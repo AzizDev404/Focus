@@ -1,0 +1,7 @@
+@import 'tailwindcss';
+@import './flocus-native.css';
+@import './flocus-overrides.css';
+
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+}

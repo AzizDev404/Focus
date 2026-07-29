@@ -1,0 +1,346 @@
+[
+  {
+    "id": "rain",
+    "name": "Rain",
+    "emoji": "☔️",
+    "category": "weather",
+    "plus": false,
+    "file": "rain.mp4"
+  },
+  {
+    "id": "ocean",
+    "name": "Ocean",
+    "emoji": "🌊",
+    "category": "nature",
+    "plus": false,
+    "file": "ocean.mp4"
+  },
+  {
+    "id": "cafe",
+    "name": "Bustling Café",
+    "emoji": "☕️",
+    "category": "interior",
+    "plus": false,
+    "file": "cafe.mp4"
+  },
+  {
+    "id": "airplane",
+    "name": "Airplane Cabin",
+    "emoji": "🛩️",
+    "category": "niche",
+    "plus": false,
+    "file": "AirplaneCabin.mp4"
+  },
+  {
+    "id": "exam",
+    "name": "Exam Hall",
+    "emoji": "🙇",
+    "category": "niche",
+    "plus": false,
+    "file": "ExamHall.mp4"
+  },
+  {
+    "id": "commuter",
+    "name": "Commuter Train",
+    "emoji": "🚃",
+    "category": "niche",
+    "plus": false,
+    "file": "CommuterTrain.mp4"
+  },
+  {
+    "id": "japanese-library",
+    "name": "Japanese Library",
+    "emoji": "📚",
+    "category": "interior",
+    "plus": false,
+    "file": "JapaneseLibrary.mp4"
+  },
+  {
+    "id": "nyc-morning",
+    "name": "NYC Morning",
+    "emoji": "🚕",
+    "category": "lifestyle",
+    "plus": false,
+    "file": "NYCMorning.mp4"
+  },
+  {
+    "id": "light-rain",
+    "name": "Light Rain",
+    "emoji": "☔️",
+    "category": "weather",
+    "plus": false,
+    "file": "LightRain.mp4"
+  },
+  {
+    "id": "heavy-rain",
+    "name": "Heavy Rain",
+    "emoji": "🌧️",
+    "category": "weather",
+    "plus": false,
+    "file": "HeavyRain.mp4"
+  },
+  {
+    "id": "thunderstorm",
+    "name": "Thunderstorm",
+    "emoji": "⛈️",
+    "category": "weather",
+    "plus": false,
+    "file": "Thunderstorm.mp4"
+  },
+  {
+    "id": "fireplace",
+    "name": "Fireplace",
+    "emoji": "🔥",
+    "category": "interior",
+    "plus": false,
+    "file": "Fireplace.mp4"
+  },
+  {
+    "id": "campfire",
+    "name": "Campfire",
+    "emoji": "🪵",
+    "category": "nature",
+    "plus": false,
+    "file": "Campfire.mp4"
+  },
+  {
+    "id": "office",
+    "name": "Office",
+    "emoji": "🏢",
+    "category": "interior",
+    "plus": false,
+    "file": "Office.mp4"
+  },
+  {
+    "id": "wind",
+    "name": "Wind",
+    "emoji": "🌬️",
+    "category": "nature",
+    "plus": false,
+    "file": "Wind.mp4"
+  },
+  {
+    "id": "white-noise",
+    "name": "White Noise",
+    "emoji": "🧠",
+    "category": "focus",
+    "plus": false,
+    "file": "WhiteNoise.mp4"
+  },
+  {
+    "id": "pink-noise",
+    "name": "Pink Noise",
+    "emoji": "🧠",
+    "category": "focus",
+    "plus": false,
+    "file": "PinkNoise.mp4"
+  },
+  {
+    "id": "brown-noise",
+    "name": "Brown Noise",
+    "emoji": "🧠",
+    "category": "focus",
+    "plus": false,
+    "file": "BrownNoise.mp4"
+  },
+  {
+    "id": "binaural-gamma",
+    "name": "Binaural: Gamma",
+    "emoji": "🙇",
+    "category": "focus",
+    "plus": false,
+    "file": "WavesGamma.mp4"
+  },
+  {
+    "id": "binaural-beta",
+    "name": "Binaural: Beta",
+    "emoji": "👨‍💻",
+    "category": "focus",
+    "plus": false,
+    "file": "WavesBeta.mp4"
+  },
+  {
+    "id": "binaural-alpha",
+    "name": "Binaural: Alpha",
+    "emoji": "💆",
+    "category": "focus",
+    "plus": false,
+    "file": "WavesAlpha.mp4"
+  },
+  {
+    "id": "binaural-theta",
+    "name": "Binaural: Theta",
+    "emoji": "🧘",
+    "category": "focus",
+    "plus": false,
+    "file": "WavesTheta.mp4"
+  },
+  {
+    "id": "binaural-delta",
+    "name": "Binaural: Delta",
+    "emoji": "😴",
+    "category": "focus",
+    "plus": false,
+    "file": "WavesDelta.mp4"
+  },
+  {
+    "id": "street-cafe",
+    "name": "Street Café",
+    "emoji": "☕️",
+    "category": "interior",
+    "plus": false,
+    "file": "StreetCafe.mp4"
+  },
+  {
+    "id": "countryside-morning-sound",
+    "name": "Countryside Morning",
+    "emoji": "🧺",
+    "category": "nature",
+    "plus": false,
+    "file": "CountrysideMorning.mp4"
+  },
+  {
+    "id": "deep-sea",
+    "name": "Deep Sea",
+    "emoji": "🐡",
+    "category": "nature",
+    "plus": false,
+    "file": "DeepSea.mp4"
+  },
+  {
+    "id": "air-conditioner",
+    "name": "Air Conditioner",
+    "emoji": "❄️",
+    "category": "interior",
+    "plus": false,
+    "file": "AirConditioner.mp4"
+  },
+  {
+    "id": "room-fan",
+    "name": "Room Fan",
+    "emoji": "🪭",
+    "category": "interior",
+    "plus": false,
+    "file": "RoomFan.mp4"
+  },
+  {
+    "id": "summer-night",
+    "name": "Summer Night",
+    "emoji": "🦗",
+    "category": "nature",
+    "plus": false,
+    "file": "SummerNight.mp4"
+  },
+  {
+    "id": "central-park",
+    "name": "Central Park",
+    "emoji": "⛲️",
+    "category": "nature",
+    "plus": false,
+    "file": "CentralPark.mp4"
+  },
+  {
+    "id": "airport",
+    "name": "Airport Terminal",
+    "emoji": "🛄",
+    "category": "niche",
+    "plus": false,
+    "file": "AirportTerminal.mp4"
+  },
+  {
+    "id": "underwater",
+    "name": "Underwater",
+    "emoji": "🤿",
+    "category": "nature",
+    "plus": false,
+    "file": "Underwater.mp4"
+  },
+  {
+    "id": "birds",
+    "name": "Birds in the Woods",
+    "emoji": "🐦",
+    "category": "nature",
+    "plus": false,
+    "file": "BirdsInWoods.mp4"
+  },
+  {
+    "id": "waterfall",
+    "name": "Waterfall",
+    "emoji": "🌊",
+    "category": "nature",
+    "plus": false,
+    "file": "Waterfall.mp4"
+  },
+  {
+    "id": "rain-tent",
+    "name": "Light Rain on Tent",
+    "emoji": "⛺️",
+    "category": "weather",
+    "plus": false,
+    "file": "LightRainOnTent.mp4"
+  },
+  {
+    "id": "keyboard",
+    "name": "Laptop Keyboard",
+    "emoji": "⌨️",
+    "category": "focus",
+    "plus": false,
+    "file": "LaptopKeyboard.mp4"
+  },
+  {
+    "id": "whales",
+    "name": "Whales",
+    "emoji": "🐋",
+    "category": "nature",
+    "plus": false,
+    "file": "Whales.mp4"
+  },
+  {
+    "id": "kitchen",
+    "name": "Home Kitchen",
+    "emoji": "🍴",
+    "category": "interior",
+    "plus": false,
+    "file": "HomeKitchen.mp4"
+  },
+  {
+    "id": "bowling",
+    "name": "Bowling Alley",
+    "emoji": "🎳",
+    "category": "niche",
+    "plus": false,
+    "file": "BowlingAlley.mp4"
+  },
+  {
+    "id": "record-static",
+    "name": "Record Player Static",
+    "emoji": "📀",
+    "category": "niche",
+    "plus": false,
+    "file": "RecordPlayerStatic.mp4"
+  },
+  {
+    "id": "space-rumble",
+    "name": "Outer Space Rumble",
+    "emoji": "🪐",
+    "category": "niche",
+    "plus": false,
+    "file": "OuterSpaceRumble.mp4"
+  },
+  {
+    "id": "clock",
+    "name": "Clock Ticking",
+    "emoji": "🕰️",
+    "category": "focus",
+    "plus": false,
+    "file": "ClockTicking.mp4"
+  },
+  {
+    "id": "cat-purr",
+    "name": "Cat Purr",
+    "emoji": "🐈",
+    "category": "lifestyle",
+    "plus": false,
+    "file": "CatPurr.mp4"
+  }
+]

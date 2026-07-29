@@ -1,0 +1,264 @@
+ument.body.addEventListener("LogUserIn",this.#o.bind(this)),localStorage.setItem("APP_VERSION",z)}connectedCallback(){this.id="settingsModal";var e='<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+    <div class="offcanvas-body" style=" --bs-offcanvas-padding-x: 0; --bs-offcanvas-padding-y: 0;">
+        <div class="d-flex align-items-start h-100">
+            <div class="offcanvas-buttons">
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                <button class="navbar-toggler d-md-none me-auto collapsed order-first" type="button" data-bs-toggle="collapse" data-bs-target="#settModal-tab" aria-controls="settModal-tab" aria-expanded="false" aria-label="Toggle navigation">
+                    <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-dhaba5" focusable="false" aria-hidden="true" viewBox="0 0 24 24" fill="#fff"><path d="M5.7 6.71c-.39.39-.39 1.02 0 1.41L9.58 12 5.7 15.88c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l4.59-4.59c.39-.39.39-1.02 0-1.41L7.12 6.71c-.39-.39-1.03-.39-1.42 0"></path><path d="M12.29 6.71c-.39.39-.39 1.02 0 1.41L16.17 12l-3.88 3.88c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l4.59-4.59c.39-.39.39-1.02 0-1.41L13.7 6.7c-.38-.38-1.02-.38-1.41.01"></path></svg>
+                </button>
+            </div>
+            <div class="nav flex-column h-100 nav-pills collapse navbar-collapse navbar-expand-lg" id="settModal-tab" role="tablist" aria-orientation="vertical">
+                <div>
+                    \x3c!-- <button class="nav-link" id="settModal-homeTheme-tab" data-bs-toggle="pill" data-bs-target="#settModal-homeTheme" type="button" role="tab" aria-controls="settModal-homeTheme" aria-selected="false">Themes</button> --\x3e
+                    <button class="nav-link" id="settModal-Theme-tab" aria-selected="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"><path fill="#7432FF" d="M8.885 18.709A9.001 9.001 0 0 1 .758 9.365C.953 4.69 4.917.83 9.595.751A9 9 0 0 1 18.75 9.75a3.414 3.414 0 0 1-3.414 3.414h-3.678a1.696 1.696 0 0 0-1.493 2.5l.295.547a1.696 1.696 0 0 1-.17 1.863c-.339.425-.864.686-1.405.635Z" opacity=".3"/><path stroke="#7432FF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.885 18.709A9.001 9.001 0 0 1 .758 9.365C.953 4.69 4.917.83 9.595.751A9 9 0 0 1 18.75 9.75a3.414 3.414 0 0 1-3.414 3.414h-3.678a1.696 1.696 0 0 0-1.493 2.5l.295.547a1.696 1.696 0 0 1-.17 1.863c-.339.425-.864.686-1.405.635Z"/><path fill="#7432FF" d="M9.75 6.026a1.241 1.241 0 1 0 0-2.483 1.241 1.241 0 0 0 0 2.483ZM6.24 7.48a1.241 1.241 0 1 0 0-2.482 1.241 1.241 0 0 0 0 2.482ZM13.26 7.48a1.241 1.241 0 1 0 0-2.482 1.241 1.241 0 0 0 0 2.482ZM4.784 10.991a1.241 1.241 0 1 0 0-2.482 1.241 1.241 0 0 0 0 2.482Z"/></svg>
+                        Themes
+                    </button>
+                    <button class="nav-link active" id="settModal-homeTheme-tab" data-bs-toggle="pill" data-bs-target="#settModal-homeTheme" type="button" role="tab" aria-controls="settModal-homeTheme" aria-selected="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="16" fill="none"><path fill="#7432FF" fill-opacity=".3" d="M1.395 4.95 6.645.96a1 1 0 0 1 1.21 0l5.25 3.99a1 1 0 0 1 .395.796v7.504a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V5.746c0-.313.146-.607.395-.796Z"/><path stroke="#7432FF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M1.395 4.95 6.645.96a1 1 0 0 1 1.21 0l5.25 3.99a1 1 0 0 1 .395.796v7.504a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V5.746c0-.313.146-.607.395-.796Z"/></svg>
+                        Home Theme
+                    </button>
+                    <button class="nav-link" id="settModal-focusTheme-tab" data-bs-toggle="pill" data-bs-target="#settModal-focusTheme" type="button" role="tab" aria-controls="settModal-focusTheme" aria-selected="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" fill="none"><path fill="#7432FF" fill-opacity=".3" fill-rule="evenodd" d="M4.923.863A5.006 5.006 0 0 1 11 5.75a4.996 4.996 0 0 1-2.75 4.46v2.04h-4.5v-2.04a5 5 0 0 1-2.662-5.414c.359-1.94 1.902-3.53 3.834-3.933Z" clip-rule="evenodd"/><path stroke="#7432FF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.751 12.25h4.5M11 5.75A5.006 5.006 0 0 0 4.924.863c-1.932.403-3.475 1.993-3.834 3.933A5 5 0 0 0 3.75 10.21v3.039a2 2 0 0 0 2 2h.5a2 2 0 0 0 2-2v-3.04A4.996 4.996 0 0 0 11 5.75Z"/></svg>
+                        Focus Theme
+                    </button>
+                    <button class="nav-link" id="settModal-ambientTheme-tab" data-bs-toggle="pill" data-bs-target="#settModal-ambientTheme" type="button" role="tab" aria-controls="settModal-ambientTheme" aria-selected="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="14" fill="none"><path fill="#7432FF" fill-opacity=".3" d="M4.056 9.781C2.092 9.994 1 11.25 1 11.25s1.305 1.5 3.625 1.5c2.32 0 3.625-1.5 3.625-1.5M12.444 9.781c1.964.213 3.056 1.469 3.056 1.469s-1.305 1.5-3.625 1.5c-2.32 0-3.625-1.5-3.625-1.5M8.25 11.25S10.5 9.36 10.5 6C10.5 2.64 8.25.75 8.25.75S6 2.64 6 6c0 3.36 2.25 5.25 2.25 5.25Z"/><path stroke="#7432FF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.056 9.781C2.092 9.994 1 11.25 1 11.25s1.305 1.5 3.625 1.5c2.32 0 3.625-1.5 3.625-1.5"/><path stroke="#7432FF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.007 6.327C4.124 4.831 2.035 5.035 2.035 5.035S1.786 7.527 3.78 9.521C5.773 11.515 8.25 11.25 8.25 11.25M12.444 9.781c1.964.213 3.056 1.469 3.056 1.469s-1.305 1.5-3.625 1.5c-2.32 0-3.625-1.5-3.625-1.5"/><path stroke="#7432FF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.493 6.327c1.883-1.496 3.972-1.292 3.972-1.292s.249 2.492-1.744 4.486C10.727 11.515 8.25 11.25 8.25 11.25"/><path stroke="#7432FF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.25 11.25S10.5 9.36 10.5 6C10.5 2.64 8.25.75 8.25.75S6 2.64 6 6c0 3.36 2.25 5.25 2.25 5.25Z"/></svg>
+                        Ambient Theme
+                    </button>
+                </div>
+                <button class="nav-link" id="settModal-support-tab" data-bs-toggle="pill" data-bs-target="#settModal-support" type="button" role="tab" aria-controls="settModal-support" aria-selected="false" style="order: 90;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" fill="none"><path fill="#7432FF" fill-opacity=".3" d="M8.25 15.25a7.25 7.25 0 1 0 0-14.5 7.25 7.25 0 0 0 0 14.5Z"/><path stroke="#7432FF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.25 15.25a7.25 7.25 0 1 0 0-14.5 7.25 7.25 0 0 0 0 14.5Z"/><path stroke="#7432FF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.175 5.619c.388-1.057 1.294-1.492 2.18-1.492.895 0 1.818.638 1.818 1.808 0 1.784-1.816 1.468-2.096 3.065"/><path fill="#7432FF" d="M8.041 12.567a1.001 1.001 0 0 1 0-2 1.001 1.001 0 0 1 0 2Z"/></svg>
+                    Support
+                </button>
+                <button class="nav-link" id="settModal-whatsnew-tab" data-bs-toggle="pill" data-bs-target="#settModal-whatsnew" type="button" role="tab" aria-controls="settModal-whatsnew" aria-selected="false" style="order: 100;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" fill="none"><path fill="#7432FF" fill-opacity=".3" d="M12.421 9.059c3.505-3.678 3.077-7.965 3.04-8.27-.306-.036-4.592-.465-8.27 3.04-2.227 2.124-2.977 4.494-3.195 5.288l3.138 3.137c.793-.217 3.164-.967 5.287-3.195Z"/><path fill="#7432FF" d="M11 6.5A1.25 1.25 0 1 0 11 4a1.25 1.25 0 0 0 0 2.5Z"/><path stroke="#7432FF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.107 11.47A1.993 1.993 0 0 0 1 13.25v2h2c.782 0 1.452-.453 1.78-1.107M12.421 9.059c3.505-3.678 3.077-7.965 3.04-8.27-.306-.036-4.592-.465-8.27 3.04-2.227 2.124-2.977 4.494-3.195 5.288l3.138 3.137c.793-.217 3.164-.967 5.287-3.195Z"/><path stroke="#7432FF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m7.516 3.528-1.374-.246C4.887 3.057 3.987 2.96 3.25 4L1 7.27s1.603-.613 3.842-.303M9.283 11.408c.31 2.24-.303 3.842-.303 3.842L12.25 13c1.041-.737.944-1.637.719-2.892l-.246-1.374"/></svg>
+                    What's New
+                </button>
+                <span class="upgrade-group mb-5">
+                    <button class="btn btn-primary upgrade-button" id="settModal-upgrade-tab" data-bs-toggle="pill" data-bs-target="#settModal-upgrade" type="button" role="tab" aria-controls="settModal-upgrade" aria-selected="false">⚡️ Upgrade to Plus</button>
+                </span>
+                <div class="login-prompt fade show">
+                    <span class="l-1">You're signed out!</span>
+                    <span class="l-2">Keep your layout, stats, and more.</span>
+                    <a href="#" class="btn btn-primary login-prompt-button go-to-tab" data-fl-target="account" data-fl-sub-target="#register-tab" data-fl-toggle="settings-tab">Sign up with email</a>
+                    <span class="l-3">Already have an account? <a href="#" class="go-to-tab" data-fl-target="account" data-fl-sub-target="#login-tab" data-fl-toggle="settings-tab">Sign in</a></span>
+                </div>
+            </div>
+            <div class="tab-content flex-grow-1" id="settModal-tabContent">
+                <div class="tab-pane fade show active" id="settModal-homeTheme" role="tabpanel" aria-labelled-by="settModal-homeTheme-tab" data-widget="homeTheme" aria-labelledby="#settModal-homeTheme-tab">
+                    <div class="settings-header">
+                        <h3>Home Theme</h3>
+                        <span class="subtitle">Pick your theme for Home. Switch to this mode to preview live.</span>
+                    </div>
+                    <div class="settings-group">
+                        <div class="custom-background">
+                            <h4 class="title">Custom Background <plus-badge data-widget="custom-background"></plus-badge></h4>
+                            <p class="description">Upload your own theme image. All uploads must follow our <a href="https://help.flocus.com/en/articles/11482927-uploading-a-custom-theme" target="_blank">guidelines</a>.</p>
+
+                            <div class="file-upload" data-mode="home">
+                                <div class="file-area">
+                                    <div class="drag-area" data-widget="homeTheme" data-mode="home">
+                                        <div class="image-holder"></div>
+                                        <div class="text-holder">
+                                            <p class="file-text">Drop file here or <u>browse</u></p>
+                                            <span class="file-text-help">JPG, PNG, WEBP, HEIC (max 5MB, min 800px)</span>
+                                            <input class="visually-hidden-focusable" type="file" id="fileUpload" />
+                                        </div>
+                                    </div>
+                                    \x3c!-- <input type="file" /> --\x3e
+                                </div>
+                                <div class="file-controls">
+                                    <div class="buttons">
+                                        <button type="button" class="btn btn-primary set-bg" value="custom|custom" name="homeTheme">Save upload</button>
+                                        <button type="button" class="btn btn-danger remove-bg">Remove image</button>
+                                    </div>
+
+                                    <div class="overlay-control">
+                                        <label for="home-overlay">Overlay</label>
+                                        <input id="home-overlay" type="range" class="" min="0" max="1" step="0.05" name="customOverlay" data-descriptor="#home-overlay-value" />
+                                        <span class="range-value" id="home-overlay-value">100%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="file-errors"></div>
+                            <div class="youtube-background">
+                                <h4>Video Background <plus-badge data-widget="custom-background"></plus-badge><span class="badge badge-new ms-2 bg-success">New</span></h4>
+                                <div class="description">Paste YouTube URL below, adjust the opacity above.</div>
+                                <div class="yoututbe-bg-wrapper">
+                                    <input type="text" name="youtube-bg" id="youtube-bg-home" class="form-control" />
+                                    <button type="button" class="btn btn-primary save-youtube" value="youtube|youtube" name="homeTheme">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-group theme-holder">
+                        <h4 class="title">Theme Library</h4>
+                        <div class="row filters">
+                            <div class="col-12 col-sm-6 col-xl">
+                                <label for="homeTheme-filter-type">Type</label>
+                                <select class="form-select filter" id="homeTheme-filter-type" data-filter-for="type" name="themeType">
+                                    <option selected>All</option>
+                                    <option>World</option>
+                                    <option>Gradient</option>
+                                    <option>Solid Color</option>
+                                    <option>Animated</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-6 col-xl">
+                                <label>Environment</label>
+                                <select class="form-select filter" data-filter-for="environment" name="themeEnvironment">
+                                    <option selected>All</option>
+                                    <option>Scenic</option>
+                                    <option>Urban</option>
+                                    <option>Nature</option>
+                                    <option>Interior</option>
+                                    <option>Abstract</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-6 col-xl d-none">
+                                <label>Brightness</label>
+                                <select class="form-select filter" data-filter-for="brightness" name="themeBrightness">
+                                    <option selected>All</option>
+                                    <option>Dark</option>
+                                    <option>Light</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-6 col-xl">
+                                <label>Color</label>
+                                <select class="form-select filter" data-filter-for="color" name="themeColor">
+                                    <option selected>All</option>
+                                    <option>Blue</option>
+                                    <option>Green</option>
+                                    <option>Pink</option>
+                                    <option>Purple</option>
+                                    <option>Orange/Yellow</option>
+                                    <option>Monochrome</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="settModal-focusTheme" role="tabpanel" aria-labelled-by="settModal-focusTheme-tab" data-widget="focusTheme" aria-labelledby="#settModal-focusTheme-tab">
+                    <div class="settings-header">
+                        <h3>Focus Theme</h3>
+                        <span class="subtitle">Pick your theme for Focus Mode. Switch to this mode to preview live.</span>
+                    </div>
+                    <div class="settings-group">
+                        <div class="custom-background">
+                            <h4 class="title">Custom Background <plus-badge data-widget="custom-background"></plus-badge></h4>
+                            <p class="description">Upload your own theme image. All uploads must follow our <a href="https://help.flocus.com/en/articles/11482927-uploading-a-custom-theme" target="_blank">guidelines</a>.</p>
+
+                            <div class="file-upload" data-mode="focus">
+                                <div class="file-area">
+                                    <div class="drag-area" data-widget="focusTheme" data-mode="focus">
+                                        <div class="image-holder"></div>
+                                        <div class="text-holder">
+                                            <p class="file-text">Drop file here or <u>browse</u></p>
+                                            <span class="file-text-help">JPG, PNG, WEBP, HEIC (max 5MB, min 800px)</span>
+                                            <input class="visually-hidden-focusable" type="file" id="fileUpload" />
+                                        </div>
+                                    </div>
+                                    \x3c!-- <input type="file" /> --\x3e
+                                </div>
+                                <div class="file-controls">
+                                    <div class="buttons">
+                                        <button type="button" class="btn btn-primary set-bg" value="custom|custom" name="focusTheme">Save upload</button>
+                                        <button type="button" class="btn btn-danger remove-bg">Remove image</button>
+                                    </div>
+
+                                    <div class="overlay-control">
+                                        <label for="focus-overlay">Overlay</label>
+                                        <input id="focus-overlay" type="range" class="" min="0" max="1" step="0.05" name="customOverlay" data-descriptor="#focus-overlay-value" />
+                                        <span class="range-value" id="focus-overlay-value">100%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="file-errors"></div>
+                            <div class="youtube-background">
+                                <h4>Video Background <plus-badge data-widget="custom-background"></plus-badge><span class="badge badge-new ms-2 bg-success">New</span></h4>
+                                <div class="description">Paste YouTube URL below, adjust the opacity above.</div>
+                                <div class="yoututbe-bg-wrapper">
+                                    <input type="text" name="youtube-bg" id="youtube-bg-focus" class="form-control" />
+                                    <button type="button" class="btn btn-primary save-youtube" value="youtube|youtube" name="focusTheme">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-group theme-holder">
+                        <h4 class="title">Theme Library</h4>
+                        <div class="row filters">
+                            <div class="col-12 col-sm-6 col-xl">
+                                <label for="focusTheme-filter-type">Type</label>
+                                <select class="form-select filter" id="focusTheme-filter-type" data-filter-for="type" name="themeType">
+                                    <option selected>All</option>
+                                    <option>World</option>
+                                    <option>Gradient</option>
+                                    <option>Solid Color</option>
+                                    <option>Animated</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-6 col-xl">
+                                <label>Environment</label>
+                                <select class="form-select filter" data-filter-for="environment" name="themeEnvironment">
+                                    <option selected>All</option>
+                                    <option>Scenic</option>
+                                    <option>Urban</option>
+                                    <option>Nature</option>
+                                    <option>Interior</option>
+                                    <option>Abstract</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-6 col-xl d-none">
+                                <label>Brightness</label>
+                                <select class="form-select filter" data-filter-for="brightness" name="themeBrightness">
+                                    <option selected>All</option>
+                                    <option>Dark</option>
+                                    <option>Light</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-6 col-xl">
+                                <label>Color</label>
+                                <select class="form-select filter" data-filter-for="color" name="themeColor">
+                                    <option selected>All</option>
+                                    <option>Blue</option>
+                                    <option>Green</option>
+                                    <option>Pink</option>
+                                    <option>Purple</option>
+                                    <option>Orange/Yellow</option>
+                                    <option>Monochrome</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="settModal-ambientTheme" role="tabpanel" aria-labelled-by="settModal-ambientTheme-tab" data-widget="ambientTheme" aria-labelledby="#settModal-ambientTheme-tab">
+                    <div class="settings-header">
+                        <h3>Ambient Theme</h3>
+                        <span class="subtitle">Pick your theme for Ambient Mode. Switch to this mode to preview live.</span>
+                    </div>
+                    <div class="settings-group">
+                        <div class="custom-background">
+                            <h4 class="title">Custom Background <plus-badge data-widget="custom-background"></plus-badge></h4>
+                            <p class="description">Upload your own theme image. All uploads must follow our <a href="https://help.flocus.com/en/articles/11482927-uploading-a-custom-theme" target="_blank">guidelines</a>.</p>
+
+                            <div class="file-upload" data-mode="ambient">
+                                <div class="file-area">
+                                    <div class="drag-area" data-widget="ambientTheme" data-mode="ambient">
+                                        <div class="image-holder"></div>
+                                        <div class="text-holder">
+                                            <p class="file-text">Drop file here or <u>browse</u></p>
+                                            <span class="file-text-help">JPG, PNG, WEBP, HEIC (max 5MB, min 800px)</span>
+                                            <input class="visually-hidden-focusable" type="file" id="fileUpload" />
+                                        </div>
+                                    </div>
+                                    \x3c!-- <input type="file" /> --\x3e
+                                </div>
+                                <div class="file-controls">
+                                    <div class="buttons">
+                                        <button type="button" class="btn btn-primary set-bg" value="custom|custom" name="ambientTheme">Save upload</button>
+                                        <button type="button" class="btn btn-danger remove-bg">Remove image</button>
+                                    </div>
+
+                                    <div class="overlay-control">
+                                        <label for="ambient-o

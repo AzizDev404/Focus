@@ -1,0 +1,239 @@
+/* ─── Tsukiyomi UI polish — consistent spacing in Settings / Profile / Magazine ─── */
+
+:root {
+  --ui-control-h: 2.75rem;
+  --ui-gap-sm: 0.75rem;
+  --ui-gap-md: 1rem;
+  --ui-gap-lg: 1.35rem;
+  --ui-line: 1.5;
+}
+
+/* Profile stats */
+.profile-stats-grid {
+  gap: var(--ui-gap-sm);
+  padding: 0 1rem 1.25rem;
+}
+
+.profile-stat {
+  min-height: 3.5rem;
+  padding: 0.75rem 0.9rem;
+  gap: 0.75rem;
+}
+
+.profile-stat-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.profile-stat-value {
+  font-size: 1.05rem;
+  line-height: 1.2;
+}
+
+.profile-stat-label {
+  font-size: 0.6875rem;
+  line-height: 1.3;
+  margin-top: 0.15rem;
+}
+
+.profile-card-body {
+  gap: var(--ui-gap-md);
+}
+
+.profile-card-main {
+  gap: 1rem;
+}
+
+.profile-identity-head {
+  gap: 0.5rem;
+}
+
+.profile-email {
+  line-height: var(--ui-line);
+  margin-top: 0.25rem;
+}
+
+.profile-edit-btn {
+  min-height: 2.25rem;
+  padding: 0 1rem;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+}
+
+/* Magazine */
+.profile-magazine-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-gap-md);
+}
+
+.profile-mag-header {
+  margin-bottom: 0;
+  padding-bottom: var(--ui-gap-md);
+}
+
+.profile-mag-header h2 {
+  font-size: 1.15rem;
+  line-height: 1.25;
+}
+
+.profile-mag-wallet {
+  min-height: 3.25rem;
+  padding: 0.6rem 1rem;
+  justify-content: center;
+}
+
+.profile-mag-filters {
+  gap: 0.5rem;
+  margin-bottom: 0;
+}
+
+.profile-mag-filters button {
+  min-height: 2.25rem;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+}
+
+.profile-mag-grid {
+  gap: var(--ui-gap-md);
+}
+
+.profile-mag-preview {
+  min-height: 6.5rem;
+}
+
+.profile-mag-body {
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.profile-mag-body h3 {
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+
+.profile-mag-body p {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  min-height: 2.4em;
+}
+
+.profile-mag-meta {
+  margin-bottom: 0.35rem;
+  font-size: 0.8125rem;
+}
+
+.profile-mag-card .profile-mag-actions button,
+.profile-mag-card button.profile-mag-buy {
+  min-height: 2.25rem;
+}
+
+/* Settings panel — profile & magazine tabs */
+settings-panel .settings-account-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-gap-lg);
+  max-width: 42rem;
+}
+
+settings-panel .settings-account-hub .profile-card:not(.lb-player-card) .profile-card-banner {
+  height: var(--profile-banner-height, 13rem);
+  min-height: var(--profile-banner-height, 13rem);
+}
+
+settings-panel .settings-account-hub .profile-card:not(.lb-player-card) .profile-card-body {
+  margin-top: 0;
+  padding: calc(var(--profile-avatar-size, 5.5rem) + 0.75rem) 1rem 1rem;
+}
+
+settings-panel .settings-account-hub .profile-card:not(.lb-player-card) .profile-avatar-stack {
+  left: 1rem;
+  top: calc(var(--profile-banner-height, 10.5rem) - var(--profile-avatar-overlap, 2.75rem));
+  transform: none;
+}
+
+settings-panel .settings-account-hub .profile-card:not(.lb-player-card) .profile-avatar {
+  width: var(--profile-avatar-size, 5.5rem);
+  height: var(--profile-avatar-size, 5.5rem);
+}
+
+settings-panel .settings-account-hub .profile-card:not(.lb-player-card) .profile-display-name {
+  font-size: 1.28rem;
+  line-height: 1.2;
+}
+
+settings-panel .settings-account-body .profile-mag-grid {
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+}
+
+settings-panel #settModal-profile.tab-pane,
+settings-panel #settModal-magazine.tab-pane,
+settings-panel #settModal-leaderboard.tab-pane {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-gap-lg);
+}
+
+settings-panel .profile-achievements-compact {
+  margin-top: 0.25rem;
+}
+
+settings-panel .account-page-actions {
+  gap: 0.65rem;
+  margin-top: var(--ui-gap-lg);
+  padding-top: var(--ui-gap-md);
+}
+
+settings-panel .account-page-actions .btn {
+  min-height: var(--ui-control-h);
+  padding: 0.5rem 1rem;
+}
+
+/* Settings shell — nav tabs & form rows */
+settings-panel .settings-nav-tabs {
+  gap: 0.5rem;
+  margin-bottom: var(--ui-gap-lg);
+  flex-wrap: wrap;
+}
+
+settings-panel .settings-nav-tabs .nav-link {
+  min-height: 2.5rem;
+  padding: 0.55rem 1rem;
+  line-height: 1.25;
+}
+
+settings-panel .tab-content {
+  padding-top: 0.25rem;
+}
+
+settings-panel .settings-row,
+settings-panel .form-group {
+  margin-bottom: var(--ui-gap-md);
+}
+
+settings-panel label,
+settings-panel .form-label {
+  margin-bottom: 0.4rem;
+  line-height: 1.35;
+}
+
+settings-panel input.form-control,
+settings-panel select.form-control,
+settings-panel textarea.form-control {
+  min-height: var(--ui-control-h);
+  padding: 0.65rem 0.9rem;
+  line-height: var(--ui-line);
+}
+
+settings-panel .profile-achievements-grid {
+  gap: var(--ui-gap-sm);
+}
+
+settings-panel .achievement-card {
+  min-height: 5rem;
+  padding: 0.85rem 1rem;
+}

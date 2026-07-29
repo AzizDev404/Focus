@@ -1,0 +1,3958 @@
+/* React app shell + fixes on top of flocus-native.css */
+
+/* ——— Accent color override ———
+   Native flocus-native.css hard-codes #7432FF (purple) in dozens of places —
+   buttons, form controls, settings icons, sounds tags, stats gradients, etc.
+   App.tsx exposes the user's chosen accent on body via --fl-accent-color (plus
+   a few aliases like --bs-purple, --fl-flip-bg-color). Here we re-route every
+   hard-coded purple to that variable so the entire UI follows the accent. */
+
+/* Settings nav icons — replaced inline fills with currentColor in TSX, so set
+   the inherited color on the parent button. */
+settings-panel .nav-link svg {
+  color: var(--fl-accent-color, #7432FF);
+}
+
+/* Hover / focus text colors */
+.upgradeModal .earlybird-message a:hover,
+settings-panel .go-to-tab:hover,
+settings-panel .whats-new a:not(.btn):hover,
+settings-panel .whats-new a:not(.btn):focus,
+settings-panel .support a:not(.btn):hover,
+settings-panel .support a:not(.btn):focus,
+#settModal-upgrade .early-bird a:hover,
+#settModal-upgrade .early-bird a:focus,
+#settModal-upgrade a:not(.btn):hover,
+.tasks-popout-wrapper .tasks-add .plus-message a:hover {
+  color: var(--fl-accent-color, #7432FF) !important;
+}
+
+/* Form controls (checkbox / radio / outline button) */
+.form-check-input:checked {
+  background-color: var(--fl-accent-color, #7432FF) !important;
+  border-color: var(--fl-accent-color, #7432FF) !important;
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--fl-accent-color, #7432FF);
+  --bs-btn-border-color: var(--fl-accent-color, #7432FF);
+  --bs-btn-hover-bg: var(--fl-accent-color, #7432FF);
+  --bs-btn-hover-border-color: var(--fl-accent-color, #7432FF);
+  --bs-btn-active-bg: var(--fl-accent-color, #7432FF);
+  --bs-btn-active-border-color: var(--fl-accent-color, #7432FF);
+}
+
+/* Plus / Pro tag pills */
+#onboarding .label-with-image .tags .tag[data-tag='plus'],
+settings-panel .label-with-image .tags .tag[data-tag='plus'] {
+  background-color: var(--fl-accent-color, #7432FF) !important;
+}
+
+/* Theme drop-area highlight */
+settings-panel .tab-content div[id*='Theme'] .drag-area.drag-active {
+  border-color: var(--fl-accent-color, #7432FF) !important;
+}
+
+/* Range slider fills (Firefox / IE) — WebKit uses the --fl-ctrl-accent var */
+settings-panel input[type='range']::-moz-range-progress,
+settings-panel input[type='range']::-ms-fill-lower {
+  background-color: var(--fl-accent-color, #7432FF) !important;
+}
+
+/* Login tab active border */
+settings-panel .login .nav-tabs .nav-link.active {
+  --bs-nav-tabs-link-active-border-color: var(--fl-accent-color, #7432FF);
+}
+
+/* Tasks & Notepad header icon (chip) — purple text on faint purple background.
+   We can't use a CSS variable inside rgba(), so set both halves explicitly. */
+.tasks-popout-wrapper .tasks-header .tasks-header-icon,
+flocus-notepad .notepad-header .notepad-header-icon {
+  color: var(--fl-accent-color, #7432FF) !important;
+  background-color: color-mix(in srgb, var(--fl-accent-color, #7432FF) 20%, transparent) !important;
+}
+
+/* Stats cards & timeframe pill gradients (deep purple → accent) */
+#settModal-stats .stats-grid .stat.score {
+  background: linear-gradient(
+    86deg,
+    color-mix(in srgb, var(--fl-accent-color, #7432FF) 60%, #000) 6.82%,
+    var(--fl-accent-color, #7432FF) 98.74%
+  ) !important;
+}
+
+#settModal-stats .timeframe.active,
+#settModal-stats .stats-refresh.active {
+  background: linear-gradient(
+    86deg,
+    var(--fl-accent-color, #7432FF) 6.82%,
+    color-mix(in srgb, var(--fl-accent-color, #7432FF) 60%, #000) 98.74%
+  ) !important;
+}
+
+/* Quill notepad picker — selected item color & stroke */
+flocus-notepad .ql-snow.ql-toolbar .ql-picker-item:hover,
+flocus-notepad .ql-snow .ql-toolbar .ql-picker-item:hover,
+flocus-notepad .ql-snow.ql-toolbar .ql-picker-item.ql-selected,
+flocus-notepad .ql-snow .ql-toolbar .ql-picker-item.ql-selected {
+  color: var(--fl-accent-color, #7432FF) !important;
+}
+flocus-notepad .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke.ql-fill,
+flocus-notepad .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke.ql-fill {
+  fill: var(--fl-accent-color, #7432FF) !important;
+}
+flocus-notepad .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter,
+flocus-notepad .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter {
+  stroke: var(--fl-accent-color, #7432FF) !important;
+}
+
+/* Sounds — sound header button, "PLUS" tag chips */
+flocus-sounds .sounds-header > button,
+flocus-sounds .sounds-header > select,
+flocus-sounds .sound .tag,
+flocus-sounds .playlist-label .tag {
+  background-color: var(--fl-accent-color, #7432FF) !important;
+}
+
+/* ——— Clock & timer font variants (1:1 with app.flocus.com) ——— */
+
+/* Default — Degular Bold (already applied by .clock base rule, no override) */
+
+/* Minimal — Inter 600 */
+body[data-font='Minimal'] .clock,
+body[data-font='Minimal'] .pomodoro-timer,
+body[data-font='Minimal'] .flip-clock-display {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.02em !important;
+  text-transform: none !important;
+}
+
+/* Pixel — Press Start 2P */
+body[data-font='Pixel'] .clock,
+body[data-font='Pixel'] .pomodoro-timer,
+body[data-font='Pixel'] .flip-clock-display {
+  font-family: 'Press Start 2P', monospace !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: none !important;
+}
+
+/* Minimal Wide — Helvetica Neue LT Std (fallback Inter) 750 */
+body[data-font='Minimal Wide'] .clock,
+body[data-font='Minimal Wide'] .pomodoro-timer,
+body[data-font='Minimal Wide'] .flip-clock-display {
+  font-family: 'Helvetica Neue LT Std', 'Inter', sans-serif !important;
+  font-weight: 750 !important;
+  letter-spacing: -0.02em !important;
+  text-transform: none !important;
+}
+
+/* Serif — DM Serif Display 400 */
+body[data-font='Serif'] .clock,
+body[data-font='Serif'] .pomodoro-timer,
+body[data-font='Serif'] .flip-clock-display {
+  font-family: 'DM Serif Display', serif !important;
+  font-weight: 400 !important;
+  text-transform: none !important;
+}
+
+/* Serif Condensed — Instrument Serif 400 */
+body[data-font='Serif Condensed'] .clock,
+body[data-font='Serif Condensed'] .pomodoro-timer,
+body[data-font='Serif Condensed'] .flip-clock-display {
+  font-family: 'Instrument Serif', serif !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+/* Handwritten — Gaegu 400 */
+body[data-font='Handwritten'] .clock,
+body[data-font='Handwritten'] .pomodoro-timer,
+body[data-font='Handwritten'] .flip-clock-display {
+  font-family: 'Gaegu', sans-serif !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.024em !important;
+  text-transform: none !important;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+#dashboard {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 100dvh;
+  position: relative;
+}
+
+#top {
+  flex-shrink: 0;
+}
+
+/* Vertically center hero between header + footer (override native margin-top:auto).
+   With the native #bottom bar removed (replaced by the floating SideRail), the
+   hero would otherwise sit too low — its midpoint drifts down by half the
+   removed footer's height. Reserve that space at the bottom so the visual
+   centre stays roughly at the viewport centre. */
+.hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 0;
+  width: 100%;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 5rem;
+}
+
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
+}
+
+/* Home — greeting + clock spacing (native uses negative margin) */
+.hero .greeting {
+  width: min(550px, 90vw);
+  max-width: 90vw;
+  margin: 0 auto 1rem !important;
+  line-height: 1.15;
+}
+
+@media (min-width: 576px) {
+  .hero .greeting {
+    margin-bottom: 1.5rem !important;
+  }
+}
+
+.hero .clock {
+  display: block;
+  margin: 0 auto;
+  line-height: 1;
+}
+
+/* Home clock — slightly smaller than the focus pomodoro-timer because the
+   HH:MM AM/PM string is wider than MM:SS and was overflowing at 13.125rem. */
+body[data-dashboard-mode='home'] .hero .clock {
+  font-family: 'Degular Bold', sans-serif;
+  font-weight: 700;
+  font-size: 11rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  text-rendering: optimizeLegibility;
+  transform: translateY(var(--clock-y-offset, -2.5rem));
+}
+
+body[data-scaled][data-dashboard-mode='home'] .hero .clock {
+  font-size: calc(11rem * var(--scale-factor)) !important;
+}
+
+body[data-dashboard-mode='home'] .hero .greeting {
+  transform: translateY(var(--clock-y-offset, -2.5rem));
+}
+
+/* ===================================================================
+ *  Cross-mode clock alignment
+ *  -------------------------------------------------------------------
+ *  Home / Focus put the "time read-out" inside `.hero`. They are
+ *  centred via `justify-content: center`, but Home pulled its clock up
+ *  by 2.5rem while Focus didn't, so the same digits landed at two
+ *  different y positions. We expose the shift as a CSS variable so
+ *  every mode honours it identically.
+ *
+ *  Home and Focus both honour the same vertical offset.
+ * =================================================================== */
+:root {
+  --clock-y-offset: -2.5rem;
+}
+
+body[data-dashboard-mode='focus'] .hero pomodoro-timer {
+  transform: translateY(var(--clock-y-offset, -2.5rem));
+}
+
+body[data-dashboard-mode='home'][data-font='Minimal'] .hero .clock,
+body[data-dashboard-mode='home'][data-font='Pixel'] .hero .clock,
+body[data-dashboard-mode='home'][data-font='Serif Condensed'] .hero .clock {
+  font-size: 11rem;
+  padding-top: 1rem;
+  padding-bottom: 0.5rem;
+}
+
+body[data-dashboard-mode='home'][data-font='Pixel'] .hero .clock {
+  font-size: 5.5rem;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+}
+
+body[data-dashboard-mode='home'][data-font='Minimal'] .hero .clock {
+  font-variant-numeric: normal;
+}
+
+body[data-dashboard-mode='focus'][data-font='Pixel'] .hero .pomodoro-timer,
+body[data-dashboard-mode='focus'][data-font='Pixel'] pomodoro-timer {
+  font-size: clamp(2.5rem, 8vw, 4.5rem) !important;
+  line-height: 1.25 !important;
+  letter-spacing: 0.06em !important;
+}
+
+body[data-dashboard-mode='home'][data-font='Handwritten'] .hero .clock {
+  letter-spacing: -0.06em;
+}
+
+/* Focus timer — layout from flocus-native.css; only hide progress bar */
+pomodoro-timer flocus-priorities > .task {
+  justify-content: center;
+}
+
+flocus-priorities {
+  cursor: pointer;
+}
+
+flocus-priorities > .task .title {
+  margin-right: 0;
+}
+
+/* Focus mode — tighter vertical rhythm between task title, segment tabs,
+   clock and action buttons (native gaps were a bit too airy). */
+body[data-dashboard-mode='focus'] pomodoro-timer flocus-priorities > .task,
+body[data-dashboard-mode='focus'] pomodoro-timer[data-mode*='doro'] flocus-priorities > .task,
+body[data-dashboard-mode='focus'] pomodoro-timer[data-mode*='fiftytwo'] flocus-priorities > .task,
+body[data-dashboard-mode='focus'] pomodoro-timer[data-mode*='task'] flocus-priorities > .task {
+  margin-bottom: 0.5rem !important;
+}
+
+body[data-dashboard-mode='focus'] .pomodoro-durations .form-check {
+  margin-bottom: 1.25rem !important;
+}
+
+body[data-dashboard-mode='focus'] pomodoro-timer[data-mode='pomodoro'] .pomodoro-timer,
+body[data-dashboard-mode='focus'] pomodoro-timer .pomodoro-timer {
+  margin-top: 0 !important;
+}
+
+body[data-dashboard-mode='focus'] pomodoro-timer .pomodoro-clock-actions {
+  margin-top: -0.25rem !important;
+}
+
+/* Pomodoro session dots (native mask SVG stays 4px — use solid circles so size scales) */
+.pomodoro-durations .pomo-counter[data-indicators='dots'] span {
+  font-size: 0;
+  line-height: 0;
+  margin-right: 8px !important;
+  vertical-align: middle;
+}
+
+.pomodoro-durations .pomo-counter[data-indicators='dots'] span:last-child {
+  margin-right: 0 !important;
+}
+
+.pomodoro-durations .pomo-counter[data-indicators='dots'] span::after {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 0;
+  border-radius: 50%;
+  background: var(--fl-foreground-color, #fff);
+  mask: none;
+  -webkit-mask: none;
+}
+
+.pomodoro-durations .pomo-counter[data-indicators='dots'] span:last-child::after {
+  margin-right: 0;
+}
+
+/* Timer controls — reset & PiP (transparent icons beside Start) */
+pomodoro-timer .pomodoro-clock-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-top: 1rem;
+}
+
+pomodoro-timer .pomodoro-stop.no-style,
+pomodoro-timer .pip-button.no-style {
+  border: none;
+  box-shadow: none;
+  background: transparent !important;
+  padding: 0.25rem;
+}
+
+pomodoro-timer .pomodoro-stop svg,
+pomodoro-timer .pip-button svg {
+  color: var(--fl-foreground-color, #fff);
+  stroke: currentColor;
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+pomodoro-timer .pomodoro-stop:hover svg,
+pomodoro-timer .pip-button:hover svg {
+  opacity: 0.85;
+}
+
+/* Settings panel — unified glass shell (nav + content + cards match) */
+settings-panel {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  --sett-glass-base: rgba(10, 12, 20, 0.58);
+  --sett-glass-card: rgba(255, 255, 255, 0.06);
+  --sett-glass-input: rgba(255, 255, 255, 0.08);
+  --sett-glass-border: rgba(255, 255, 255, 0.11);
+  --sett-glass-blur: 28px;
+  --fl-ctrl-bg: var(--sett-glass-input);
+  --fl-ctrl-bg-hover: rgba(255, 255, 255, 0.11);
+  --fl-ctrl-bg-active: rgba(255, 255, 255, 0.14);
+  --fl-ctrl-border: var(--sett-glass-border);
+  --fl-ctrl-border-hover: rgba(255, 255, 255, 0.18);
+}
+
+settings-panel.show {
+  display: block;
+}
+
+settings-panel.show::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.12);
+  z-index: 0;
+  pointer-events: none;
+}
+
+settings-panel .offcanvas,
+settings-panel .offcanvas-end {
+  --bs-offcanvas-width: clamp(950px, 62vw, 100vw);
+  width: var(--bs-offcanvas-width);
+  max-width: 100%;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  visibility: visible;
+  transform: none;
+  background: var(--sett-glass-base) !important;
+  border-left: 1px solid var(--sett-glass-border);
+  backdrop-filter: blur(var(--sett-glass-blur)) saturate(135%);
+  -webkit-backdrop-filter: blur(var(--sett-glass-blur)) saturate(135%);
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.22);
+}
+
+settings-panel .offcanvas-body,
+settings-panel .offcanvas-body > .d-flex {
+  background: transparent !important;
+}
+
+settings-panel .nav.nav-pills,
+settings-panel #settModal-tab {
+  background: transparent !important;
+  background-color: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-right: 1px solid var(--sett-glass-border);
+}
+
+settings-panel #settModal-tabContent {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+settings-panel .settings-group {
+  background: var(--sett-glass-card) !important;
+  border: 1px solid var(--sett-glass-border) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+settings-panel #Profile .nav-tabs {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  margin-bottom: 1.5rem;
+}
+
+settings-panel #Profile .nav-tabs .nav-link {
+  color: #9ca3af;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  padding-bottom: 0.75rem;
+  margin-bottom: -1px;
+}
+
+settings-panel #Profile .nav-tabs .nav-link.active {
+  color: #fff;
+  background: transparent;
+  border-bottom-color: var(--fl-accent-color, #7432FF);
+}
+
+settings-panel #Profile .form-control {
+  background: var(--sett-glass-input);
+  border-color: var(--sett-glass-border);
+  color: #fff;
+}
+
+settings-panel #Profile .btn-primary.w-100 {
+  margin-top: 0.5rem;
+}
+
+settings-panel .account-footer {
+  margin-top: 1.25rem;
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+settings-panel .account-footer a {
+  color: #baa5ec;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+settings-panel .nav-notification-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f97316;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+settings-panel .offcanvas-body {
+  height: 100%;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Tab content scrolls independently, with generous bottom padding so the
+   last item never gets clipped behind the OS scrollbar / safe-area. */
+settings-panel #settModal-tabContent {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100vh;
+  position: relative;
+  z-index: 2;
+  pointer-events: auto;
+  padding: 1.75rem 1.75rem 4rem;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+settings-panel #settModal-tabContent::-webkit-scrollbar {
+  width: 10px;
+}
+settings-panel #settModal-tabContent::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+settings-panel #settModal-tabContent::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
+  background-clip: padding-box;
+}
+
+/* Nav column gets its own scroll so 14+ tabs never push content
+   off-screen on short viewports. */
+settings-panel #settModal-tab {
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  height: 100vh;
+  padding-bottom: 1.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+settings-panel #settModal-tab::-webkit-scrollbar {
+  width: 6px;
+}
+settings-panel #settModal-tab::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+}
+
+settings-panel #settModal-tabContent .tab-pane {
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+settings-panel .offcanvas,
+settings-panel .offcanvas-body,
+settings-panel .tab-content,
+settings-panel .tab-pane,
+settings-panel .settings-group,
+settings-panel .form-control,
+settings-panel .form-select,
+settings-panel .form-check-input,
+settings-panel .nav-link,
+settings-panel .btn {
+  pointer-events: auto;
+}
+
+settings-panel .form-control,
+settings-panel .form-select {
+  background-color: var(--sett-glass-input) !important;
+  border-color: var(--sett-glass-border) !important;
+  color: #fff;
+}
+
+settings-panel .form-control:focus,
+settings-panel .form-select:focus {
+  background-color: var(--fl-ctrl-bg-active) !important;
+  border-color: var(--fl-accent-color, #7432FF);
+  color: #fff;
+  box-shadow: 0 0 0 2px rgba(116, 50, 255, 0.2);
+}
+
+settings-panel .form-select option {
+  background: #12141c;
+  color: #fff;
+}
+
+settings-panel .tab-pane {
+  color: #fff;
+}
+
+/* Fade + lift each tab pane when the user switches tabs. The pane mounts
+   fresh each time (conditional render keyed off settingsTab), so the
+   animation re-plays automatically. */
+settings-panel .tab-pane.show.active {
+  animation: settings-tab-fade 320ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+@keyframes settings-tab-fade {
+  from { opacity: 0; transform: translateY(8px); filter: blur(2px); }
+  to   { opacity: 1; transform: translateY(0);   filter: blur(0);   }
+}
+
+/* Settings nav links — small hover / active glow that matches the side rail.
+   The icon nudges right on hover, a soft background appears, and a slim accent
+   bar surfaces on the active tab's leading edge. */
+settings-panel .nav-link {
+  position: relative;
+  transition:
+    background 200ms ease,
+    color 200ms ease,
+    transform 220ms cubic-bezier(0.34, 1.5, 0.64, 1);
+  border-radius: 0.55rem;
+}
+
+settings-panel .nav-link svg {
+  transition: transform 220ms cubic-bezier(0.34, 1.5, 0.64, 1), color 180ms ease;
+}
+
+/* Hover affordance: faint white wash + icon glide. */
+settings-panel .nav-link:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+settings-panel .nav-link:hover svg {
+  transform: translateX(2px) scale(1.04);
+  color: var(--fl-accent-color, #7432ff);
+}
+
+/* Leading accent bar. */
+settings-panel .nav-link::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  width: 3px;
+  height: 0;
+  border-radius: 999px;
+  background: var(--fl-accent-color, #7432ff);
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: height 260ms cubic-bezier(0.34, 1.4, 0.64, 1), opacity 200ms ease;
+}
+
+settings-panel .nav-link.active::before {
+  height: 56%;
+  opacity: 1;
+}
+
+/* Active state: subtle white wash + accent-tinted icon. */
+settings-panel .nav-link.active {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+settings-panel .nav-link.active svg {
+  color: var(--fl-accent-color, #7432ff);
+  transform: scale(1.06);
+}
+
+/* The Themes accordion header is a toggle, not a destination tab — drop the
+   active bar so it doesn't compete with the highlighted child sub-tab. */
+settings-panel .theme-nav-group .nav-link-theme-head::before {
+  display: none;
+}
+
+settings-panel .theme-nav-group .nav-link-theme-head.open {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* Child active row — keep the leading bar but offset it to align with the
+   indented icons. */
+settings-panel .theme-nav-group .nav-link-theme-child::before {
+  left: 12px;
+}
+
+settings-panel .theme-nav-group .nav-link-theme-child.active svg {
+  color: var(--fl-accent-color, #7432ff);
+}
+
+/* —— Settings page heading (matches a 2rem Degular display) —— */
+settings-panel .settings-header {
+  margin-bottom: 2rem !important;
+}
+
+settings-panel .settings-header h3 {
+  font-family: 'Degular Semibold', 'Degular Bold', 'Inter', system-ui, sans-serif !important;
+  font-size: 2rem !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.04em !important;
+  line-height: 1.1 !important;
+  margin: 0 !important;
+  color: #fff !important;
+}
+
+settings-panel .settings-header .subtitle {
+  display: block !important;
+  color: #a0a0a0 !important;
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.4 !important;
+  margin-top: 0.5rem !important;
+}
+
+/* —— Account / Create Account form —— */
+settings-panel #Profile .login.guest .nav-tabs {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-left: 0;
+}
+
+settings-panel #Profile .login.guest .nav-tabs .nav-link {
+  padding: 0 0 0.75rem;
+  margin: 0;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+settings-panel #Profile .login.guest .nav-tabs .nav-link.active {
+  color: #fff;
+  border-bottom-color: var(--fl-accent-color, #7432FF);
+  background: transparent;
+}
+
+settings-panel #Profile .settings-input-group {
+  margin-bottom: 1rem;
+}
+
+settings-panel #Profile .form-label {
+  display: block !important;
+  font-size: 0.9375rem !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.02em !important;
+  color: #fff !important;
+  margin-bottom: 0.5rem !important;
+}
+
+settings-panel #Profile .form-control {
+  background-color: #17181c !important;
+  border: 1px solid #242628 !important;
+  color: #fff !important;
+  height: 2.75rem !important;
+  padding: 0.625rem 0.875rem !important;
+  font-size: 0.9375rem !important;
+  border-radius: 0.5rem !important;
+}
+
+settings-panel #Profile .form-control::placeholder {
+  color: #6b6b6b !important;
+  opacity: 1;
+}
+
+settings-panel #Profile .form-control:focus {
+  border-color: var(--fl-accent-color, #7432FF) !important;
+  box-shadow: 0 0 0 2px rgba(116, 50, 255, 0.18) !important;
+}
+
+settings-panel #Profile .check-wrap.newsletter-consent {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1.25rem 0 !important;
+}
+
+settings-panel #Profile .check-wrap.newsletter-consent .form-check-input {
+  width: 1rem !important;
+  height: 1rem !important;
+  margin: 0 !important;
+  background-color: var(--fl-accent-color, #7432FF) !important;
+  border-color: var(--fl-accent-color, #7432FF) !important;
+  border-radius: 4px !important;
+}
+
+settings-panel #Profile .check-wrap.newsletter-consent label {
+  margin: 0 !important;
+  font-size: 0.875rem !important;
+  color: #d1d5db !important;
+  font-weight: 400 !important;
+}
+
+settings-panel #Profile .btn-primary.w-100 {
+  height: 2.875rem !important;
+  font-size: 0.9375rem !important;
+  font-weight: 600 !important;
+  border-radius: 0.5rem !important;
+  margin-top: 0.5rem !important;
+  background-color: var(--fl-accent-color, #7432FF) !important;
+  border-color: var(--fl-accent-color, #7432FF) !important;
+  letter-spacing: -0.01em;
+}
+
+settings-panel .account-footer {
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+settings-panel .account-footer a {
+  color: #fff;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+settings-panel .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+settings-panel .nav-link svg {
+  flex-shrink: 0;
+}
+
+/* Settings — Themes group (flat list) */
+settings-panel .theme-nav-group {
+  display: flex;
+  flex-direction: column;
+}
+
+settings-panel #settModal-Theme-tab {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+settings-panel .theme-nav-group .nav-link-theme-head {
+  padding-left: 1rem;
+}
+
+/* Pomodoro — no progress line under timer */
+pomodoro-timer .timer-progress,
+pomodoro-timer .progress.timer-progress {
+  display: none !important;
+}
+
+settings-panel .offcanvas-buttons .btn-close {
+  filter: invert(1) grayscale(1);
+  opacity: 0.85;
+}
+
+settings-panel .offcanvas-buttons .btn-close:hover {
+  opacity: 1;
+}
+
+@media (min-width: 768px) {
+  settings-panel #settModal-tab.navbar-collapse {
+    display: flex !important;
+    visibility: visible !important;
+    height: auto !important;
+  }
+}
+
+settings-panel .theme-thumb {
+  display: block;
+  width: 100%;
+  min-height: 72px;
+  border-radius: 0.5rem;
+  border: 2px solid transparent;
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 0.375rem;
+  transition: border-color 175ms ease;
+}
+
+settings-panel .theme.form-check-label.active .theme-thumb {
+  border-color: var(--fl-accent-color, #7432FF);
+  box-shadow: 0 0 0 2px rgba(116, 50, 255, 0.35);
+}
+
+settings-panel .theme.form-check-label {
+  cursor: pointer;
+  color: #fff;
+  font-size: 0.875rem;
+  width: calc(25% - 0.75rem);
+  min-width: 140px;
+  margin: 0.375rem;
+}
+
+settings-panel .theme-group .theme input {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+@media (max-width: 767.98px) {
+  settings-panel #settModal-tabContent {
+    margin-left: 0 !important;
+    padding: 1rem !important;
+  }
+}
+
+/* Bottom bar — native flocus-native.css (#bottom, .dash-button, hosts) */
+#bottom {
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+#bottom-left,
+#bottom-right {
+  pointer-events: auto;
+}
+
+#bottom .soundscapes-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 44;
+}
+
+/* Close buttons */
+.tasks-popout-wrapper .tasks-header button[aria-label='Close'] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ——— Notepad (native flocus-native.css + Quill tweaks) ——— */
+flocus-notepad .notepad-wrapper {
+  /* native: min-width 500px on desktop — do not shrink */
+  width: auto;
+}
+
+flocus-notepad .notepad-header-text h3 {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+flocus-notepad plus-badge {
+  flex-shrink: 0;
+}
+
+flocus-notepad .notepad-toolbar-inactive {
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+flocus-notepad .notepad-toolbar button {
+  width: 28px;
+  height: 28px;
+  padding: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 0.375rem;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+}
+
+flocus-notepad .notepad-toolbar button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+flocus-notepad .notepad-toolbar button.ql-active {
+  color: #a78bfa;
+  background: rgba(167, 139, 250, 0.12);
+}
+
+flocus-notepad .notepad-toolbar button svg {
+  width: 18px;
+  height: 18px;
+}
+
+flocus-notepad .notepad-toolbar .ql-stroke,
+flocus-notepad .notepad-toolbar .ql-stroke-miter {
+  stroke: currentColor;
+}
+
+flocus-notepad .notepad-toolbar .ql-fill,
+flocus-notepad .notepad-toolbar .ql-stroke.ql-fill {
+  fill: currentColor;
+}
+
+flocus-notepad .notepad-toolbar .ql-even {
+  fill-rule: evenodd;
+}
+
+flocus-notepad .notepad-toolbar .ql-thin,
+flocus-notepad .notepad-toolbar .ql-stroke.ql-thin {
+  stroke-width: 1;
+}
+
+flocus-notepad .notepad-toolbar {
+  display: flex !important;
+  flex-wrap: nowrap;
+  overflow-x: visible;
+}
+
+flocus-notepad .notepad-toolbar .ql-toolbar {
+  display: flex !important;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+  padding: 0 !important;
+  border: none !important;
+}
+
+flocus-notepad .notepad-toolbar .ql-formats {
+  display: inline-flex !important;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0;
+  margin-right: 0.35rem !important;
+  flex-shrink: 0;
+}
+
+flocus-notepad .notepad-toolbar .ql-formats:last-child {
+  margin-right: 0 !important;
+}
+
+flocus-notepad .notepad-toolbar button {
+  flex-shrink: 0;
+  float: none !important;
+}
+
+flocus-notepad .notepad-toolbar .notepad-quote-icon {
+  width: 14px;
+  height: 14px;
+}
+
+flocus-notepad .notepad-free {
+  padding: 1rem;
+}
+
+flocus-notepad .notepad-guest-editor {
+  padding: 0.5rem 0.75rem;
+  background-color: rgba(31, 41, 55, 0.6);
+  border: 1px solid rgba(55, 65, 81, 0.5);
+  border-radius: 0.75rem;
+}
+
+flocus-notepad .notepad-guest-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 168px;
+  padding: 1.25rem 1.5rem;
+  text-align: center;
+}
+
+flocus-notepad .notepad-guest-text {
+  margin: 0 0 1.25rem;
+  max-width: 280px;
+  color: #898989;
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+flocus-notepad .notepad-quill-mount {
+  min-height: 150px;
+}
+
+flocus-notepad .notepad-quill-mount > .ql-toolbar {
+  display: none !important;
+}
+
+flocus-notepad .notepad-quill-root .ql-container.ql-snow {
+  border: none !important;
+  background: transparent !important;
+}
+
+flocus-notepad .notepad-quill-root .ql-editor {
+  min-height: 150px;
+  height: 35vh;
+  max-height: calc(var(--soundscapes-max-height) - 250px - 1rem);
+  padding: 0;
+  color: #fff;
+  line-height: 1.55;
+}
+
+flocus-notepad .notepad-quill-root .ql-editor.ql-blank::before {
+  color: #898989;
+  font-style: normal;
+  left: 0;
+  right: 0;
+}
+
+flocus-notepad .notepad-quill-root .ql-editor h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+flocus-notepad .notepad-quill-root .ql-editor h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+flocus-notepad .notepad-quill-root .ql-editor blockquote {
+  border-left: 3px solid var(--fl-accent-color, #7432FF);
+  padding-left: 0.75rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+flocus-notepad .notepad-upgrade-btn {
+  background: var(--fl-accent-color, #7432FF) !important;
+  border: none !important;
+  border-radius: 0.5rem !important;
+  color: #fff !important;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.5rem 1.25rem !important;
+  box-shadow: 0 2px 12px rgba(116, 50, 255, 0.35);
+  white-space: nowrap;
+}
+
+flocus-notepad .notepad-upgrade-btn:hover {
+  background: #5517d9 !important;
+}
+
+flocus-notepad .notepad-footer {
+  padding: 0 1rem 1rem;
+  font-size: 0.75rem;
+  text-align: center;
+  color: var(--bs-secondary-color, #9ca3af);
+}
+
+flocus-notepad .notepad-editor #editor {
+  position: relative;
+  min-height: 180px;
+}
+
+/* ——— Tasks panel — flex layout; row visuals from flocus-native.css ——— */
+.tasks-popout-wrapper .tasks-wrapper {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.tasks-popout-wrapper:has(.emoji-tooltip.shown) .tasks-wrapper,
+.tasks-popout-wrapper:has(.emoji-tooltip.shown) .tasks-list,
+.rail-drawer:has(.emoji-tooltip.shown) {
+  overflow: visible;
+}
+
+.tasks-popout-wrapper .tasks-header-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.tasks-popout-wrapper .tasks-header-text h3 {
+  margin: 0;
+}
+
+.tasks-popout-wrapper .tasks-header-button {
+  margin-left: auto;
+}
+
+.tasks-popout-wrapper .tasks-settings.collapse:not(.show) {
+  display: none;
+}
+
+.tasks-popout-wrapper .tasks-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.tasks-popout-wrapper flocus-listitem.list__item {
+  position: relative;
+  z-index: 1;
+}
+
+.tasks-popout-wrapper flocus-listitem.list__item:has(.emoji-tooltip.shown) {
+  z-index: 1000;
+}
+
+.tasks-popout-wrapper .emoji-button {
+  position: relative;
+  z-index: 2;
+  overflow: visible;
+}
+
+/* Native sets width:100% on text inputs — shrink in flex row */
+.tasks-popout-wrapper flocus-listitem.list__item input[type='text'] {
+  flex: 1;
+  min-width: 0;
+  width: auto !important;
+}
+
+.tasks-popout-wrapper .tasks-emoji-picker,
+.tasks-popout-wrapper .emoji-tooltip.shown.tasks-emoji-picker {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  z-index: 10001;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.25rem;
+  padding: 0.5rem;
+  margin-bottom: 0.25rem;
+  background: rgba(0, 0, 0, 0.92);
+  border: 1px solid #374151;
+  border-radius: 0.5rem;
+}
+
+.tasks-popout-wrapper .tasks-emoji-picker button {
+  font-size: 1.125rem;
+  line-height: 1;
+  padding: 0.2rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.tasks-popout-wrapper .tasks-progress .progress-bar {
+  background-color: var(--fl-accent-color, #7432FF);
+}
+
+.tasks-popout-wrapper .tasks-progress .progress {
+  height: 0.35rem;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.tasks-popout-wrapper .tasks-settings .break-options {
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border-bottom: 1px solid rgba(55, 65, 81, 0.5);
+}
+
+.tasks-popout-wrapper .tasks-settings .action-buttons {
+  padding: 0.75rem 1.25rem;
+}
+
+.tasks-popout-wrapper .switch-with-dropdown {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tasks-popout-wrapper .switch-with-dropdown .form-select {
+  width: auto;
+  min-width: 6rem;
+}
+
+.input-flocus,
+.input-dark {
+  width: 100%;
+  border-radius: 0.375rem;
+  border: 1px solid rgb(55 65 81 / 0.5);
+  background: rgba(0, 0, 0, 0.35);
+  padding: 0.5rem 0.75rem;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.875rem;
+  color: #fff;
+  outline: none;
+}
+
+.input-flocus:focus {
+  border-color: var(--fl-accent-color, #7432FF);
+}
+
+/* Stats tab — compact layout matching reference (app.flocus.com) */
+#settModal-stats .stats-panel-body {
+  padding: 0 0 1rem;
+  max-width: 100%;
+}
+
+#settModal-stats .stats-panel-desc {
+  margin: 0 0 0.85rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* Period pills — small segmented control (Today / 1 Week / 4 Weeks) */
+#settModal-stats .stats-period-pills {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin: 0 0 1rem;
+  padding: 0.2rem;
+  border-radius: 0.45rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+#settModal-stats .stats-period-pill {
+  appearance: none;
+  border: none;
+  margin: 0;
+  min-width: 0;
+  padding: 0.32rem 0.7rem;
+  border-radius: 0.35rem;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+#settModal-stats .stats-period-pill:hover {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+#settModal-stats .stats-period-pill.active {
+  background: linear-gradient(
+    86deg,
+    var(--fl-accent-color, #7432ff) 6.82%,
+    color-mix(in srgb, var(--fl-accent-color, #7432ff) 55%, #000) 98.74%
+  );
+  color: #fff;
+  font-weight: 600;
+}
+
+/* 3×2 stat card grid — native proportions, not oversized */
+#settModal-stats .stats-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin: 0 0 1.25rem;
+}
+
+#settModal-stats .stats-grid .stat {
+  flex: 1 1 calc(33.333% - 0.5rem);
+  max-width: 168px;
+  min-width: 100px;
+  min-height: 112px;
+  border: none !important;
+  border-radius: 0.75rem;
+  padding: 0.75rem 0.8rem 0.85rem;
+  position: relative;
+  box-shadow: none;
+}
+
+#settModal-stats .stats-grid .stat:hover {
+  transform: none;
+}
+
+#settModal-stats .time-period-title {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+  margin-bottom: 0.2rem;
+  line-height: 1.2;
+}
+
+#settModal-stats .time-period-value {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #fff;
+  line-height: 1.15;
+  margin-bottom: 0 !important;
+}
+
+#settModal-stats .time-period-icon {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.7rem;
+  color: rgba(255, 255, 255, 0.9);
+  opacity: 0.92;
+  line-height: 0;
+}
+
+#settModal-stats .time-period-icon svg {
+  display: block;
+}
+
+#settModal-stats .stats-grid .stat.streak {
+  background: linear-gradient(228deg, #ff9000 2.27%, #f00 86.82%) !important;
+}
+
+#settModal-stats .stats-grid .stat.focus {
+  background: linear-gradient(228deg, #ffd900 2.27%, #ff6200 86.82%) !important;
+}
+
+#settModal-stats .stats-grid .stat.score {
+  background: linear-gradient(86deg, #290682 6.82%, var(--fl-accent-color, #7432ff) 98.74%) !important;
+}
+
+#settModal-stats .stats-grid .stat.tasks {
+  background: linear-gradient(228deg, #00eb62 2.27%, #0a5916 86.82%) !important;
+}
+
+#settModal-stats .stats-grid .stat.pomos {
+  background: linear-gradient(228deg, #0df 2.27%, #0640a5 86.82%) !important;
+}
+
+#settModal-stats .stats-grid .stat.break {
+  background: linear-gradient(228deg, #ff8ed4 2.27%, #ff009d 86.82%) !important;
+}
+
+#settModal-stats .stats-charts {
+  margin-top: 0.5rem;
+}
+
+#settModal-stats .stats-chart-label {
+  margin: 0 0 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.88);
+  text-transform: none;
+}
+
+#settModal-stats .stats-charts .stats-chart-label:not(:first-child) {
+  margin-top: 1.1rem;
+}
+
+#settModal-stats .stats-chart-card {
+  background: rgba(20, 20, 24, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0.75rem;
+  padding: 0.85rem 0.75rem 0.65rem;
+}
+
+#settModal-stats .stats-chart-card .h-48 {
+  height: 9.5rem !important;
+}
+
+#settModal-stats .stats-chart-card--compact .h-32 {
+  height: 6.5rem !important;
+}
+
+#settModal-stats .recharts-responsive-container {
+  min-height: 0;
+}
+
+.flocus-chip {
+  border-radius: 9999px;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.flocus-chip.active {
+  background: rgba(116, 50, 255, 0.4);
+  color: #fff;
+}
+
+.flocus-period-tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.flocus-period-tabs button {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.375rem;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+}
+
+.flocus-period-tabs button.active {
+  background: var(--fl-accent-color, #7432FF);
+  color: #fff;
+}
+
+/* Promo banner */
+.flocus-promo-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.5rem 2.5rem 0.5rem 1rem;
+  background: #9333ea;
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.flocus-promo-banner p {
+  margin: 0;
+  text-align: center;
+}
+
+.flocus-promo-link {
+  background: none;
+  border: none;
+  color: #fff;
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+}
+
+.flocus-promo-close {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.25rem;
+  cursor: pointer;
+  opacity: 0.85;
+}
+
+body:has(.flocus-promo-banner) #dashboard {
+  padding-top: 2.25rem;
+  box-sizing: border-box;
+}
+
+/* Brand logo — Tsuki wordmark (inline SVG, 380×160 viewBox).
+   Native CSS pins .logo to width:150px / max-width:150px; we override that
+   so the wordmark renders at the intended size — same on all dashboard modes. */
+.logo,
+body[data-scaled] .logo {
+  width: 210px !important;
+  max-width: 210px !important;
+  height: auto !important;
+  margin-top: -18px !important;
+  animation:
+    logo-enter 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both,
+    logo-breathe 6s ease-in-out 1.2s infinite;
+  transform-origin: center;
+}
+
+.logo:hover {
+  animation: logo-shimmer 1.4s ease-in-out;
+}
+
+@keyframes logo-enter {
+  0%   { opacity: 0; transform: translateY(-8px) scale(0.96); filter: blur(4px); }
+  60%  { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@keyframes logo-breathe {
+  0%, 100% { opacity: 0.95; filter: drop-shadow(0 0 0 transparent); }
+  50%      { opacity: 1;    filter: drop-shadow(0 0 18px color-mix(in srgb, var(--fl-accent-color, #7432ff) 35%, transparent)); }
+}
+
+@keyframes logo-shimmer {
+  0%   { transform: scale(1) rotate(0); }
+  35%  { transform: scale(1.05) rotate(-1deg); }
+  65%  { transform: scale(0.99) rotate(1deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+#top-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1rem;
+  max-width: min(420px, 45vw);
+}
+
+text-quote.top-quote.quote-home {
+  font-family: 'Degular Semibold', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  text-align: right;
+  margin: 0;
+}
+
+text-quote.top-quote.quote-focus {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  text-align: right;
+  margin: 0;
+}
+
+.timer-progress {
+  width: min(280px, 70vw);
+  height: 8px;
+  margin-top: 1rem;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+/* Sounds — native flocus-sounds; hide legacy helpers only */
+.sounds-grid,
+.sound-filters,
+.flocus-chip,
+.sound-layer-count {
+  display: none !important;
+}
+
+flocus-sounds .sounds-header nav .nav-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+flocus-sounds .sound .tag {
+  z-index: 2;
+  pointer-events: none;
+}
+
+flocus-sounds .sound button {
+  position: relative;
+  width: 100%;
+  cursor: pointer;
+}
+
+flocus-sounds.max-count .sound[data-active='false'] button {
+  cursor: not-allowed;
+}
+
+flocus-sounds .sound[data-active='false'] .name {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+flocus-sounds .sound[data-active='true'] .name {
+  color: #fff;
+}
+
+flocus-sounds .tab-content {
+  min-height: 0;
+}
+
+flocus-sounds .tab-pane.sounds-body.active {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.plus-badge-inline {
+  margin-left: 0.35rem;
+  font-size: 8px;
+  font-weight: 700;
+  background: var(--fl-accent-color, #7432FF);
+  color: #fff;
+  padding: 2px 5px;
+  border-radius: 4px;
+  vertical-align: middle;
+}
+
+body.flocus-is-plus .flocus-plus-only {
+  display: revert !important;
+}
+
+settings-panel .theme-nav-group {
+  display: flex !important;
+  flex-direction: column;
+  width: 100%;
+}
+
+settings-panel .theme-nav-group .nav-link-theme-head {
+  display: flex !important;
+  align-items: center;
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+settings-panel .theme-nav-group .nav-link-theme-head .nav-label {
+  flex: 1;
+}
+
+settings-panel .theme-nav-group .theme-nav-chevron {
+  transition: transform 200ms ease;
+  opacity: 0.6;
+  margin-left: auto;
+}
+
+settings-panel .theme-nav-group .theme-nav-chevron.open {
+  transform: rotate(180deg);
+}
+
+settings-panel .theme-nav-group .theme-nav-children {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  padding-left: 0.5rem;
+  width: 100%;
+  transition: grid-template-rows 220ms ease, margin-bottom 220ms ease;
+  margin-bottom: 0;
+}
+
+settings-panel .theme-nav-group .theme-nav-children.is-open {
+  grid-template-rows: 1fr;
+  margin-bottom: 0.25rem;
+}
+
+settings-panel .theme-nav-group .theme-nav-children-inner {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+settings-panel .theme-nav-group .nav-link-theme-child {
+  display: flex !important;
+  align-items: center;
+  gap: 0.5rem;
+  padding-left: 1.75rem !important;
+  font-size: 0.9rem;
+  opacity: 0.85;
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  pointer-events: auto;
+}
+
+settings-panel .theme-nav-group .nav-link-theme-child:hover {
+  opacity: 1;
+}
+
+settings-panel .theme-nav-group .nav-link-theme-child.active {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 0.5rem;
+}
+
+pomodoro-timer .pomo-counter[data-indicators='static'],
+pomodoro-timer .pomo-counter[data-indicators='dynamic'] {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.35rem;
+  width: max-content;
+  min-width: 0;
+  left: 50%;
+  transform: translate(-50%, 100%);
+  white-space: nowrap;
+}
+
+pomodoro-timer .pomo-counter .tally-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  opacity: 0.35;
+  transition: opacity 200ms ease, transform 200ms ease;
+  line-height: 1;
+  flex: 0 0 auto;
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji', sans-serif;
+}
+
+pomodoro-timer .pomo-counter .tally-icon.active {
+  opacity: 1;
+}
+
+pomodoro-timer .pomo-counter .tally-icon.pulse {
+  animation: tally-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes tally-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.18); }
+}
+
+pomodoro-timer .timer-progress {
+  width: clamp(200px, 60%, 480px);
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 0.75rem auto 0;
+  overflow: hidden;
+}
+
+pomodoro-timer .timer-progress-bar {
+  height: 100%;
+  background: var(--fl-accent-color, #7432FF);
+  transition: width 250ms linear;
+  border-radius: 999px;
+}
+
+settings-panel .recharts-responsive-container {
+  min-height: 12rem;
+}
+
+/* ——— Plus / Pro removed — everything unlocked, badges & upsell hidden ——— */
+body:not(.flocus-is-plus) .flocus-plus-only {
+  display: block !important;
+}
+
+.flocus-free-only,
+body.flocus-is-plus .flocus-free-only,
+.upgradeModal,
+#settModal-upgrade,
+.notepad-upgrade-btn,
+.settings-upgrade-cta,
+nav .nav-link-upgrade,
+.tag[data-tag='plus'],
+flocus-sounds .sound .tag,
+flocus-sounds .playlist-label .tag,
+plus-badge,
+.plus-badge-inline {
+  display: none !important;
+}
+
+.tasks-add .plus-message {
+  display: none !important;
+}
+
+/* Stats, sounds settings, tasks — unlock when host lacks .flocus-is-plus */
+#settModal-stats:not(.flocus-is-plus) .tasks .time-period-value,
+#settModal-stats:not(.flocus-is-plus) .pomos .time-period-value,
+#settModal-stats:not(.flocus-is-plus) .break .time-period-value,
+#settModal-stats:not(.flocus-is-plus) .score .time-period-value {
+  filter: none !important;
+  user-select: auto !important;
+}
+
+#settModal-stats:not(.flocus-is-plus) .tasks::after,
+#settModal-stats:not(.flocus-is-plus) .pomos::after,
+#settModal-stats:not(.flocus-is-plus) .break::after,
+#settModal-stats:not(.flocus-is-plus) .score::after {
+  display: none !important;
+  content: none !important;
+}
+
+settings-panel #settModal-sounds:not(.flocus-is-plus) .plus-sounds > div {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  user-select: auto !important;
+}
+
+flocus-listitem:not(.flocus-is-plus) .tag-picker,
+flocus-listitem:not(.flocus-is-plus) .emoji-button,
+flocus-listitem:not(.flocus-is-plus) select {
+  display: revert !important;
+  pointer-events: auto !important;
+}
+
+.tasks-popout-wrapper:not(.flocus-is-plus) .break-options {
+  display: flex !important;
+}
+
+body:not(.flocus-is-plus) #settModal-stats .chart-title {
+  opacity: 1 !important;
+}
+
+.music-row {
+  display: flex;
+  width: 100%;
+  gap: 0.75rem;
+  align-items: flex-start;
+  text-align: left;
+  padding: 0.65rem 0.75rem;
+  margin-bottom: 0.35rem;
+  border: none;
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  cursor: pointer;
+}
+
+.music-row.active {
+  background: rgba(116, 50, 255, 0.3);
+  outline: 1px solid var(--fl-accent-color, #7432FF);
+}
+
+.music-section-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.45);
+  margin: 0.75rem 0 0.35rem;
+}
+
+.nav-badge {
+  margin-left: 0.35rem;
+  font-size: 9px;
+  font-weight: 700;
+  color: #22c55e;
+  vertical-align: middle;
+}
+
+flocus-priorities {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* =================================================================== */
+/*  PREMIUM UI CONTROLS — settings panel + global forms                 */
+/*  Replaces Bootstrap defaults with polished Flocus controls.      */
+/* =================================================================== */
+
+:root {
+  --fl-ctrl-bg: #15171b;
+  --fl-ctrl-bg-hover: #1c1f24;
+  --fl-ctrl-bg-active: #20242a;
+  --fl-ctrl-border: rgba(255, 255, 255, 0.08);
+  --fl-ctrl-border-hover: rgba(255, 255, 255, 0.16);
+  --fl-ctrl-text: #f5f5f7;
+  --fl-ctrl-text-muted: rgba(255, 255, 255, 0.55);
+  --fl-ctrl-accent: var(--fl-accent-color, #7432FF);
+  --fl-ctrl-accent-soft: rgba(116, 50, 255, 0.18);
+  --fl-ctrl-accent-glow: rgba(116, 50, 255, 0.45);
+  --fl-ctrl-radius: 0.6rem;
+  --fl-ctrl-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ---- Settings group spacing & dividers ------------------------------ */
+settings-panel .settings-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+/* ---- Card-style sections ------------------------------------------- */
+/* Each major sub-section of a tab is a slightly-elevated dark card with a
+   title, optional description, and a body. Matches the reference Flocus
+   layout where every group lives on its own surface. */
+settings-panel .settings-section {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  background: var(--sett-glass-card);
+  border: 1px solid var(--sett-glass-border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  padding: 2.5rem 2rem 2.75rem;
+  min-height: 15rem;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.02) inset, 0 10px 30px -16px rgba(0, 0, 0, 0.55);
+  animation: settings-section-pop 380ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+settings-panel .settings-section > * {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Bootstrap rows use negative side margins for gutters — neutralise them
+   inside a padded section so the columns sit flush with the section's
+   inner padding rather than poking out to the card edges. */
+settings-panel .settings-section .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+settings-panel .settings-section .row > [class*='col-'] {
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
+}
+
+settings-panel .settings-section .row > [class*='col-']:first-child {
+  padding-left: 0;
+}
+
+settings-panel .settings-section .row > [class*='col-']:last-child {
+  padding-right: 0;
+}
+
+@keyframes settings-section-pop {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+settings-panel .settings-section + .settings-section {
+  margin-top: 0; /* gap on parent .settings-group handles spacing */
+}
+
+settings-panel .settings-section-title {
+  font-family: 'Degular Semibold', 'Inter', system-ui, sans-serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  color: var(--fl-ctrl-text);
+  margin: 0 0 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+settings-panel .settings-section-desc {
+  font-size: 0.85rem;
+  color: var(--fl-ctrl-text-muted);
+  margin: 0 0 1.6rem;
+  line-height: 1.5;
+}
+
+settings-panel .settings-section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+/* Extras — Appearance & Behavior (and similar toggle-heavy blocks) */
+settings-panel .settings-section.settings-section-tall {
+  min-height: 24rem;
+  padding: 3.25rem 2.25rem 3.75rem;
+}
+
+settings-panel .settings-section.settings-section-tall .settings-section-body {
+  gap: 2.1rem;
+}
+
+settings-panel .settings-section.settings-section-tall .form-check.form-switch {
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+}
+
+/* Inputs sitting directly inside a section feel a touch denser. */
+settings-panel .settings-section .settings-input-group {
+  gap: 0.4rem;
+}
+
+/* Small helper text shown beneath an input label inside a section. */
+settings-panel .settings-input-help {
+  margin: 0 0 0.25rem;
+  font-size: 0.78rem;
+  color: var(--fl-ctrl-text-muted);
+  line-height: 1.4;
+}
+
+/* ---- Clock-format visual picker (12-hour / 24-hour cards) ---------- */
+settings-panel .format-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.85rem;
+}
+
+settings-panel .format-card {
+  --tone-from: #533cff;
+  --tone-to: #aa3dff;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.5rem;
+  padding: 0;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.85rem;
+  background: transparent;
+  color: var(--fl-ctrl-text);
+  cursor: pointer;
+  text-align: center;
+  overflow: hidden;
+  transition:
+    border-color 200ms ease,
+    transform 220ms cubic-bezier(0.34, 1.4, 0.64, 1),
+    box-shadow 200ms ease;
+}
+
+settings-panel .format-card[data-tone='warm'] {
+  --tone-from: #ff6ec7;
+  --tone-to: #6c4cff;
+}
+settings-panel .format-card[data-tone='cool'] {
+  --tone-from: #4cb5ff;
+  --tone-to: #6c5cff;
+}
+
+settings-panel .format-card-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 5.5rem;
+  font-family: 'Degular Bold', 'Inter', sans-serif;
+  font-size: 2.6rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: #fff;
+  background: linear-gradient(135deg, var(--tone-from), var(--tone-to));
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+}
+
+settings-panel .format-card-label {
+  padding: 0.55rem 0.4rem 0.75rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--fl-ctrl-text);
+}
+
+settings-panel .format-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+settings-panel .format-card.active {
+  border-color: var(--fl-accent-color, #7432ff);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--fl-accent-color, #7432ff) 22%, transparent),
+    0 10px 24px -12px rgba(0, 0, 0, 0.6);
+}
+
+/* ---- Static tally picker (Dots / Hearts / Stars / Squares cards) --- */
+settings-panel .tally-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.85rem;
+}
+
+settings-panel .tally-card {
+  --tone-from: #6c4cff;
+  --tone-to: #ff6ec7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 1.35rem 0.85rem 0.95rem;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.85rem;
+  background: linear-gradient(135deg, var(--tone-from), var(--tone-to));
+  color: #fff;
+  cursor: pointer;
+  text-align: center;
+  position: relative;
+  transition:
+    border-color 200ms ease,
+    transform 220ms cubic-bezier(0.34, 1.4, 0.64, 1),
+    box-shadow 200ms ease;
+}
+
+settings-panel .tally-card[data-style='dots'] {
+  --tone-from: #8a47ff;
+  --tone-to: #ff5fa8;
+}
+settings-panel .tally-card[data-style='hearts'] {
+  --tone-from: #ff4d6d;
+  --tone-to: #a83cff;
+}
+settings-panel .tally-card[data-style='stars'] {
+  --tone-from: #ffb454;
+  --tone-to: #ff5b8c;
+}
+settings-panel .tally-card[data-style='squares'] {
+  --tone-from: #4cb5ff;
+  --tone-to: #2848ff;
+}
+settings-panel .tally-card[data-style='tomato'] {
+  --tone-from: #ff6a3d;
+  --tone-to: #c41818;
+}
+settings-panel .tally-card[data-style='bolt'] {
+  --tone-from: #ffd900;
+  --tone-to: #ff6200;
+}
+settings-panel .tally-card[data-style='graduation'] {
+  --tone-from: #2d3a8c;
+  --tone-to: #6c5cff;
+}
+settings-panel .tally-card[data-style='snowflake'],
+settings-panel .tally-card[data-style='snowman'] {
+  --tone-from: #6ec6ff;
+  --tone-to: #1f5dd6;
+}
+settings-panel .tally-card[data-style='xmas'] {
+  --tone-from: #0eba6b;
+  --tone-to: #0a5916;
+}
+
+settings-panel .tally-card-pill {
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.32rem 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  backdrop-filter: blur(8px);
+}
+
+settings-panel .tally-card-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+settings-panel .tally-card-icon {
+  opacity: 0.32;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+  transition: opacity 180ms ease;
+}
+
+settings-panel .tally-card-icon.on {
+  opacity: 1;
+}
+
+settings-panel .tally-card-label {
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+settings-panel .tally-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+settings-panel .tally-card.active {
+  border-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--fl-accent-color, #7432ff) 35%, transparent),
+    0 12px 26px -12px rgba(0, 0, 0, 0.7);
+}
+
+/* ---- Form switch — bigger, smoother track + knob -------------------- */
+settings-panel .form-check.form-switch {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding-left: 0;
+  margin: 0;
+  min-height: unset;
+}
+
+settings-panel .form-check.form-switch .form-check-input {
+  width: 2.4rem;
+  height: 1.35rem;
+  margin: 0.1rem 0 0;
+  flex-shrink: 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-image: radial-gradient(circle, #d1d1d1 28%, transparent 30%);
+  background-position: 4px center;
+  background-size: 0.95rem 0.95rem;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  transition:
+    background-color 220ms ease,
+    background-position 260ms cubic-bezier(0.34, 1.4, 0.64, 1),
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+settings-panel .form-check.form-switch .form-check-input:focus {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--fl-accent-color, #7432ff) 28%, transparent);
+  outline: none;
+}
+
+settings-panel .form-check.form-switch .form-check-input:checked {
+  background-color: var(--fl-accent-color, #7432ff);
+  border-color: var(--fl-accent-color, #7432ff);
+  background-image: radial-gradient(circle, #fff 28%, transparent 30%);
+  background-position: calc(100% - 4px) center;
+}
+
+settings-panel .form-check.form-switch .form-check-label {
+  flex: 1;
+  color: var(--fl-ctrl-text);
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+settings-panel .form-check.form-switch .form-check-label .description {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--fl-ctrl-text-muted);
+  line-height: 1.45;
+}
+
+/* ---- Stats period pills (Today / 1 Week / 4 Weeks) ----------------- */
+settings-panel .tab-content .nav-tabs {
+  border-bottom: none;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.25rem;
+  border-radius: 999px;
+  width: fit-content;
+}
+
+settings-panel .tab-content .nav-tabs .nav-link {
+  border: none !important;
+  background: transparent !important;
+  border-radius: 999px !important;
+  padding: 0.4rem 1rem !important;
+  font-size: 0.85rem !important;
+  font-weight: 600;
+  color: var(--fl-ctrl-text-muted) !important;
+  transition: background 200ms ease, color 200ms ease;
+}
+
+settings-panel .tab-content .nav-tabs .nav-link:hover {
+  color: #fff !important;
+}
+
+settings-panel .tab-content .nav-tabs .nav-link.active {
+  background: var(--fl-accent-color, #7432ff) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 14px -6px color-mix(in srgb, var(--fl-accent-color, #7432ff) 60%, transparent);
+}
+
+/* ---- Alert sound emoji radio grid --------------------------------- */
+settings-panel .alert-sound-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem 1.5rem;
+}
+
+settings-panel .alert-sound-option {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.45rem 0.55rem;
+  background: transparent;
+  border: none;
+  border-radius: 0.45rem;
+  color: var(--fl-ctrl-text);
+  cursor: pointer;
+  font-size: 0.92rem;
+  text-align: left;
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+settings-panel .alert-sound-option:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+settings-panel .alert-sound-option .radio-dot {
+  width: 1.05rem;
+  height: 1.05rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  background: transparent;
+  position: relative;
+  transition: border-color 180ms ease, background 180ms ease;
+}
+
+settings-panel .alert-sound-option .radio-dot::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 999px;
+  background: var(--fl-accent-color, #7432ff);
+  transform: scale(0);
+  transition: transform 200ms cubic-bezier(0.34, 1.5, 0.64, 1);
+}
+
+settings-panel .alert-sound-option.active .radio-dot {
+  border-color: var(--fl-accent-color, #7432ff);
+}
+
+settings-panel .alert-sound-option.active .radio-dot::after {
+  transform: scale(1);
+}
+
+settings-panel .alert-sound-emoji {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+settings-panel .alert-sound-name {
+  font-weight: 500;
+}
+
+/* ---- Clock style preview grid (6 mock-clock cards) ---------------- */
+settings-panel .clock-style-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.85rem;
+}
+
+settings-panel .clock-style-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0;
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.85rem;
+  color: var(--fl-ctrl-text);
+  cursor: pointer;
+  text-align: center;
+  overflow: hidden;
+  transition:
+    border-color 200ms ease,
+    transform 220ms cubic-bezier(0.34, 1.4, 0.64, 1),
+    box-shadow 200ms ease;
+}
+
+settings-panel .clock-style-preview {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 6rem;
+  background:
+    radial-gradient(120% 100% at 50% 100%, rgba(255, 130, 80, 0.18), transparent 60%),
+    linear-gradient(180deg, #1d1d3a 0%, #2a1d4a 55%, #44284e 100%);
+  overflow: hidden;
+}
+
+settings-panel .clock-style-brand {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-family: 'Degular Bold', 'Inter', sans-serif;
+  font-size: 0.62rem;
+  color: rgba(255, 255, 255, 0.75);
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+}
+
+settings-panel .clock-style-card[data-font-style='pixel'] .clock-style-time {
+  font-size: 0.95rem;
+  line-height: 1.35;
+  letter-spacing: 0.05em;
+}
+
+settings-panel .clock-style-time {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  font-size: 2.1rem;
+  line-height: 1;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+  font-variant-numeric: tabular-nums;
+  /* The numeric variant should be tabular for stable column widths, but for
+     handwritten/serif faces we want their natural feature set. The OpenType
+     "tnum" feature is applied above; individual cards override font-family
+     and weight inline. */
+}
+
+settings-panel .clock-style-label {
+  padding: 0.45rem 0.4rem 0.7rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--fl-ctrl-text);
+}
+
+settings-panel .clock-style-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+settings-panel .clock-style-card.active {
+  border-color: var(--fl-accent-color, #7432ff);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--fl-accent-color, #7432ff) 22%, transparent),
+    0 10px 22px -12px rgba(0, 0, 0, 0.6);
+}
+
+/* ---- Timer Lengths 3-column grid (Focus / Short break / Long break) */
+/* Bootstrap's `.row g-2` was wrapping to two rows in the narrow tab pane.
+   A plain CSS grid keeps the three fields on a single line regardless of
+   the section width. */
+settings-panel .timer-lengths-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+  width: 100%;
+}
+
+settings-panel .timer-lengths-grid > .settings-input-group {
+  min-width: 0; /* Allow children to shrink inside the grid track. */
+}
+
+/* When countdown mode is active a 4th field appears — wrap to 2 rows of 2. */
+settings-panel .timer-lengths-grid:has(> :nth-child(4)) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* ---- Number input with inline "mins" suffix ----------------------- */
+/* The wrapper acts as the visible "input chip": its border + background are
+   the field, while the real <input> is rendered transparent inside. The
+   number and the suffix sit side-by-side, vertically centred. */
+settings-panel .num-input-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  min-width: 0;
+  height: 2.65rem;
+  padding: 0 0.65rem;
+  background: var(--fl-ctrl-bg, #1a1a1a);
+  border: 1px solid var(--fl-ctrl-border, #333);
+  border-radius: 0.5rem;
+  box-sizing: border-box;
+  /* Don't clip — we want the number to be fully visible even if it grows. */
+  overflow: visible;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+settings-panel .num-input-wrap:focus-within {
+  border-color: var(--fl-accent-color, #7432ff);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--fl-accent-color, #7432ff) 22%, transparent);
+}
+
+settings-panel .num-input-wrap .num-input {
+  /* Strip Bootstrap .form-control framing — the wrapper owns the chrome.
+     Width is auto so 1–3 digit numbers all render fully. !important is
+     needed across the board because .form-control applies its own padding,
+     height and font sizing that would otherwise win. */
+  width: auto !important;
+  min-width: 1.8rem !important;
+  max-width: 3.5rem !important;
+  height: 1.8rem !important;
+  padding: 0 0.15rem !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  color: var(--fl-ctrl-text, #fff) !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  line-height: 1.8rem !important;
+  vertical-align: middle;
+  font-variant-numeric: tabular-nums;
+  /* Hide native number spinners — the suffix takes that real-estate. */
+  appearance: textfield !important;
+  -moz-appearance: textfield;
+}
+
+settings-panel .num-input-wrap .num-input:focus {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+settings-panel .num-input-wrap .num-input::-webkit-outer-spin-button,
+settings-panel .num-input-wrap .num-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+settings-panel .num-input-suffix {
+  pointer-events: none;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--fl-ctrl-text-muted);
+  letter-spacing: -0.005em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+settings-panel .settings-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+settings-panel .settings-input-group > .form-label,
+settings-panel .form-label {
+  display: block !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.012em !important;
+  color: var(--fl-ctrl-text) !important;
+  margin: 0 !important;
+}
+
+settings-panel .settings-input-group .description {
+  font-size: 0.78rem;
+  color: var(--fl-ctrl-text-muted);
+  margin-top: 0.15rem;
+  line-height: 1.4;
+}
+
+/* ---- Text / number / email / password inputs ------------------------ */
+settings-panel .form-control,
+.form-wrapper .form-control {
+  background-color: var(--fl-ctrl-bg) !important;
+  border: 1px solid var(--fl-ctrl-border) !important;
+  color: var(--fl-ctrl-text) !important;
+  height: 2.6rem !important;
+  padding: 0.55rem 0.85rem !important;
+  font-size: 0.92rem !important;
+  border-radius: var(--fl-ctrl-radius) !important;
+  transition: border-color 160ms var(--fl-ctrl-ease),
+    box-shadow 160ms var(--fl-ctrl-ease),
+    background-color 160ms var(--fl-ctrl-ease) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+settings-panel .form-control:hover,
+.form-wrapper .form-control:hover {
+  border-color: var(--fl-ctrl-border-hover) !important;
+  background-color: var(--fl-ctrl-bg-hover) !important;
+}
+
+settings-panel .form-control:focus,
+.form-wrapper .form-control:focus {
+  border-color: var(--fl-ctrl-accent) !important;
+  background-color: var(--fl-ctrl-bg-active) !important;
+  box-shadow: 0 0 0 3px var(--fl-ctrl-accent-soft) !important;
+}
+
+settings-panel .form-control::placeholder,
+.form-wrapper .form-control::placeholder {
+  color: rgba(255, 255, 255, 0.32) !important;
+}
+
+settings-panel input[type='number'].form-control {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+settings-panel input[type='number'].form-control::-webkit-outer-spin-button,
+settings-panel input[type='number'].form-control::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ---- Select dropdowns with custom chevron --------------------------- */
+settings-panel .form-select {
+  background-color: var(--fl-ctrl-bg) !important;
+  border: 1px solid var(--fl-ctrl-border) !important;
+  color: var(--fl-ctrl-text) !important;
+  height: 2.6rem !important;
+  padding: 0.55rem 2.25rem 0.55rem 0.85rem !important;
+  font-size: 0.92rem !important;
+  font-weight: 500 !important;
+  border-radius: var(--fl-ctrl-radius) !important;
+  transition: border-color 160ms var(--fl-ctrl-ease),
+    box-shadow 160ms var(--fl-ctrl-ease),
+    background-color 160ms var(--fl-ctrl-ease) !important;
+  outline: none !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'><path d='M1 1.5L6 6.5L11 1.5' stroke='rgba(255,255,255,0.55)' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/></svg>") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.95rem center !important;
+  background-size: 12px 8px !important;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+settings-panel .form-select:hover {
+  border-color: var(--fl-ctrl-border-hover) !important;
+  background-color: var(--fl-ctrl-bg-hover) !important;
+}
+
+settings-panel .form-select:focus {
+  border-color: var(--fl-ctrl-accent) !important;
+  background-color: var(--fl-ctrl-bg-active) !important;
+  box-shadow: 0 0 0 3px var(--fl-ctrl-accent-soft) !important;
+}
+
+settings-panel .form-select option {
+  background: #111417 !important;
+  color: var(--fl-ctrl-text) !important;
+  font-size: 0.92rem;
+  padding: 0.5rem 0.75rem;
+}
+
+/* ---- Switch / toggle (Bootstrap's .form-switch overhaul) ------------ */
+settings-panel .form-check.form-switch,
+.form-check.form-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  padding-left: 0 !important;
+  min-height: 2.6rem;
+  margin: 0 !important;
+}
+
+settings-panel .form-check.form-switch .form-check-label,
+.form-check.form-switch .form-check-label {
+  order: 0;
+  flex: 1 1 auto;
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--fl-ctrl-text);
+  line-height: 1.35;
+  cursor: pointer;
+}
+
+settings-panel .form-check.form-switch .form-check-label .description,
+.form-check.form-switch .form-check-label .description {
+  margin-top: 0.2rem;
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--fl-ctrl-text-muted);
+  line-height: 1.4;
+}
+
+settings-panel .form-check.form-switch .form-check-input,
+.form-check.form-switch .form-check-input {
+  order: 1;
+  flex: 0 0 auto;
+  width: 2.6rem !important;
+  height: 1.5rem !important;
+  margin: 0 !important;
+  background-color: #2a2d33 !important;
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><circle cx='6' cy='6' r='5' fill='%23ffffff'/></svg>") !important;
+  background-position: 0.15rem center !important;
+  background-size: 1.2rem 1.2rem !important;
+  background-repeat: no-repeat !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-radius: 999px !important;
+  cursor: pointer;
+  position: relative;
+  transition:
+    background-color 220ms var(--fl-ctrl-ease),
+    background-position 220ms var(--fl-ctrl-ease),
+    box-shadow 220ms var(--fl-ctrl-ease) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35) !important;
+  outline: none !important;
+}
+
+settings-panel .form-check.form-switch .form-check-input:hover,
+.form-check.form-switch .form-check-input:hover {
+  background-color: #34373e !important;
+}
+
+settings-panel .form-check.form-switch .form-check-input:focus-visible,
+.form-check.form-switch .form-check-input:focus-visible {
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.35),
+    0 0 0 3px var(--fl-ctrl-accent-soft) !important;
+}
+
+settings-panel .form-check.form-switch .form-check-input:checked,
+.form-check.form-switch .form-check-input:checked {
+  background-color: var(--fl-ctrl-accent) !important;
+  background-position: calc(100% - 0.15rem) center !important;
+  border-color: transparent !important;
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.25),
+    0 0 12px var(--fl-ctrl-accent-glow) !important;
+}
+
+settings-panel .form-check.form-switch .form-check-input:disabled,
+.form-check.form-switch .form-check-input:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ---- Standalone checkbox (newsletter consent etc.) ------------------ */
+settings-panel .form-check:not(.form-switch) .form-check-input {
+  width: 1.1rem !important;
+  height: 1.1rem !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.25) !important;
+  background-color: transparent !important;
+  border-radius: 0.3rem !important;
+  cursor: pointer;
+  transition: background 160ms var(--fl-ctrl-ease), border-color 160ms var(--fl-ctrl-ease);
+  box-shadow: none !important;
+}
+
+settings-panel .form-check:not(.form-switch) .form-check-input:hover {
+  border-color: rgba(255, 255, 255, 0.45) !important;
+}
+
+settings-panel .form-check:not(.form-switch) .form-check-input:checked {
+  background-color: var(--fl-ctrl-accent) !important;
+  border-color: var(--fl-ctrl-accent) !important;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'><path d='M3.5 8.5l3 3 6-6' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>") !important;
+  background-position: center !important;
+  background-size: 12px 12px !important;
+  background-repeat: no-repeat !important;
+}
+
+/* ---- Range slider --------------------------------------------------- */
+settings-panel .form-range,
+.theme-holder .overlay-control input[type='range'],
+input.form-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+}
+
+settings-panel .form-range::-webkit-slider-runnable-track,
+input.form-range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      to right,
+      var(--fl-ctrl-accent) 0%,
+      var(--fl-ctrl-accent) var(--range-fill, 50%),
+      rgba(255, 255, 255, 0.12) var(--range-fill, 50%),
+      rgba(255, 255, 255, 0.12) 100%
+    );
+}
+
+settings-panel .form-range::-moz-range-track,
+input.form-range::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+settings-panel .form-range::-moz-range-progress,
+input.form-range::-moz-range-progress {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--fl-ctrl-accent);
+}
+
+settings-panel .form-range::-webkit-slider-thumb,
+input.form-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: none;
+  margin-top: -6px;
+  cursor: grab;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.4),
+    0 0 0 0 var(--fl-ctrl-accent-soft);
+  transition: box-shadow 160ms var(--fl-ctrl-ease), transform 120ms var(--fl-ctrl-ease);
+}
+
+settings-panel .form-range::-moz-range-thumb,
+input.form-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: none;
+  cursor: grab;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+settings-panel .form-range:hover::-webkit-slider-thumb,
+input.form-range:hover::-webkit-slider-thumb {
+  transform: scale(1.1);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.45),
+    0 0 0 6px var(--fl-ctrl-accent-soft);
+}
+
+settings-panel .form-range:active::-webkit-slider-thumb,
+input.form-range:active::-webkit-slider-thumb {
+  cursor: grabbing;
+  transform: scale(1.15);
+}
+
+/* ---- Buttons -------------------------------------------------------- */
+settings-panel .btn,
+.btn.btn-primary,
+.btn.btn-secondary,
+.btn.btn-danger,
+.btn.btn-outline-light {
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+  border-radius: var(--fl-ctrl-radius) !important;
+  padding: 0.55rem 1.05rem !important;
+  transition:
+    background-color 160ms var(--fl-ctrl-ease),
+    border-color 160ms var(--fl-ctrl-ease),
+    transform 80ms var(--fl-ctrl-ease),
+    box-shadow 160ms var(--fl-ctrl-ease) !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+settings-panel .btn.btn-primary,
+.btn.btn-primary {
+  background: var(--fl-ctrl-accent) !important;
+  border: 1px solid transparent !important;
+  color: #fff !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset, 0 4px 14px rgba(116, 50, 255, 0.25) !important;
+}
+
+settings-panel .btn.btn-primary:hover,
+.btn.btn-primary:hover {
+  background: #8b48ff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset, 0 6px 18px rgba(116, 50, 255, 0.45) !important;
+}
+
+settings-panel .btn.btn-primary:active,
+.btn.btn-primary:active {
+  background: #6b29df !important;
+  transform: translateY(0);
+}
+
+settings-panel .btn.btn-secondary,
+.btn.btn-secondary {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid var(--fl-ctrl-border) !important;
+  color: var(--fl-ctrl-text) !important;
+}
+
+settings-panel .btn.btn-secondary:hover,
+.btn.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: var(--fl-ctrl-border-hover) !important;
+}
+
+settings-panel .btn.btn-danger,
+.btn.btn-danger {
+  background: rgba(244, 63, 94, 0.14) !important;
+  border: 1px solid rgba(244, 63, 94, 0.35) !important;
+  color: #fda4af !important;
+}
+
+settings-panel .btn.btn-danger:hover,
+.btn.btn-danger:hover {
+  background: rgba(244, 63, 94, 0.22) !important;
+  border-color: rgba(244, 63, 94, 0.55) !important;
+  color: #fff !important;
+}
+
+settings-panel .btn.btn-outline-light,
+.btn.btn-outline-light {
+  background: transparent !important;
+  border: 1px solid var(--fl-ctrl-border-hover) !important;
+  color: var(--fl-ctrl-text) !important;
+}
+
+settings-panel .btn.btn-outline-light:hover,
+.btn.btn-outline-light:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+settings-panel .btn.btn-link,
+.btn.btn-link {
+  background: transparent !important;
+  border: none !important;
+  color: #a78bfa !important;
+  padding: 0.25rem 0 !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+}
+
+settings-panel .btn.btn-link:hover,
+.btn.btn-link:hover {
+  color: #c4b5fd !important;
+  text-decoration: underline !important;
+}
+
+settings-panel .btn:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 3px var(--fl-ctrl-accent-soft) !important;
+}
+
+/* ---- Settings sub-tab pill nav (stats period / account auth) -------- */
+/* Older underline tab style — superseded by the pill rules above. Kept
+   empty intentionally so existing selectors continue to apply harmlessly. */
+
+/* ---- Stats grid cards (focus / streak / sessions / etc.) ------------ */
+/* ---- Theme Library filters row & theme-thumb hover ------------------ */
+settings-panel .theme-holder .filters {
+  margin-bottom: 1rem;
+}
+
+settings-panel .theme-holder .filters label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--fl-ctrl-text-muted);
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+settings-panel .theme-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.85rem;
+  margin: 0;
+}
+
+settings-panel .theme-group .theme {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  cursor: pointer;
+  margin: 0;
+  position: relative;
+}
+
+/* We use a 12:7 (~1.71) thumbnail. We force cover + no-repeat so the
+   image keeps its aspect ratio and never stretches, even when the underlying
+   photo is 4:3 (desktop) or 1:2 (mobile). */
+settings-panel .theme-group .theme-thumb {
+  display: block;
+  width: 100%;
+  aspect-ratio: 12 / 7;
+  height: auto;
+  border-radius: 0.6rem;
+  border: 2px solid var(--sett-glass-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  background-color: rgba(255, 255, 255, 0.04);
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  transition: border-color 180ms var(--fl-ctrl-ease), transform 180ms var(--fl-ctrl-ease),
+    box-shadow 180ms var(--fl-ctrl-ease);
+}
+
+settings-panel .theme-group .theme:hover .theme-thumb {
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
+settings-panel .theme-group .theme.active .theme-thumb {
+  border-color: var(--fl-ctrl-accent);
+  box-shadow: 0 0 0 3px var(--fl-ctrl-accent-soft), 0 6px 18px rgba(116, 50, 255, 0.25);
+}
+
+settings-panel .theme-group .theme > span:last-child {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--fl-ctrl-text);
+  letter-spacing: -0.01em;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* ---- Custom-background drag/drop card ------------------------------- */
+settings-panel .custom-background .drag-area.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  background: var(--fl-ctrl-bg);
+  border: 1.5px dashed var(--fl-ctrl-border-hover);
+  border-radius: 0.9rem;
+  padding: 2rem 1.25rem;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  transition:
+    border-color 180ms var(--fl-ctrl-ease),
+    background 180ms var(--fl-ctrl-ease),
+    transform 180ms var(--fl-ctrl-ease);
+}
+
+settings-panel .custom-background .drag-area.empty:hover,
+settings-panel .custom-background .drag-area.empty:focus-visible,
+settings-panel .custom-background .drag-area.empty.drag-active {
+  border-color: var(--fl-ctrl-accent);
+  background: color-mix(in srgb, var(--fl-accent-color, #7432ff) 8%, var(--fl-ctrl-bg));
+}
+
+settings-panel .custom-background .drag-area.empty .upload-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--fl-accent-color, #7432ff) 14%, transparent);
+  color: var(--fl-accent-color, #7432ff);
+  margin-bottom: 0.25rem;
+}
+
+settings-panel .custom-background .file-text {
+  font-size: 0.92rem;
+  color: var(--fl-ctrl-text);
+  margin: 0;
+}
+
+settings-panel .custom-background .file-text u {
+  color: var(--fl-accent-color, #c4b5fd);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 2px;
+}
+
+settings-panel .custom-background .file-text-help {
+  display: block;
+  font-size: 0.74rem;
+  color: var(--fl-ctrl-text-muted);
+}
+
+/* ---- Upload editor (preview + zoom/pan/overlay controls) ------------ */
+settings-panel .custom-background .upload-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+  padding: 1rem;
+  background: var(--fl-ctrl-bg);
+  border: 1px solid var(--fl-ctrl-border);
+  border-radius: 0.9rem;
+}
+
+settings-panel .custom-background .crop-preview {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 0.65rem;
+  background: #0d0d12;
+  cursor: default;
+  user-select: none;
+  touch-action: none;
+}
+
+settings-panel .custom-background .crop-preview.is-pannable {
+  cursor: grab;
+}
+
+settings-panel .custom-background .crop-preview.is-dragging {
+  cursor: grabbing;
+}
+
+settings-panel .custom-background .crop-preview img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  will-change: transform, object-position;
+  transition: transform 80ms linear;
+}
+
+settings-panel .custom-background .crop-preview .crop-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: rgba(0, 0, 0, var(--custom-bg-overlay, 0.35));
+  transition: background 120ms linear;
+}
+
+settings-panel .custom-background .crop-preview .crop-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 0.6rem;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+  background: rgba(0, 0, 0, 0.45);
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  pointer-events: none;
+  backdrop-filter: blur(4px);
+}
+
+settings-panel .custom-background .crop-controls {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.55rem;
+}
+
+settings-panel .custom-background .crop-controls .range-row {
+  display: grid;
+  grid-template-columns: 92px 1fr 56px;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+settings-panel .custom-background .crop-controls .range-row label {
+  font-size: 0.8rem;
+  color: var(--fl-ctrl-text-muted);
+  margin: 0;
+}
+
+settings-panel .custom-background .crop-controls .range-row input[type='range'] {
+  width: 100%;
+  margin: 0;
+}
+
+settings-panel .custom-background .crop-controls .range-row input[type='range']:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+settings-panel .custom-background .crop-controls .range-row .range-value {
+  font-size: 0.78rem;
+  color: var(--fl-ctrl-text);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+settings-panel .custom-background .upload-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+settings-panel .custom-background .upload-actions .btn {
+  font-size: 0.82rem;
+  padding: 0.45rem 0.85rem;
+}
+
+/* ---- Theme-Library title -------------------------- */
+settings-panel .theme-holder .title,
+settings-panel .custom-background .title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--fl-ctrl-text);
+  margin: 0 0 0.6rem;
+}
+
+settings-panel .custom-background .description {
+  font-size: 0.82rem;
+  color: var(--fl-ctrl-text-muted);
+  margin-bottom: 0.85rem;
+  line-height: 1.45;
+}
+
+settings-panel .custom-background .description a {
+  color: #c4b5fd;
+  text-decoration: underline;
+}
+
+/* ---- Nav badge ('NEW', etc.) ---------------------------------------- */
+settings-panel .nav .badge,
+settings-panel .badge.badge-new {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+  color: #fff !important;
+  font-size: 0.62rem !important;
+  font-weight: 700 !important;
+  padding: 0.15rem 0.4rem !important;
+  border-radius: 999px !important;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ---- Pomodoro tally counter — make sure inactive icons are visible -- */
+pomodoro-timer .pomo-counter .tally-icon {
+  filter: grayscale(0.4);
+}
+pomodoro-timer .pomo-counter .tally-icon.active {
+  filter: grayscale(0) drop-shadow(0 0 4px rgba(255, 255, 255, 0.18));
+}
+
+/* ---- Settings-input-group inline help / unit suffix ----------------- */
+settings-panel .settings-input-group small,
+settings-panel .form-text {
+  font-size: 0.74rem;
+  color: var(--fl-ctrl-text-muted);
+  margin-top: 0.25rem;
+}
+
+/* =================================================================== */
+/*  BACKGROUND IMAGE LAYER                                              */
+/*                                                                      */
+/*  Fill the whole viewport edge-to-edge. `object-fit: cover` keeps the */
+/*  image's aspect ratio while guaranteeing both axes are saturated     */
+/*  with pixels — never any black bars. For images whose ratio differs  */
+/*  from the screen (4:3 photos on a 16:9 monitor, etc.) cover crops    */
+/*  the longer axis instead of stretching, so nothing ever distorts.    */
+/* =================================================================== */
+
+#bg-wrapper {
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+#bg-image,
+#bg-video {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  min-width: 100% !important;
+  min-height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: opacity 250ms ease;
+}
+
+/* When the wrapper isn't in image/video mode the elements are hidden by the
+   native :not() rules — no extra work needed. */
+
+/* ---- Tally preview row (settings → focus timer → tally selectors) --- */
+settings-panel .tally-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 0.55rem;
+  padding: 0.55rem 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--fl-ctrl-border);
+  border-radius: var(--fl-ctrl-radius);
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji', sans-serif;
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+settings-panel .tally-preview .tally-preview-icon {
+  opacity: 0.35;
+  filter: grayscale(0.4);
+  transition: opacity 200ms var(--fl-ctrl-ease), filter 200ms var(--fl-ctrl-ease);
+}
+
+settings-panel .tally-preview .tally-preview-icon.active {
+  opacity: 1;
+  filter: grayscale(0) drop-shadow(0 0 4px rgba(255, 255, 255, 0.2));
+}
+
+/* =====================================================================
+   Side rail — vertical column of standalone buttons anchored to the LEFT
+   edge. No surrounding panel chrome; each button floats on its own.
+   ===================================================================== */
+#bottom {
+  display: none !important;
+}
+
+.side-rail {
+  position: fixed;
+  top: 50%;
+  left: 1.25rem;
+  transform: translateY(-50%);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  color: rgba(255, 255, 255, 0.82);
+  user-select: none;
+  pointer-events: none;
+  transition: opacity 250ms ease;
+  overflow: visible;
+}
+
+.side-rail > * {
+  pointer-events: auto;
+}
+
+body[data-clear-mode='on'] .side-rail {
+  opacity: 0.18;
+}
+
+body[data-clear-mode='on'] .side-rail:hover,
+body[data-clear-mode='on'] .side-rail:focus-within {
+  opacity: 1;
+}
+
+.side-rail .rail-divider {
+  display: block;
+  width: 18px;
+  height: 1px;
+  margin: 0.25rem 0;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* Mode group — vertical segmented stack of Home / Focus buttons. */
+.side-rail .rail-mode-group {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 4px;
+  border-radius: 1.2rem;
+  background: rgba(15, 18, 26, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+  overflow: visible;
+}
+
+.side-rail .rail-mode-slot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: visible;
+}
+
+.side-rail .rail-mode-slot--streak {
+  z-index: 2;
+}
+
+.side-rail .rail-mode-slot + .rail-mode-slot {
+  margin-top: 3px;
+}
+
+/* Sliding accent indicator — travels between Home and Focus. */
+.side-rail .rail-mode-indicator {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 38px;
+  height: 38px;
+  border-radius: 0.95rem;
+  background: var(--fl-accent-color, #7432ff);
+  box-shadow:
+    0 8px 18px color-mix(in srgb, var(--fl-accent-color, #7432ff) 40%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--fl-accent-color, #7432ff) 80%, #fff 15%);
+  pointer-events: none;
+  z-index: 0;
+  transition: transform 380ms cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+.side-rail .rail-mode-group[data-active='home'] .rail-mode-indicator {
+  transform: translateY(0);
+}
+
+.side-rail .rail-mode-group[data-active='focus'] .rail-mode-indicator {
+  transform: translateY(calc(38px + 3px));
+}
+
+.side-rail .rail-mode-btn {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  border-radius: 0.95rem;
+  cursor: pointer;
+  transition:
+    color 240ms var(--fl-ctrl-ease, ease),
+    transform 140ms var(--fl-ctrl-ease, ease);
+}
+
+.side-rail .rail-mode-btn:hover {
+  color: #fff;
+}
+
+.side-rail .rail-mode-btn:focus-visible {
+  outline: 2px solid var(--fl-accent-color, #7432ff);
+  outline-offset: 2px;
+}
+
+.side-rail .rail-mode-btn.is-active {
+  color: #fff;
+}
+
+.side-rail .rail-mode-btn.is-active svg {
+  animation: mode-icon-pop 380ms cubic-bezier(0.34, 1.7, 0.64, 1);
+}
+
+@keyframes mode-icon-pop {
+  0%   { transform: scale(0.7) rotate(-6deg); opacity: 0.4; }
+  60%  { transform: scale(1.15) rotate(2deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+.side-rail .rail-mode-btn:active {
+  transform: scale(0.9);
+}
+
+.side-rail .rail-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 0;
+  border-radius: 1.1rem;
+  background: rgba(15, 18, 26, 0.45);
+  color: inherit;
+  cursor: pointer;
+  overflow: visible;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition:
+    background 220ms var(--fl-ctrl-ease, ease),
+    color 220ms var(--fl-ctrl-ease, ease),
+    transform 220ms cubic-bezier(0.34, 1.5, 0.64, 1),
+    box-shadow 220ms ease;
+}
+
+.side-rail .rail-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at center,
+    color-mix(in srgb, var(--fl-accent-color, #7432ff) 55%, transparent) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 220ms ease, transform 320ms ease;
+  pointer-events: none;
+}
+
+.side-rail .rail-btn:hover {
+  background: rgba(15, 18, 26, 0.65);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+}
+
+.side-rail .rail-btn:hover::before {
+  opacity: 0.35;
+  transform: scale(1);
+}
+
+.side-rail .rail-btn:focus-visible {
+  outline: 2px solid var(--fl-accent-color, #7432ff);
+  outline-offset: 2px;
+}
+
+.side-rail .rail-btn.is-active {
+  background: color-mix(in srgb, var(--fl-accent-color, #7432ff) 78%, rgba(15, 18, 26, 0.35));
+  color: #fff;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--fl-accent-color, #7432ff) 90%, transparent),
+    0 6px 22px color-mix(in srgb, var(--fl-accent-color, #7432ff) 45%, transparent);
+}
+
+.side-rail .rail-btn.is-active svg {
+  animation: rail-icon-tap 320ms cubic-bezier(0.34, 1.6, 0.64, 1);
+}
+
+@keyframes rail-icon-tap {
+  0%   { transform: scale(0.8); }
+  60%  { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+.side-rail .rail-btn:active {
+  transform: scale(0.93);
+  transition-duration: 100ms;
+}
+
+.side-rail .rail-label {
+  position: absolute;
+  left: calc(100% + 0.65rem);
+  top: 50%;
+  transform: translateY(-50%) translateX(-4px);
+  padding: 0.25rem 0.55rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  background: rgba(15, 18, 26, 0.92);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.side-rail .rail-btn:hover .rail-label,
+.side-rail .rail-btn:focus-visible .rail-label {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+.side-rail .rail-badge {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 17px;
+  border-radius: 999px;
+  background: var(--fl-accent-color, #7432ff);
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 0 0 2px rgba(15, 18, 26, 0.85);
+  animation:
+    badge-pop 380ms cubic-bezier(0.34, 1.7, 0.64, 1) both,
+    badge-pulse 2.2s ease-in-out 0.5s infinite;
+}
+
+@keyframes badge-pop {
+  0%   { transform: scale(0); opacity: 0; }
+  70%  { transform: scale(1.25); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+@keyframes badge-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 2px rgba(15, 18, 26, 0.85),
+      0 0 0 0 color-mix(in srgb, var(--fl-accent-color, #7432ff) 60%, transparent);
+  }
+  60% {
+    box-shadow:
+      0 0 0 2px rgba(15, 18, 26, 0.85),
+      0 0 0 6px transparent;
+  }
+}
+
+.side-rail .rail-streak {
+  position: absolute;
+  left: calc(100% + 0.55rem);
+  top: 50%;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.32rem 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fde68a;
+  background: rgba(15, 18, 26, 0.92);
+  border: 1px solid rgba(253, 230, 138, 0.35);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  white-space: nowrap;
+  transform: translateY(-50%);
+  transform-origin: left center;
+  pointer-events: none;
+  animation: streak-pop 380ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  box-shadow: 0 6px 18px rgba(245, 158, 11, 0.28);
+}
+
+.side-rail .rail-streak-emoji {
+  font-size: 0.95rem;
+  line-height: 1;
+  display: inline-block;
+  animation: streak-flame 1.6s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+@keyframes streak-pop {
+  0% {
+    opacity: 0;
+    transform: translate(-12px, -50%) scale(0.55);
+  }
+  60% {
+    opacity: 1;
+    transform: translate(2px, -50%) scale(1.06);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, -50%) scale(1);
+  }
+}
+
+@keyframes streak-flame {
+  0%, 100% {
+    transform: scale(1) rotate(-2deg);
+    filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.55));
+  }
+  50% {
+    transform: scale(1.12) rotate(3deg);
+    filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.85));
+  }
+}
+
+/* Drawer that hosts the side panels (tasks / sounds / notepad). */
+.rail-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  -webkit-backdrop-filter: blur(0);
+  backdrop-filter: blur(0);
+  z-index: 55;
+  cursor: pointer;
+  animation: rail-fade 280ms ease forwards;
+}
+
+@keyframes rail-fade {
+  from { background: rgba(0, 0, 0, 0); backdrop-filter: blur(0); }
+  to   { background: rgba(0, 0, 0, 0.32); backdrop-filter: blur(2px); }
+}
+
+.rail-drawer {
+  position: fixed;
+  top: 50%;
+  left: calc(1.25rem + 40px + 0.85rem);
+  transform: translateY(-50%);
+  z-index: 60;
+  width: min(720px, calc(100vw - 6rem));
+  max-height: 82vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: rail-slide 340ms cubic-bezier(0.2, 0.85, 0.25, 1) both;
+  transform-origin: left center;
+}
+
+@keyframes rail-slide {
+  0% {
+    opacity: 0;
+    transform: translate(-24px, -50%) scale(0.96);
+    filter: blur(4px);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, -50%) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* Stagger child elements inside the drawer for a soft cascade. */
+.rail-drawer .tasks-wrapper > *,
+.rail-drawer .soundscapes-wrapper > *,
+.rail-drawer .notepad-wrapper > * {
+  animation: drawer-child 480ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+.rail-drawer .tasks-wrapper > *:nth-child(2),
+.rail-drawer .soundscapes-wrapper > *:nth-child(2),
+.rail-drawer .notepad-wrapper > *:nth-child(2) {
+  animation-delay: 60ms;
+}
+
+.rail-drawer .tasks-wrapper > *:nth-child(3),
+.rail-drawer .soundscapes-wrapper > *:nth-child(3),
+.rail-drawer .notepad-wrapper > *:nth-child(3) {
+  animation-delay: 120ms;
+}
+
+.rail-drawer .tasks-wrapper > *:nth-child(n + 4),
+.rail-drawer .soundscapes-wrapper > *:nth-child(n + 4),
+.rail-drawer .notepad-wrapper > *:nth-child(n + 4) {
+  animation-delay: 180ms;
+}
+
+@keyframes drawer-child {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Side-rail itself enters with a soft fade-up on first paint. */
+.side-rail {
+  animation: rail-enter 600ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes rail-enter {
+  from { opacity: 0; transform: translate(-12px, -50%); }
+  to   { opacity: 1; transform: translate(0, -50%); }
+}
+
+/* Respect the user's reduced-motion preference. */
+@media (prefers-reduced-motion: reduce) {
+  .side-rail,
+  .side-rail *,
+  .rail-drawer,
+  .rail-drawer *,
+  .rail-drawer-backdrop,
+  .logo,
+  text-quote .content {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Reset the native vendor positioning so the wrappers fill the drawer.
+   We keep the legacy class hierarchy (tasks-popout-wrapper / flocus-sounds
+   / flocus-notepad) so existing scoped overrides still style the content,
+   but every layout property is stripped. */
+.rail-drawer .tasks-popout-wrapper,
+.rail-drawer flocus-sounds,
+.rail-drawer flocus-notepad {
+  position: static !important;
+  display: block !important;
+  z-index: auto !important;
+  width: 100% !important;
+  height: auto !important;
+  transform: none !important;
+  margin: 0 !important;
+  pointer-events: auto !important;
+}
+
+.rail-drawer .tasks-wrapper,
+.rail-drawer .soundscapes-wrapper,
+.rail-drawer .notepad-wrapper {
+  position: relative !important;
+  inset: auto !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  max-height: 82vh !important;
+  margin: 0 !important;
+}
+
+.rail-drawer .tasks-wrapper::after,
+.rail-drawer .soundscapes-wrapper::after,
+.rail-drawer .notepad-wrapper::after {
+  display: none !important;
+}
+
+/* Sounds drawer needs more breathing room than tasks/notepad. */
+.rail-drawer:has(flocus-sounds) {
+  width: min(900px, calc(100vw - 6rem));
+}
+
+@media (max-width: 720px) {
+  .side-rail {
+    right: 0.5rem;
+    padding: 0.4rem 0.35rem;
+  }
+  .rail-drawer {
+    right: 0.5rem;
+    left: 0.5rem;
+    width: auto;
+    transform: translateY(-50%);
+  }
+}
+
+/* ---- Support tab: troubleshooting list ----------------------------- */
+settings-panel .support-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+settings-panel .support-list li {
+  position: relative;
+  padding: 0.7rem 0.85rem 0.7rem 2rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0.6rem;
+  font-size: 0.86rem;
+  color: var(--fl-ctrl-text-muted, rgba(255, 255, 255, 0.72));
+  line-height: 1.45;
+}
+settings-panel .support-list li::before {
+  content: '';
+  position: absolute;
+  left: 0.85rem;
+  top: 1.05rem;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--fl-accent-color, #7432ff);
+  box-shadow: 0 0 8px -1px color-mix(in srgb, var(--fl-accent-color, #7432ff) 70%, transparent);
+}
+settings-panel .support-list li strong {
+  color: var(--fl-ctrl-text, #fff);
+  font-weight: 600;
+  margin-right: 0.25rem;
+}
+
+/* Account tab — neutralise Bootstrap row negative margins inside the
+   card sections so forms align cleanly. */
+settings-panel .settings-section .account,
+settings-panel .settings-section .registered-user,
+settings-panel .settings-section .login {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+settings-panel .settings-section .form-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+settings-panel .settings-section .account-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+settings-panel .welcome-message {
+  font-size: 0.88rem;
+  color: var(--fl-ctrl-text-muted) !important;
+  margin: 0 0 0.5rem 0;
+}
+
+/* The Bootstrap .col-12 in the guest login wrapper was forcing extra
+   gutters that misaligned the auth tabs against the section padding. */
+settings-panel .settings-section .login.col-12 {
+  flex: none;
+  width: 100%;
+  padding-right: 0;
+  padding-left: 0;
+}

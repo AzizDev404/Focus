@@ -1,0 +1,191 @@
+.account-social-page {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 16rem;
+}
+
+.account-social-guest {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem 1.25rem;
+  border-radius: 0.9rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.account-social-guest h3 {
+  margin: 0.65rem 0 0.35rem;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.account-social-guest p {
+  margin: 0 0 1rem;
+  font-size: 0.82rem;
+  max-width: 18rem;
+}
+
+.account-social-error {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #f87171;
+}
+
+.account-social-empty {
+  margin: 0;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.82rem;
+  border-radius: 0.9rem;
+}
+
+.account-social-empty small {
+  display: block;
+  margin-top: 0.35rem;
+  opacity: 0.75;
+}
+
+.account-social-refresh {
+  align-self: flex-start;
+}
+
+/* Community chat (public) */
+.account-social-chat .account-chat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  min-height: 20rem;
+  max-height: min(58vh, 520px);
+  padding: 0.75rem;
+  border-radius: 0.9rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.account-social-chat .account-chat-list {
+  flex: 1;
+  min-height: 12rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.account-social-chat .account-chat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.65rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.account-social-chat .account-chat-item.is-self {
+  background: color-mix(in srgb, var(--fl-accent-color, #7432ff) 14%, rgba(255, 255, 255, 0.05));
+  border-color: rgba(167, 139, 250, 0.22);
+}
+
+.account-social-chat .account-chat-item strong {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.account-social-chat .account-chat-item p {
+  margin: 0.15rem 0 0;
+  font-size: 0.86rem;
+  color: #fff;
+  line-height: 1.4;
+}
+
+.account-social-chat .account-chat-compose {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.account-social-chat .account-chat-compose .form-control {
+  flex: 1;
+  min-width: 0;
+  border-radius: 0.55rem;
+  background: rgba(0, 0, 0, 0.28);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+/* DM inbox */
+.account-dm-inbox {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.account-dm-inbox-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.55rem;
+  align-items: center;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.account-dm-inbox-row:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.account-dm-inbox-avatar {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  background: color-mix(in srgb, var(--fl-accent-color, #7432ff) 35%, rgba(255, 255, 255, 0.08));
+}
+
+.account-dm-inbox-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  min-width: 0;
+}
+
+.account-dm-inbox-body strong {
+  font-size: 0.86rem;
+}
+
+.account-dm-inbox-body span {
+  font-size: 0.74rem;
+  color: rgba(255, 255, 255, 0.45);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-dm-inbox-row time {
+  font-size: 0.62rem;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.account-social-messages-thread .social-dm-panel {
+  max-height: min(62vh, 560px);
+  width: 100%;
+}
