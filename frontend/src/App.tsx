@@ -192,7 +192,7 @@ export default function App() {
         <SideRail />
 
         <settings-panel
-          className={`flocus-is-plus${panel === 'settings' ? ' show' : ''}`}
+          className={`flocus-is-plus${panel === 'settings' ? ' show' : ''} settings-panel--position-${settings.sideRailPosition ?? 'left'}`}
           onClick={(e) => {
             if (e.target === e.currentTarget) setPanel('none')
           }}

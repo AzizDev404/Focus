@@ -8,6 +8,7 @@ import type {
   DayStats,
   FlocusSettings,
   FocusArea,
+  MessagesTarget,
   Panel,
   SoundLayer,
   StatsPeriod,
@@ -64,6 +65,7 @@ const defaultSettings: FlocusSettings = {
   showTasksProgressBar: true,
   showTasksCount: true,
   accentColor: '#0369A1',
+  sideRailPosition: 'left',
 }
 
 const defaultTimer: TimerState = {
@@ -101,6 +103,7 @@ interface FlocusStore {
   authModalOpen: boolean
   authModalTab: AuthModalTab
   profile: UserProfile | null
+  messagesTarget: MessagesTarget | null
   leaderboardResetToken: number
 
   setMode: (m: DashboardMode) => void
@@ -119,6 +122,8 @@ interface FlocusStore {
   setAuthModalOpen: (v: boolean) => void
   setAuthModalTab: (tab: AuthModalTab) => void
   setProfile: (profile: UserProfile | null) => void
+  openMessagesWith: (peerId: number, displayName: string) => void
+  clearMessagesTarget: () => void
   bumpLeaderboardReset: () => void
   completeOnboarding: () => void
   addTask: (text: string) => void

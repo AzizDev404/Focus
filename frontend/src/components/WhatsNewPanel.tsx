@@ -23,7 +23,7 @@ const CHANGELOG = [
     items: [
       '73 themes with filters',
       '43 ambient soundscapes',
-      'Spotify curated playlists',
+      'Expanded profile and focus tools',
     ],
   },
   {

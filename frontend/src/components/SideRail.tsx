@@ -27,6 +27,7 @@ export function SideRail() {
   const setPanel = useFlocusStore((s) => s.setPanel)
   const setSettingsTab = useFlocusStore((s) => s.setSettingsTab)
 
+  const position = settings.sideRailPosition ?? 'left'
   const incompleteTasks = tasks.filter((t) => !t.completed).length
 
   const pickMode = (next: DashboardMode) => {
@@ -64,7 +65,7 @@ export function SideRail() {
     else void document.exitFullscreen()
   }
 
-  const soundsOpen = panel === 'sounds' || panel === 'music' || panel === 'playlists'
+  const soundsOpen = panel === 'sounds'
   const tasksOpen = panel === 'tasks'
   const notepadOpen = panel === 'notepad'
   const drawerOpen = soundsOpen || tasksOpen || notepadOpen
@@ -79,7 +80,7 @@ export function SideRail() {
         />
       )}
 
-      <nav className="side-rail" id="side-rail" aria-label="Dashboard controls">
+      <nav className={`side-rail side-rail--${position}`} id="side-rail" aria-label="Dashboard controls">
         <div
           className="rail-mode-group"
           role="tablist"
@@ -111,6 +112,7 @@ export function SideRail() {
                   onClick={() => pickMode(id)}
                 >
                   <Icon size={20} />
+                  <span className="rail-mode-label">{label}</span>
                 </button>
               </div>
             )
@@ -162,9 +164,9 @@ export function SideRail() {
         <button
           type="button"
           className={`rail-btn${panel === 'settings' ? ' is-active' : ''}`}
-          title="More"
+          title="More / Settings"
           aria-pressed={panel === 'settings'}
-          aria-label="More options and settings"
+          aria-label="Settings and appearance"
           onClick={openSettings}
         >
           <IconMore size={22} />

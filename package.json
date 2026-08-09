@@ -4,15 +4,17 @@
   "version": "1.0.0",
   "workspaces": [
     "frontend",
+    "admin",
     "backend"
   ],
   "scripts": {
-    "dev": "concurrently -n web,api -c cyan,magenta \"npm run dev -w frontend\" \"npm run dev -w backend\"",
+    "dev": "concurrently -n web,admin,api -c cyan,yellow,magenta \"npm run dev -w frontend\" \"npm run dev -w admin\" \"npm run dev -w backend\"",
     "dev:frontend": "npm run dev -w frontend",
+    "dev:admin": "npm run dev -w admin",
     "dev:backend": "npm run dev -w backend",
-    "build": "npm run build -w frontend",
+    "build": "npm run build -w frontend && npm run build -w admin",
     "start": "npm run start -w backend",
-    "lint": "npm run lint -w frontend"
+    "lint": "npm run lint -w frontend && npm run lint -w admin"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

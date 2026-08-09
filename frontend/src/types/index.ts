@@ -1,6 +1,6 @@
 export type DashboardMode = 'home' | 'focus'
 
-export type Panel = 'none' | 'settings' | 'sounds' | 'music' | 'playlists' | 'tasks' | 'notepad'
+export type Panel = 'none' | 'settings' | 'sounds' | 'tasks' | 'notepad'
 
 export type TimerMode = 'pomodoro' | 'countdown' | 'stopwatch' | 'animedoro' | '52/17'
 
@@ -133,6 +133,7 @@ export interface FlocusSettings {
   showTasksProgressBar: boolean
   showTasksCount: boolean
   accentColor: string
+  sideRailPosition: SideRailPosition
 }
 
 export interface TimerState {
@@ -143,3 +144,10 @@ export interface TimerState {
   pomodoroCount: number
   currentTaskId: string | null
 }
+
+export interface MessagesTarget {
+  peerId: number
+  displayName: string
+}
+
+export type SideRailPosition = 'left' | 'right' | 'bottom'

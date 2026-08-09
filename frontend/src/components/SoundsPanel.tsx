@@ -2,10 +2,7 @@ import { useEffect, useState } from 'react'
 import { SOUNDS, SOUND_CATEGORIES, getSound } from '../data/catalog'
 import { audioEngine } from '../lib/howlerAudio'
 import { useFlocusStore } from '../store/useFlocusStore'
-import { MusicPanel } from './MusicPanel'
 import '../styles/settings-controls.css'
-
-type SoundTab = 'sounds' | 'music' | 'library'
 
 const RESET_SVG = (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 40" aria-hidden>
@@ -20,18 +17,12 @@ const RESET_SVG = (
 export function SoundsPanel() {
   const layers = useFlocusStore((s) => s.soundLayers)
   const setLayers = useFlocusStore((s) => s.setSoundLayers)
-  const panel = useFlocusStore((s) => s.panel)
-  const setPanel = useFlocusStore((s) => s.setPanel)
   const [cat, setCat] = useState<string>('all')
   const [anyPlaying, setAnyPlaying] = useState(false)
-
-  const tab: SoundTab =
-    panel === 'music' ? 'music' : panel === 'playlists' ? 'library' : 'sounds'
 
   const maxLayers = 5
 
   useEffect(() => {
-    if (tab !== 'sounds') return
     layers.forEach((l) => {
       if (!audioEngine.isPlaying(l.soundId)) {
         audioEngine.playSound(l.soundId, l.volume)
@@ -43,17 +34,17 @@ export function SoundsPanel() {
     })
     if (!layers.length) audioEngine.stopAll()
     setAnyPlaying(layers.some((l) => audioEngine.isPlaying(l.soundId)))
-  }, [layers, tab])
+  }, [layers])
 
   useEffect(() => {
     const host = document.querySelector('flocus-sounds.show')
     if (!host) return
-    if (tab === 'sounds' && layers.length >= maxLayers) {
+    if (layers.length >= maxLayers) {
       host.classList.add('max-count')
     } else {
       host.classList.remove('max-count')
     }
-  }, [layers.length, maxLayers, tab])
+  }, [layers.length, maxLayers])
 
   const toggleSound = (soundId: string) => {
     const def = getSound(soundId)
@@ -95,43 +86,22 @@ export function SoundsPanel() {
   }
 
   const filtered = SOUNDS.filter((s) => cat === 'all' || s.category === cat)
+  const hasBundledSounds = SOUNDS.length > 0
+  const wrapperClassName = `soundscapes-wrapper${hasBundledSounds ? '' : ' soundscapes-wrapper--empty'}`
+  const bodyClassName = `tab-pane fade active show sounds-body${hasBundledSounds ? '' : ' sounds-body--empty'}`
 
   return (
-    <div className="soundscapes-wrapper">
+    <div className={wrapperClassName}>
       <header className="sounds-header">
-        <nav role="tablist">
-          <button
-            type="button"
-            role="tab"
-            id="nav-sounds-tab"
-            className={`nav-link${tab === 'sounds' ? ' active' : ''}`}
-            aria-selected={tab === 'sounds'}
-            onClick={() => setPanel('sounds')}
-          >
+        <div>
+          <p className="music-section-label" style={{ marginBottom: 4 }}>
             Sounds
-          </button>
-          <button
-            type="button"
-            role="tab"
-            id="nav-custom-tab"
-            className={`nav-link${tab === 'music' ? ' active' : ''}`}
-            aria-selected={tab === 'music'}
-            onClick={() => setPanel('music')}
-          >
-            My Music
-          </button>
-          <button
-            type="button"
-            role="tab"
-            id="nav-playlist-tab"
-            className={`nav-link${tab === 'library' ? ' active' : ''}`}
-            aria-selected={tab === 'library'}
-            onClick={() => setPanel('playlists')}
-          >
-            Playlist Library
-          </button>
-        </nav>
-        {tab === 'sounds' ? (
+          </p>
+          <p className="text-secondary" style={{ fontSize: 11, margin: 0 }}>
+            {hasBundledSounds ? 'Ambient library' : 'Open-source safe build'}
+          </p>
+        </div>
+        {hasBundledSounds ? (
           <>
             <button
               type="button"
@@ -160,12 +130,12 @@ export function SoundsPanel() {
       </header>
 
       <div className="tab-content" id="nav-main">
-        {tab === 'sounds' && (
+        {hasBundledSounds ? (
           <div
-            className="tab-pane fade active show sounds-body"
+            className={bodyClassName}
             id="nav-sounds"
             role="tabpanel"
-            aria-labelledby="nav-sounds-tab"
+            aria-label="Ambient sounds"
           >
             {filtered.map((s) => {
               const active = layers.some((l) => l.soundId === s.id)
@@ -200,16 +170,24 @@ export function SoundsPanel() {
               )
             })}
           </div>
-        )}
-
-        {(tab === 'music' || tab === 'library') && (
+        ) : (
           <div
-            className="tab-pane fade active show sounds-body"
-            id="nav-custom"
-            role="tabpanel"
-            aria-labelledby={tab === 'music' ? 'nav-custom-tab' : 'nav-playlist-tab'}
+            className={bodyClassName}
+            role="status"
+            aria-live="polite"
           >
-            <MusicPanel variant={tab} />
+            <div className="glass-surface sounds-empty-card" style={{ padding: 16, borderRadius: 18 }}>
+              <strong style={{ display: 'block', marginBottom: 6 }}>No bundled audio pack</strong>
+              <p className="text-secondary" style={{ margin: 0, fontSize: 12, lineHeight: 1.5 }}>
+                This repository does not ship copyrighted ambient tracks, sound packs, or embedded music sources.
+              </p>
+            </div>
+            <div className="glass-surface sounds-empty-card" style={{ padding: 16, borderRadius: 18 }}>
+              <strong style={{ display: 'block', marginBottom: 6 }}>Want your own sounds?</strong>
+              <p className="text-secondary" style={{ margin: 0, fontSize: 12, lineHeight: 1.5 }}>
+                Add entries to <code>frontend/src/data/catalog.ts</code> and keep any private media in your own deployment.
+              </p>
+            </div>
           </div>
         )}
       </div>

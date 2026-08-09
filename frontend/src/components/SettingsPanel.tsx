@@ -4,7 +4,6 @@ import { calculateFocusScore } from '../lib/focusScore'
 import { CLOCK_FONT_DEFINITIONS, CLOCK_FONT_PICKER_IDS } from '../lib/clockFonts'
 import { aggregatePeriodStats } from '../lib/statsPeriod'
 import { StatsChart, SessionsBarChart } from './StatsChart'
-import { WhatsNewPanel } from './WhatsNewPanel'
 import { SettingsNavGroup } from './settings/SettingsNavGroup'
 import { flattenSettingsNavTabs, SETTINGS_NAV_GROUPS } from './settings/settingsNavConstants'
 import { isThemeSettingsTab } from './settings/themeNavConstants'
@@ -119,9 +118,10 @@ export function SettingsPanel() {
               aria-expanded={navOpen}
               onClick={() => setNavOpen((o) => !o)}
             >
-              <svg viewBox="0 0 24 24" fill="#fff" width={30} height={30} aria-hidden>
-                <path d="M5.7 6.71c-.39.39-.39 1.02 0 1.41L9.58 12 5.7 15.88c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l4.59-4.59c.39-.39.39-1.02 0-1.41L7.12 6.71c-.39-.39-1.03-.39-1.42 0" />
-                <path d="M12.29 6.71c-.39.39-.39 1.02 0 1.41L16.17 12l-3.88 3.88c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l4.59-4.59c.39-.39.39-1.02 0-1.41L13.7 6.7c-.38-.38-1.02-.38-1.41.01" />
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width={24} height={24} aria-hidden>
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="18" x2="21" y2="18" />
               </svg>
             </button>
           </div>
@@ -136,41 +136,6 @@ export function SettingsPanel() {
           </nav>
 
           <div className="tab-content flex-grow-1" id="settModal-tabContent">
-        {settingsTab === 'support' &&
-          tabPane(
-            'settModal-support',
-            'Support',
-            <SettingsGroup>
-              <SettingsSection
-                title="Troubleshooting"
-                description="Quick tips for the most common issues."
-              >
-                <ul className="support-list">
-                  <li>
-                    <strong>Timer not starting</strong> — check auto-start in Focus Timer settings.
-                  </li>
-                  <li>
-                    <strong>Sounds not playing</strong> — click anywhere on the page to unlock audio.
-                  </li>
-                  <li>
-                    <strong>Themes feel slow</strong> — disable animated themes in Extras.
-                  </li>
-                </ul>
-              </SettingsSection>
-            </SettingsGroup>,
-            'Find quick answers to common questions.',
-          )}
-
-        {settingsTab === 'whatsnew' &&
-          tabPane(
-            'settModal-whatsnew',
-            "What's New",
-            <SettingsGroup>
-              <WhatsNewPanel />
-            </SettingsGroup>,
-            'Recent improvements and updates.',
-          )}
-
         {settingsTab === 'profile' &&
           tabPane(
             'settModal-profile',
@@ -605,6 +570,108 @@ export function SettingsPanel() {
               </SettingsSection>
 
               <SettingsSection title="Appearance" className="settings-section-tall">
+                <SettingsInputGroup label="Accent color" htmlFor="accentColor">
+                  <p className="settings-input-help">Pick a highlight color used throughout the UI for buttons, progress, checkboxes and focus rings.</p>
+                  <div className="position-picker color-swatch-grid" role="radiogroup" aria-label="Accent color">
+                    {([
+                      { id: 'blue', label: 'Blue', color: '#0369A1' },
+                      { id: 'cyan', label: 'Cyan', color: '#0891B2' },
+                      { id: 'emerald', label: 'Emerald', color: '#0D9488' },
+                      { id: 'green', label: 'Green', color: '#059669' },
+                      { id: 'lime', label: 'Lime', color: '#65A30D' },
+                      { id: 'yellow', label: 'Yellow', color: '#CA8A04' },
+                      { id: 'amber', label: 'Amber', color: '#D97706' },
+                      { id: 'orange', label: 'Orange', color: '#EA580C' },
+                      { id: 'red', label: 'Red', color: '#DC2626' },
+                      { id: 'rose', label: 'Rose', color: '#E11D48' },
+                      { id: 'pink', label: 'Pink', color: '#DB2777' },
+                      { id: 'purple', label: 'Purple', color: '#7432FF' },
+                    ] as const).map((opt) => {
+                      const active =
+                        (settings.accentColor ?? '#0369A1').toLowerCase() === opt.color.toLowerCase()
+                      return (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          role="radio"
+                          aria-checked={active}
+                          aria-label={opt.label}
+                          title={opt.label}
+                          onClick={() => setSettings({ accentColor: opt.color })}
+                          className={`position-card color-swatch-card${active ? ' active' : ''}`}
+                          style={
+                            {
+                              '--swatch-color': opt.color,
+                              background: `linear-gradient(180deg, color-mix(in srgb, ${opt.color} 28%, rgba(255,255,255,0.04)) 0%, color-mix(in srgb, ${opt.color} 40%, rgba(255,255,255,0.02)) 100%)`,
+                            } as React.CSSProperties
+                          }
+                        >
+                          <span
+                            className="color-swatch-preview"
+                            style={{ backgroundColor: opt.color }}
+                            aria-hidden
+                          />
+                          <span className="position-label color-swatch-label">{opt.label}</span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                  <br />
+                  <div className="color-custom-row">
+                    <div className="color-custom-input-wrap">                    
+                      <label htmlFor="accentColor" className="color-custom-label">
+                        Custom color
+                      </label>
+                      <br />
+                        <input
+                        id="accentColor"
+                        type="color"
+                        className="color-custom-input"
+                        value={settings.accentColor ?? '#0369A1'}
+                        onChange={(e) => setSettings({ accentColor: e.target.value })}
+                        aria-label="Custom accent color"
+                      />
+                    </div>
+                    <br />
+                    {(settings.accentColor ?? '#0369A1').toLowerCase() !== '#0369A1' && (
+                      <button
+                        type="button"
+                        className="btn btn-outline-secondary btn-sm color-reset-btn"
+                        onClick={() => setSettings({ accentColor: '#0369A1' })}
+                      >
+                        Reset
+                      </button>
+                    )}
+                  </div>
+                </SettingsInputGroup>
+
+                <SettingsInputGroup label="Menu position" htmlFor="sideRailPosition">
+                  <p className="settings-input-help">Place the side menu on the left, right or bottom of the screen.</p>
+                  <div className="position-picker" role="radiogroup" aria-label="Menu position">
+                    {([
+                      { id: 'left', label: 'Left' },
+                      { id: 'right', label: 'Right' },
+                      { id: 'bottom', label: 'Bottom' },
+                    ] as const).map((opt) => {
+                      const active = settings.sideRailPosition === opt.id
+                      return (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          role="radio"
+                          aria-checked={active}
+                          onClick={() => setSettings({ sideRailPosition: opt.id })}
+                          className={`position-card${active ? ' active' : ''}`}
+                        >
+                          <span className="position-preview" data-position={opt.id} aria-hidden>
+                            <span className="position-preview-bar" />
+                          </span>
+                          <span className="position-label">{opt.label}</span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                </SettingsInputGroup>
                 <FormSwitch
                   id="disableAnimated"
                   label="Disable animated themes"

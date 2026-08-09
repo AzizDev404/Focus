@@ -3379,15 +3379,445 @@ settings-panel .tally-preview .tally-preview-icon.active {
   display: none !important;
 }
 
-.side-rail {
-  position: fixed;
+/* LEFT: full height, left edge, buttons vertically stacked & CENTERED */
+.side-rail--left {
+  left: 0 !important;
+  right: auto !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  transform: none !important;
+  width: auto !important;
+  height: auto !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 1rem 0.75rem !important;
+  background: linear-gradient(to right, rgba(10,12,20,0.28), transparent 85%);
+}
+
+/* RIGHT: full height, right edge, buttons vertically stacked & CENTERED */
+.side-rail--right {
+  right: 0 !important;
+  left: auto !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  transform: none !important;
+  width: auto !important;
+  height: auto !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 1rem 0.75rem !important;
+  background: linear-gradient(to left, rgba(10,12,20,0.28), transparent 85%);
+}
+
+/* ── Left/Right: VERTICAL rail (default), indicator translates VERTICALLY ── */
+.side-rail--left .rail-mode-group,
+.side-rail--right .rail-mode-group {
+  flex-direction: column !important;
+}
+
+.side-rail--left .rail-mode-slot + .rail-mode-slot,
+.side-rail--right .rail-mode-slot + .rail-mode-slot {
+  margin-top: 3px;
+  margin-left: 0;
+}
+
+.side-rail--left .rail-mode-indicator,
+.side-rail--right .rail-mode-indicator {
+  top: 4px;
+  left: 4px;
+  width: 38px;
+  height: 38px;
+  transition: transform 380ms cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+.side-rail--left .rail-mode-group[data-active='home'] .rail-mode-indicator,
+.side-rail--right .rail-mode-group[data-active='home'] .rail-mode-indicator {
+  transform: translateY(0) !important;
+}
+
+.side-rail--left .rail-mode-group[data-active='focus'] .rail-mode-indicator,
+.side-rail--right .rail-mode-group[data-active='focus'] .rail-mode-indicator {
+  transform: translateY(calc(38px + 3px)) !important;
+}
+
+/* Labels for vertical rail — show to the right (left rail) or left (right rail) */
+.side-rail--left .rail-label {
   top: 50%;
-  left: 1.25rem;
+  left: calc(100% + 0.65rem);
+  transform: translate(-8px, -50%);
+}
+
+.side-rail--left .rail-btn:hover .rail-label,
+.side-rail--left .rail-btn:focus-visible .rail-label {
+  transform: translate(0, -50%);
+}
+
+.side-rail--right .rail-label {
+  top: 50%;
+  right: calc(100% + 0.65rem);
+  left: auto;
+  transform: translate(8px, -50%);
+}
+
+.side-rail--right .rail-btn:hover .rail-label,
+.side-rail--right .rail-btn:focus-visible .rail-label {
+  transform: translate(0, -50%);
+}
+
+.side-rail--left .rail-streak {
+  top: -0.55rem;
+  left: auto;
+  right: -0.65rem;
+  transform: none;
+}
+
+.side-rail--right .rail-streak {
+  top: -0.55rem;
+  right: auto;
+  left: -0.65rem;
+  transform: none;
+}
+
+.side-rail--left .rail-badge {
+  top: 3px;
+  right: 3px;
+}
+
+.side-rail--right .rail-badge {
+  top: 3px;
+  left: 3px;
+}
+
+/* Drawers for vertical rails — vertically centered next to the rail */
+.side-rail--left .rail-drawer {
+  top: 50%;
+  bottom: auto;
+  left: calc(0.75rem + 42px + 0.75rem);
+  right: auto;
   transform: translateY(-50%);
-  z-index: 60;
+}
+
+.side-rail--right .rail-drawer {
+  top: 50%;
+  bottom: auto;
+  right: calc(0.75rem + 42px + 0.75rem);
+  left: auto;
+  transform: translateY(-50%);
+}
+
+/* BOTTOM: full width, bottom edge, buttons horizontal & CENTERED */
+.side-rail--bottom {
+  bottom: 0 !important;
+  top: auto !important;
+  left: 0 !important;
+  right: 0 !important;
+  transform: none !important;
+  width: auto !important;
+  height: auto !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 0.75rem 1rem !important;
+  background: linear-gradient(to top, rgba(10,12,20,0.28), transparent 85%);
+}
+
+.side-rail--bottom .rail-divider {
+  width: 1px;
+  height: 18px;
+  margin: 0 0.25rem;
+}
+
+.side-rail--bottom .rail-mode-group {
+  flex-direction: row !important;
+}
+
+.side-rail--bottom .rail-mode-slot + .rail-mode-slot {
+  margin-top: 0;
+  margin-left: 3px;
+}
+
+.side-rail--bottom .rail-mode-indicator {
+  top: 4px;
+  left: 4px;
+  width: 38px;
+  height: 38px;
+  transition: transform 380ms cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+.side-rail--bottom .rail-mode-group[data-active='home'] .rail-mode-indicator {
+  transform: translateX(0) !important;
+}
+
+.side-rail--bottom .rail-mode-group[data-active='focus'] .rail-mode-indicator {
+  transform: translateX(calc(38px + 3px)) !important;
+}
+
+.side-rail--bottom .rail-label {
+  top: auto;
+  bottom: calc(100% + 0.65rem);
+  left: 50%;
+  transform: translateX(-50%) translateY(-12px);
+}
+
+.side-rail--bottom .rail-btn:hover .rail-label,
+.side-rail--bottom .rail-btn:focus-visible .rail-label {
+  transform: translateX(-50%) translateY(0);
+}
+
+.side-rail--bottom .rail-streak {
+  top: auto;
+  bottom: calc(100% + 0.55rem);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.side-rail--bottom .rail-streak:hover {
+  transform: translateX(-50%);
+}
+
+.side-rail--bottom .rail-badge {
+  top: 3px;
+  right: 3px;
+}
+
+.side-rail--bottom .rail-drawer {
+  bottom: calc(0.75rem + 42px + 0.75rem);
+  top: auto;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.side-rail--bottom .rail-drawer-backdrop {
+  /* ... */
+}
+
+/* ─────────── Menu position picker in Settings → Extras ─────────── */
+.position-picker {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.position-card {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text, #fff);
+  border-radius: 14px;
+  padding: 0.75rem 0.5rem 0.6rem;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 0.55rem;
+  cursor: pointer;
+  transition: all 180ms ease;
+}
+
+.position-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.position-card.active {
+  background: rgba(3, 105, 161, 0.18);
+  border-color: rgba(3, 105, 161, 0.7);
+  box-shadow: 0 0 0 2px rgba(3, 105, 161, 0.22);
+}
+
+.position-preview {
+  position: relative;
+  width: 68px;
+  height: 48px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.position-preview-bar {
+  position: absolute;
+  background: var(--accent, #0369a1);
+  border-radius: 3px;
+}
+
+.position-preview[data-position='left'] .position-preview-bar {
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 32px;
+}
+
+.position-preview[data-position='right'] .position-preview-bar {
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 32px;
+}
+
+.position-preview[data-position='bottom'] .position-preview-bar {
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 6px;
+}
+
+.position-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* ─────────── Side rail — responsive media queries ─────────── */
+/* Tablets: keep full-height, just tighten padding */
+@media (max-width: 900px) {
+  .side-rail--left {
+    padding: 1rem 0.5rem !important;
+  }
+  .side-rail--right {
+    padding: 1rem 0.5rem !important;
+  }
+  .side-rail--bottom {
+    padding: 0.5rem 1rem !important;
+  }
+  .side-rail--left .rail-drawer {
+    left: calc(0.5rem + 42px + 0.5rem) !important;
+  }
+  .side-rail--right .rail-drawer {
+    right: calc(0.5rem + 42px + 0.5rem) !important;
+  }
+}
+
+/* Mobile phones: left/right become bottom bar to save horizontal space */
+@media (max-width: 640px) {
+  .side-rail--left,
+  .side-rail--right {
+    bottom: 0 !important;
+    top: auto !important;
+    left: 0 !important;
+    right: 0 !important;
+    transform: none !important;
+    flex-direction: row !important;
+    padding: 0.5rem 0.75rem !important;
+    background: linear-gradient(to top, rgba(10,12,20,0.28), transparent 85%) !important;
+  }
+
+  .side-rail--left .rail-divider,
+  .side-rail--right .rail-divider {
+    width: 1px;
+    height: 18px;
+    margin: 0 0.25rem;
+  }
+
+  .side-rail--left .rail-mode-group,
+  .side-rail--right .rail-mode-group {
+    flex-direction: row !important;
+  }
+
+  .side-rail--left .rail-mode-slot + .rail-mode-slot,
+  .side-rail--right .rail-mode-slot + .rail-mode-slot {
+    margin-top: 0;
+    margin-left: 3px;
+  }
+
+  .side-rail--left .rail-mode-indicator,
+  .side-rail--right .rail-mode-indicator,
+  .side-rail--bottom .rail-mode-indicator {
+    top: 4px;
+    left: 4px;
+    width: 38px;
+    height: 38px;
+    transition: transform 380ms cubic-bezier(0.34, 1.4, 0.64, 1);
+  }
+
+  .side-rail--left .rail-mode-group[data-active='focus'] .rail-mode-indicator,
+  .side-rail--right .rail-mode-group[data-active='focus'] .rail-mode-indicator,
+  .side-rail--bottom .rail-mode-group[data-active='focus'] .rail-mode-indicator {
+    transform: translateX(calc(38px + 3px)) !important;
+  }
+
+  .side-rail--left .rail-mode-group[data-active='home'] .rail-mode-indicator,
+  .side-rail--right .rail-mode-group[data-active='home'] .rail-mode-indicator,
+  .side-rail--bottom .rail-mode-group[data-active='home'] .rail-mode-indicator {
+    transform: translateX(0) !important;
+  }
+
+  .side-rail--left .rail-label,
+  .side-rail--right .rail-label {
+    top: auto !important;
+    bottom: calc(100% + 0.5rem) !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+
+  .side-rail--left .rail-btn:hover .rail-label,
+  .side-rail--right .rail-btn:hover .rail-label,
+  .side-rail--left .rail-btn:focus-visible .rail-label,
+  .side-rail--right .rail-btn:focus-visible .rail-label {
+    transform: translateX(-50%) translateY(0) !important;
+  }
+
+  .side-rail--left .rail-streak,
+  .side-rail--right .rail-streak {
+    top: auto !important;
+    bottom: calc(100% + 0.45rem) !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+
+  .side-rail--left .rail-badge,
+  .side-rail--right .rail-badge,
+  .side-rail--bottom .rail-badge {
+    top: 3px !important;
+    right: 3px !important;
+  }
+
+  .side-rail--left .rail-drawer,
+  .side-rail--right .rail-drawer,
+  .side-rail--bottom .rail-drawer {
+    bottom: calc(0.5rem + 42px + 0.6rem) !important;
+    top: auto !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+}
+
+/* Very small phones: tighten horizontal bottom rail even more */
+@media (max-width: 420px) {
+  .side-rail--bottom,
+  .side-rail--left,
+  .side-rail--right {
+    padding: 0.35rem 0.5rem !important;
+    gap: 0.1rem !important;
+  }
+  .side-rail .rail-btn {
+    width: 38px;
+    height: 38px;
+  }
+  .side-rail .rail-mode-btn {
+    width: 38px;
+    height: 38px;
+  }
+  .side-rail .rail-mode-indicator {
+    width: 38px;
+    height: 38px;
+  }
+  .position-picker {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+}
+
+.side-rail {
+  position: fixed;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 0.45rem;
   color: rgba(255, 255, 255, 0.82);
   user-select: none;
@@ -3956,3 +4386,797 @@ settings-panel .settings-section .login.col-12 {
   padding-right: 0;
   padding-left: 0;
 }
+
+/* =================================================================== */
+/*  POSITION-AWARE DRAWERS — slide direction follows the SideRail      */
+/* =================================================================== */
+
+/* LEFT drawer — slides in from the LEFT (from beside left rail → toward right) */
+@keyframes rail-slide-left {
+  0% {
+    opacity: 0;
+    transform: translate(-24px, -50%) scale(0.96);
+    filter: blur(4px);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, -50%) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* RIGHT drawer — slides in from the RIGHT (from beside right rail → toward left) */
+@keyframes rail-slide-right {
+  0% {
+    opacity: 0;
+    transform: translate(24px, -50%) scale(0.96);
+    filter: blur(4px);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, -50%) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* BOTTOM drawer — slides DOWN from ABOVE (from above the bottom rail → downward) */
+@keyframes rail-slide-bottom {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -24px) scale(0.96);
+    filter: blur(4px);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.side-rail--left .rail-drawer {
+  animation: rail-slide-left 340ms cubic-bezier(0.2, 0.85, 0.25, 1) both !important;
+  transform-origin: left center;
+}
+
+.side-rail--right .rail-drawer {
+  animation: rail-slide-right 340ms cubic-bezier(0.2, 0.85, 0.25, 1) both !important;
+  transform-origin: right center;
+}
+
+.side-rail--bottom .rail-drawer {
+  animation: rail-slide-bottom 340ms cubic-bezier(0.2, 0.85, 0.25, 1) both !important;
+  transform-origin: center bottom;
+}
+
+/* =================================================================== */
+/*  POSITION-AWARE SETTINGS OFFCANVAS — follows SideRail position      */
+/* =================================================================== */
+
+/* RIGHT (default) — offcanvas slides from right side */
+settings-panel--position-right .offcanvas,
+settings-panel--position-right .offcanvas-end {
+  right: 0 !important;
+  left: auto !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  border-left: 1px solid var(--sett-glass-border);
+  border-right: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.22);
+  animation: offcanvas-from-right 340ms cubic-bezier(0.2, 0.85, 0.25, 1) both;
+}
+
+@keyframes offcanvas-from-right {
+  0%   { transform: translateX(100%); opacity: 0; }
+  100% { transform: translateX(0);    opacity: 1; }
+}
+
+/* LEFT — offcanvas slides from left side */
+settings-panel--position-left .offcanvas,
+settings-panel--position-left .offcanvas-end {
+  left: 0 !important;
+  right: auto !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  border-right: 1px solid var(--sett-glass-border);
+  border-left: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  box-shadow: 12px 0 40px rgba(0, 0, 0, 0.22);
+  animation: offcanvas-from-left 340ms cubic-bezier(0.2, 0.85, 0.25, 1) both;
+}
+
+@keyframes offcanvas-from-left {
+  0%   { transform: translateX(-100%); opacity: 0; }
+  100% { transform: translateX(0);     opacity: 1; }
+}
+
+/* BOTTOM — offcanvas slides DOWN from TOP of viewport */
+settings-panel--position-bottom .offcanvas,
+settings-panel--position-bottom .offcanvas-end {
+  left: 0 !important;
+  right: 0 !important;
+  top: 0 !important;
+  bottom: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  --bs-offcanvas-width: 100% !important;
+  height: 85vh !important;
+  max-height: 85vh !important;
+  border-bottom: 1px solid var(--sett-glass-border);
+  border-left: none !important;
+  border-right: none !important;
+  border-top: none !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22);
+  animation: offcanvas-from-top 340ms cubic-bezier(0.2, 0.85, 0.25, 1) both;
+}
+
+settings-panel--position-bottom .offcanvas-body {
+  height: 85vh !important;
+}
+
+settings-panel--position-bottom .offcanvas-body > .d-flex {
+  flex-direction: row !important;
+  height: 100% !important;
+}
+
+@keyframes offcanvas-from-top {
+  0%   { transform: translateY(-100%); opacity: 0; }
+  100% { transform: translateY(0);     opacity: 1; }
+}
+
+/* =================================================================== */
+/*  MORE BUTTON DROPDOWN — Choose Color + Settings quick menu          */
+/* =================================================================== */
+
+.rail-more-menu {
+  position: absolute;
+  z-index: 80;
+  min-width: 240px;
+  padding: 0.5rem;
+  background: rgba(15, 18, 26, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 1rem;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4);
+  pointer-events: auto;
+}
+
+/* LEFT rail — dropdown appears to the RIGHT */
+.side-rail--left .rail-more-menu {
+  top: 50%;
+  left: calc(100% + 0.65rem);
+  transform: translate(-8px, -50%);
+  animation: more-menu-from-left 220ms cubic-bezier(0.2, 0.85, 0.25, 1) both;
+  transform-origin: left center;
+}
+
+@keyframes more-menu-from-left {
+  0%   { opacity: 0; transform: translate(-16px, -50%) scale(0.96); }
+  100% { opacity: 1; transform: translate(0, -50%) scale(1); }
+}
+
+/* RIGHT rail — dropdown appears to the LEFT */
+.side-rail--right .rail-more-menu {
+  top: 50%;
+  right: calc(100% + 0.65rem);
+  left: auto;
+  transform: translate(8px, -50%);
+  animation: more-menu-from-right 220ms cubic-bezier(0.2, 0.85, 0.25, 1) both;
+  transform-origin: right center;
+}
+
+@keyframes more-menu-from-right {
+  0%   { opacity: 0; transform: translate(16px, -50%) scale(0.96); }
+  100% { opacity: 1; transform: translate(0, -50%) scale(1); }
+}
+
+/* BOTTOM rail — dropdown appears ABOVE */
+.side-rail--bottom .rail-more-menu {
+  bottom: calc(100% + 0.65rem);
+  left: 50%;
+  top: auto;
+  transform: translateX(-50%) translateY(8px);
+  animation: more-menu-from-bottom 220ms cubic-bezier(0.2, 0.85, 0.25, 1) both;
+  transform-origin: center bottom;
+}
+
+@keyframes more-menu-from-bottom {
+  0%   { opacity: 0; transform: translateX(-50%) translateY(-8px) scale(0.96); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+
+.rail-more-menu--heading {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 0.4rem 0.55rem 0.3rem;
+}
+
+.rail-more-menu--swatches {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.45rem;
+  padding: 0.4rem 0.45rem 0.6rem;
+}
+
+.rail-more-menu--swatch {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.65rem;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+  transition: transform 140ms cubic-bezier(0.34, 1.5, 0.64, 1),
+              border-color 140ms ease,
+              box-shadow 140ms ease;
+}
+
+.rail-more-menu--swatch:hover {
+  transform: scale(1.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.rail-more-menu--swatch.is-active {
+  border-color: #fff;
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.9),
+    0 4px 14px rgba(0, 0, 0, 0.35);
+  transform: scale(1.08);
+}
+
+.rail-more-menu--swatch.is-active::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+  pointer-events: none;
+}
+
+.rail-more-menu--custom {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.55rem 0.55rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.rail-more-menu--custom-label {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.65);
+  flex: 1;
+  letter-spacing: -0.01em;
+}
+
+.rail-more-menu--custom-input {
+  width: 38px;
+  height: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.5rem;
+  background: transparent;
+  cursor: pointer;
+  padding: 2px;
+}
+
+.rail-more-menu--custom-input::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.rail-more-menu--custom-input::-webkit-color-swatch {
+  border: none;
+  border-radius: 0.35rem;
+}
+
+.rail-more-menu--custom-input::-moz-color-swatch {
+  border: none;
+  border-radius: 0.35rem;
+}
+
+.rail-more-menu--actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: 0.2rem;
+}
+
+.rail-more-menu--action {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  background: transparent;
+  border: none;
+  border-radius: 0.6rem;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: background 140ms ease, color 140ms ease;
+}
+
+.rail-more-menu--action:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.rail-more-menu--action svg {
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.rail-more-menu--reset {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 0.3rem;
+  padding: 0.4rem;
+  background: transparent;
+  border: none;
+  border-radius: 0.5rem;
+  color: rgba(255, 255, 255, 0.38);
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: color 140ms ease, background 140ms ease;
+}
+
+.rail-more-menu--reset:hover {
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* =================================================================== */
+/*  EXPLICIT LABEL DIRECTION OVERRIDES — left→right, right→left, bottom→top  */
+/* =================================================================== */
+
+/* LEFT rail — labels always emerge to the RIGHT of the button, sliding in FROM the left (button side) */
+.side-rail--left .rail-label {
+  left: calc(100% + 0.65rem) !important;
+  right: auto !important;
+  top: 50% !important;
+  bottom: auto !important;
+  transform: translate(-8px, -50%) !important;
+}
+.side-rail--left .rail-btn:hover .rail-label,
+.side-rail--left .rail-btn:focus-visible .rail-label {
+  transform: translate(0, -50%) !important;
+  opacity: 1 !important;
+}
+
+/* RIGHT rail — labels always emerge to the LEFT of the button, sliding in FROM the right (button side) */
+.side-rail--right .rail-label {
+  right: calc(100% + 0.65rem) !important;
+  left: auto !important;
+  top: 50% !important;
+  bottom: auto !important;
+  transform: translate(8px, -50%) !important;
+}
+.side-rail--right .rail-btn:hover .rail-label,
+.side-rail--right .rail-btn:focus-visible .rail-label {
+  transform: translate(0, -50%) !important;
+  opacity: 1 !important;
+}
+
+/* BOTTOM rail — labels always emerge ABOVE the button, sliding DOWN (from top direction) */
+.side-rail--bottom .rail-label {
+  bottom: calc(100% + 0.65rem) !important;
+  top: auto !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) translateY(-12px) !important;
+}
+.side-rail--bottom .rail-btn:hover .rail-label,
+.side-rail--bottom .rail-btn:focus-visible .rail-label {
+  transform: translateX(-50%) translateY(0) !important;
+  opacity: 1 !important;
+}
+
+/* SettingsPanel: Accent color swatch grid */
+.settings-panel .color-swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+@media (max-width: 420px) {
+  .settings-panel .color-swatch-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.settings-panel .color-swatch-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.55rem;
+  padding: 0.85rem 0.8rem 0.75rem;
+  border-radius: 1rem;
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.settings-panel .color-swatch-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.02) 50%,
+    rgba(0, 0, 0, 0.08) 100%
+  );
+  pointer-events: none;
+}
+.settings-panel .color-swatch-card:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--swatch-color, #7432ff) 65%, rgba(255, 255, 255, 0.1));
+}
+.settings-panel .color-swatch-card.active {
+  border-color: color-mix(in srgb, var(--swatch-color, #7432ff) 92%, #fff 8%);
+  box-shadow:
+    0 0 0 2px var(--flocus-bg, #111218),
+    0 0 0 4px color-mix(in srgb, var(--swatch-color, #7432ff) 70%, transparent 30%);
+}
+.settings-panel .color-swatch-preview {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 34px;
+  border-radius: 0.65rem;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.28),
+    inset 0 -8px 18px rgba(0, 0, 0, 0.22),
+    0 4px 10px rgba(0, 0, 0, 0.25);
+}
+.settings-panel .color-swatch-label {
+  position: relative;
+  z-index: 1;
+  align-self: center;
+  font-size: 0.83rem;
+  color: rgba(255, 255, 255, 0.96);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+}
+.settings-panel .color-custom-row {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: 1.1rem;
+  padding: 0.9rem 1rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  flex-wrap: wrap;
+}
+.settings-panel .color-custom-input-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex: 1;
+  min-width: 0;
+}
+.settings-panel .color-custom-label {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 500;
+  margin-bottom: 0;
+  line-height: 1;
+  cursor: pointer;
+}
+.settings-panel .color-custom-input {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  width: 46px;
+  height: 38px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+.settings-panel .color-custom-input::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+.settings-panel .color-custom-input::-webkit-color-swatch {
+  border-radius: 12px;
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.15),
+    0 3px 10px rgba(0, 0, 0, 0.32);
+}
+.settings-panel .color-custom-input::-moz-color-swatch {
+  border-radius: 12px;
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.15),
+    0 3px 10px rgba(0, 0, 0, 0.32);
+}
+.settings-panel .color-reset-btn {
+  margin-left: auto;
+  border-color: rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.45rem 0.95rem;
+  border-radius: 0.75rem;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.1s ease;
+  flex: 0 0 auto;
+}
+.settings-panel .color-reset-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.38);
+  transform: translateY(-1px);
+}
+.settings-panel .color-reset-btn:active {
+  transform: translateY(0);
+}
+
+.settings-panel .position-card.color-swatch-card:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--flocus-bg, #111218),
+    0 0 0 4px color-mix(in srgb, var(--fl-accent-color, #7432ff) 72%, transparent 28%);
+}
+
+/* ============================================================
+   STREAK + BADGE: LEFT rail → RIGHT of slot, RIGHT rail → LEFT of slot
+   Streak sits at EXACTLY the same distance as the hover labels.
+   ============================================================ */
+
+/* ------ LEFT side rail: streak sits to the RIGHT of the Focus slot
+           (same offset as .rail-label — calc(100% + 0.7rem + 2px)) ------ */
+.side-rail--left .rail-streak {
+  top: 50% !important;
+  left: calc(100% + 0.7rem + 10px) !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translate(-10px, -50%) !important;
+  opacity: 0;
+  transition:
+    transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 0.2s ease !important;
+  pointer-events: none;
+}
+.side-rail--left .rail-mode-slot:hover .rail-streak,
+.side-rail--left .rail-mode-slot:focus-within .rail-streak,
+.side-rail--left .rail-mode-slot--streak:hover .rail-streak {
+  opacity: 1 !important;
+}
+
+/* LEFT rail: task badge still stays top-right corner of the button icon */
+.side-rail--left .rail-badge {
+  top: 3px !important;
+  right: 3px !important;
+  left: auto !important;
+  bottom: auto !important;
+}
+
+/* ------ RIGHT side rail: streak sits to the LEFT of the Focus slot
+           (same offset as .rail-label — calc(100% + 0.7rem + 2px)) ------ */
+.side-rail--right .rail-streak {
+  top: 50% !important;
+  right: calc(100% + 0.7rem + 10px) !important;
+  left: auto !important;
+  bottom: auto !important;
+  transform: translate(10px, -50%) !important;
+  opacity: 0;
+  transition:
+    transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 0.2s ease !important;
+  pointer-events: none;
+}
+.side-rail--right .rail-mode-slot:hover .rail-streak,
+.side-rail--right .rail-mode-slot:focus-within .rail-streak,
+.side-rail--right .rail-mode-slot--streak:hover .rail-streak {
+  opacity: 1 !important;
+}
+
+/* RIGHT rail: task badge stays top-left corner of the button icon */
+.side-rail--right .rail-badge {
+  top: 3px !important;
+  left: 3px !important;
+  right: auto !important;
+  bottom: auto !important;
+}
+
+/* ============================================================
+   COMPLETE DIRECTION OVERRIDES — rail labels, streak, mode-label
+   Rule:  LEFT rail → from RIGHT slide-in
+          RIGHT rail → from LEFT slide-in
+          BOTTOM rail → from TOP slide-in (ABOVE button, slide DOWN)
+   ============================================================ */
+
+/* Base hidden-state default for rail-mode-label (Home/Focus text) */
+.side-rail .rail-mode-label {
+  position: absolute;
+  z-index: 70;
+  pointer-events: none;
+  white-space: nowrap;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(20, 22, 30, 0.82);
+  color: #fff;
+  font-size: 0.78rem;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  font-weight: 500;
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  transition:
+    transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 0.18s ease;
+}
+.side-rail .rail-mode-btn:hover .rail-mode-label,
+.side-rail .rail-mode-btn:focus-visible .rail-mode-label {
+  opacity: 1;
+}
+
+/* -------- LEFT side-rail → everything emerges from the RIGHT side of buttons -------- */
+.side-rail--left .rail-label {
+  top: 50% !important;
+  left: calc(100% + 0.7rem + 2px) !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translate(-10px, -50%) !important;
+}
+.side-rail--left .rail-btn:hover .rail-label,
+.side-rail--left .rail-btn:focus-visible .rail-label {
+  transform: translate(0, -50%) !important;
+  opacity: 1 !important;
+}
+
+.side-rail--left .rail-mode-label {
+  top: 50% !important;
+  left: calc(100% + 0.7rem + 2px) !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translate(-10px, -50%);
+}
+.side-rail--left .rail-mode-btn:hover .rail-mode-label,
+.side-rail--left .rail-mode-btn:focus-visible .rail-mode-label {
+  transform: translate(0, -50%);
+}
+
+/* LEFT rail streak + badge: same position / offset as rail-label (see earlier block above — 4960-4986) */
+
+.side-rail--left .rail-badge {
+  top: 3px !important;
+  right: 3px !important;
+  left: auto !important;
+  bottom: auto !important;
+}
+
+/* -------- RIGHT side-rail → everything emerges from the LEFT side of buttons -------- */
+.side-rail--right .rail-label {
+  top: 50% !important;
+  right: calc(100% + 0.7rem + 2px) !important;
+  left: auto !important;
+  bottom: auto !important;
+  transform: translate(10px, -50%) !important;
+}
+.side-rail--right .rail-btn:hover .rail-label,
+.side-rail--right .rail-btn:focus-visible .rail-label {
+  transform: translate(0, -50%) !important;
+  opacity: 1 !important;
+}
+
+.side-rail--right .rail-mode-label {
+  top: 50% !important;
+  right: calc(100% + 0.7rem + 2px) !important;
+  left: auto !important;
+  bottom: auto !important;
+  transform: translate(10px, -50%);
+}
+.side-rail--right .rail-mode-btn:hover .rail-mode-label,
+.side-rail--right .rail-mode-btn:focus-visible .rail-mode-label {
+  transform: translate(0, -50%);
+}
+
+/* RIGHT rail streak + badge: same position / offset as rail-label (see 4988-5015) */
+
+.side-rail--right .rail-badge {
+  top: 3px !important;
+  left: 3px !important;
+  right: auto !important;
+  bottom: auto !important;
+}
+
+/* -------- BOTTOM side-rail → EVERYTHING emerges ABOVE button, slides DOWN from TOP -------- */
+.side-rail--bottom .rail-label {
+  bottom: calc(100% + 0.7rem) !important;
+  top: auto !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) translateY(-14px) !important;
+}
+.side-rail--bottom .rail-btn:hover .rail-label,
+.side-rail--bottom .rail-btn:focus-visible .rail-label {
+  transform: translateX(-50%) translateY(0) !important;
+  opacity: 1 !important;
+}
+
+.side-rail--bottom .rail-mode-label {
+  bottom: calc(100% + 0.7rem) !important;
+  top: auto !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) translateY(-14px);
+}
+.side-rail--bottom .rail-mode-btn:hover .rail-mode-label,
+.side-rail--bottom .rail-mode-btn:focus-visible .rail-mode-label {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* BOTTOM rail: the streak counter must also sit ABOVE the slot and fade/slide from top */
+.side-rail--bottom .rail-streak {
+  top: auto !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: calc(100% + 0.6rem) !important;
+  transform: translateX(-50%) translateY(-10px) !important;
+  opacity: 0;
+  transition:
+    transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 0.2s ease !important;
+}
+.side-rail--bottom .rail-mode-slot:hover .rail-streak,
+.side-rail--bottom .rail-mode-slot--streak:hover .rail-streak,
+.side-rail--bottom .rail-mode-slot:focus-within .rail-streak {
+  opacity: 1 !important;
+}
+
+/* BOTTOM rail: task badge still stays top-right of the icon (corner badge, not directional) */
+.side-rail--bottom .rail-badge {
+  top: 3px !important;
+  right: 3px !important;
+  left: auto !important;
+  bottom: auto !important;
+}
+
+/* Safety: BOTTOM rail should be horizontal (flex row) and center icons + labels */
+.side-rail--bottom .rail-mode-group,
+.side-rail--bottom #side-rail,
+.side-rail.side-rail--bottom {
+  flex-direction: row !important;
+}
+.side-rail--bottom .rail-btn,
+.side-rail--bottom .rail-mode-btn {
+  position: relative;
+}
+

@@ -1,0 +1,51 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "testuser2@test.com",
+      "address": "testuser2@test.com",
+      "passwordHash": "$2b$10$YAzQKsR9FavQX.2WhRFoM.848Yy6h6cJz8LvO38Z1d84db4PcC.he",
+      "displayName": "Test User2",
+      "createdAt": "2026-07-26T16:30:53.330Z",
+      "lastLoginAt": null,
+      "statsHistory": {},
+      "coins": 0,
+      "xp": 0,
+      "level": 1,
+      "achievements": [],
+      "inventory": [],
+      "equipped": {
+        "background": null,
+        "avatar": null,
+        "frame": null,
+        "charm": null
+      },
+      "emailVerified": false,
+      "googleId": null,
+      "pendingVerification": {
+        "codeHash": "$2b$10$aVYUqT6kJ9QMrc5B0Y/4fOCWat7tsrxnMq5yzOs3X0KTMmqO5dVu.",
+        "expiresAt": "2026-07-26T16:45:53.490Z",
+        "attempts": 0
+      },
+      "mailbox": [],
+      "nextMailId": 1,
+      "media": {
+        "avatarUrl": null,
+        "backgroundUrl": null
+      },
+      "tasks": [],
+      "notepadDaily": {}
+    }
+  ],
+  "shopItems": [],
+  "shopEvents": [],
+  "achievementDefs": [],
+  "chatMessages": [],
+  "follows": [],
+  "dmMessages": [],
+  "nextId": 2,
+  "nextShopId": 1,
+  "nextEventId": 1,
+  "nextChatId": 1,
+  "nextDmId": 1
+}

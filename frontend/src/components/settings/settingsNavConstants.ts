@@ -48,15 +48,6 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroupDef[] = [
       { id: 'mail', label: 'Mail', requiresLogin: true },
     ],
   },
-  {
-    id: 'help',
-    label: 'Help',
-    icon: 'support',
-    tabs: [
-      { id: 'support', label: 'Support' },
-      { id: 'whatsnew', label: "What's New" },
-    ],
-  },
 ]
 
 export function flattenSettingsNavTabs(): SettingsNavTab[] {

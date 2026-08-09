@@ -1,6 +1,5 @@
 // Generated from data manifest — see scripts/generate-data.js
 import type { Theme } from '../types'
-import { PERSONAL_PICS } from './picManifest'
 
 export const FLOCUS_PRIMARY = '#7432FF'
 
@@ -43,20 +42,6 @@ export const THEMES: Theme[] = [
     "brightness": "light",
     "sourceFile": "White.jpg"
   },
-  // One theme per personal photo. Each entry exposes both a landscape
-  // (`image`) and portrait (`mobileImage`) URL — Background.tsx picks
-  // whichever fits the current viewport.
-  ...PERSONAL_PICS.map<Theme>((pic) => ({
-    id: `pic-${pic.id}`,
-    name: pic.name,
-    type: 'world' as const,
-    plus: false,
-    animated: false,
-    environment: 'scenic',
-    brightness: 'light' as const,
-    image: pic.desktop ?? pic.mobile ?? undefined,
-    mobileImage: pic.mobile ?? pic.desktop ?? undefined,
-  })),
 ]
 
 export function getTheme(id: string): Theme | undefined {
@@ -112,13 +97,4 @@ export const ALERT_SOUNDS = [
   { id: 'none', label: '🔕 No Alert', freq: 0 },
 ]
 
-export const CURATED_PLAYLISTS = [
-  { id: 'lofi', name: 'Lofi', emoji: '🎧', description: 'Easygoing beats for both focus and downtime.', spotifyId: '37i9dQZF1DWWQR3ui11tip' },
-  { id: 'rainy-lofi', name: 'Rainy Day Lofi', emoji: '☔️', description: 'Drizzly beats for cozy reflections.', spotifyId: '37i9dQZF1DWY4lFlS4Pnso' },
-  { id: 'paris', name: 'Paris Café', emoji: '🥐', description: 'Charming sounds from streets of Paris.', spotifyId: '37i9dQZF1DX9uKN11c7J6k' },
-  { id: 'picks', name: 'Tsukiyomi Picks', emoji: '🌙', description: 'A curated mix for work and relaxation.', spotifyId: '37i9dQZF1DX8NTey1Pt11a' },
-  { id: 'piano', name: 'Relaxing Piano', emoji: '🎹', description: 'Gentle piano for a peaceful backdrop.', spotifyId: '37i9dQZF1DX4sWSpwq3LiO' },
-  { id: 'vgm', name: 'Video Game Music', emoji: '👾', description: 'Chill nostalgic tracks from games.', spotifyId: '37i9dQZF1DX3OGO9Pq5HXm' },
-  { id: 'jazzhop', name: 'Jazzhop', emoji: '🎷', description: 'Smooth grooves no matter what your mood.', spotifyId: '37i9dQZF1DWWQR3ui11tip' },
-  { id: 'holiday', name: 'Holiday Lofi', emoji: '🎄', description: 'Festive beats for the holiday spirit.', spotifyId: '37i9dQZF1DX9uKN11c7J6k' },
-]
+export const CURATED_PLAYLISTS = []

@@ -40,14 +40,14 @@ export function IconNotepad(props: IconProps) {
   )
 }
 
-/** More menu — vertical dots (opens settings panel) */
+/** More menu — modern controls icon (opens settings panel) */
 export function IconMore(props: IconProps) {
   const { size = 24, ...rest } = props
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden {...STROKE} {...rest}>
-      <circle cx="12" cy="5" r="1.25" fill="currentColor" stroke="none" />
-      <circle cx="12" cy="12" r="1.25" fill="currentColor" stroke="none" />
-      <circle cx="12" cy="19" r="1.25" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="12" r="1" />
+      <circle cx="12" cy="5" r="1" />
+      <circle cx="12" cy="19" r="1" />
     </svg>
   )
 }
@@ -226,6 +226,19 @@ export function IconPip(props: IconProps) {
         d="M13 11h6v6h-6v-6z"
         fill="currentColor"
       />
+    </svg>
+  )
+}
+
+export function IconPalette(props: IconProps) {
+  const { size = 24, ...rest } = props
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden {...STROKE} {...rest}>
+      <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" />
+      <circle cx="17.5" cy="10.5" r=".5" fill="currentColor" />
+      <circle cx="8.5" cy="7.5" r=".5" fill="currentColor" />
+      <circle cx="6.5" cy="12.5" r=".5" fill="currentColor" />
+      <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.5-.7 1.5-1.5 0-.4-.15-.75-.4-1.05-.25-.3-.4-.65-.4-1.05 0-.8.7-1.5 1.5-1.5H16c3.3 0 6-2.7 6-6 0-4.97-4.5-9-10-9z" />
     </svg>
   )
 }
