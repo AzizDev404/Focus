@@ -185,7 +185,7 @@ export function SideRail() {
       </nav>
 
       {drawerOpen && (
-        <div className="rail-drawer" role="dialog" aria-modal="false">
+        <div className={`rail-drawer rail-drawer--${position}`} role="dialog" aria-modal="false">
           {tasksOpen && (
             <div className="tasks-popout-wrapper show flocus-is-plus">
               <TaskPanel />

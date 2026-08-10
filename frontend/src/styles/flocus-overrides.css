@@ -1691,6 +1691,272 @@ flocus-sounds .tab-pane.sounds-body.active {
   flex-wrap: wrap;
 }
 
+/* ======================================================
+   Sounds Panel — header, layout & empty-state overrides
+   ====================================================== */
+
+flocus-sounds .soundscapes-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 0.25rem 0 0.5rem;
+}
+
+flocus-sounds .sounds-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  padding: 0.9rem 1.15rem 0.25rem;
+}
+
+flocus-sounds .sounds-header > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+flocus-sounds .sounds-header .music-section-label {
+  margin: 0 !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.55) !important;
+  text-transform: uppercase !important;
+  line-height: 1 !important;
+}
+
+flocus-sounds .sounds-header .text-secondary {
+  font-size: 0.78rem !important;
+  color: rgba(255, 255, 255, 0.62) !important;
+  line-height: 1.35 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+flocus-sounds .sounds-header > button,
+flocus-sounds .sounds-header > select {
+  height: 36px;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  padding: 0 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.08s ease;
+  cursor: pointer;
+}
+
+flocus-sounds .sounds-header > button:hover,
+flocus-sounds .sounds-header > select:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.26);
+}
+
+flocus-sounds .sounds-header > button:active {
+  transform: translateY(1px);
+}
+
+flocus-sounds .sounds-header > button.play-button {
+  width: 36px;
+  padding: 0;
+  background-image: radial-gradient(circle at 50% 50%, transparent 55%, currentColor 56%, currentColor 57%, transparent 58%),
+                    linear-gradient(90deg, transparent 44%, #fff 45%, #fff 60%, transparent 61%);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 14px 14px, 20px 20px;
+}
+
+flocus-sounds .sounds-header > button.play-button.paused {
+  background-image: linear-gradient(90deg, transparent 40%, #fff 41%, #fff 51%, transparent 52%),
+                    linear-gradient(90deg, transparent 60%, #fff 61%, #fff 71%, transparent 72%);
+}
+
+flocus-sounds .sounds-header > button.reset-button {
+  width: 36px;
+  padding: 0 8px;
+}
+
+flocus-sounds .sounds-header > button.reset-button svg {
+  width: 16px;
+  height: 18px;
+  color: #fff;
+}
+
+flocus-sounds .sounds-category-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6l4 4 4-4' stroke='white' stroke-opacity='0.85' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.65rem center;
+  background-size: 14px 14px;
+  padding-right: 2.25rem !important;
+  min-width: 140px;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+flocus-sounds .sounds-category-select option {
+  background: #13141c;
+  color: #fff;
+}
+
+/* ---- Sounds body (grid of sound tiles) ---- */
+flocus-sounds .sounds-body {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.9rem 1rem;
+  padding: 0.9rem 1.15rem 1.15rem;
+  margin: 0;
+  align-items: stretch;
+}
+
+flocus-sounds .sounds-body .sound {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.95rem 0.95rem 0.85rem;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
+}
+
+flocus-sounds .sounds-body .sound:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.14);
+  transform: translateY(-2px);
+}
+
+flocus-sounds .sounds-body .sound[data-active='true'] {
+  background: rgba(255, 255, 255, 0.085);
+  border-color: color-mix(in srgb, var(--fl-accent-color, #7432FF) 48%, rgba(255, 255, 255, 0.16));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--fl-accent-color, #7432FF) 35%, transparent),
+    0 8px 22px color-mix(in srgb, var(--fl-accent-color, #7432FF) 14%, transparent);
+}
+
+flocus-sounds .sounds-body .sound button {
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: left;
+  color: inherit;
+  min-height: 0;
+}
+
+flocus-sounds .sounds-body .sound .emoji {
+  font-size: 1.4rem;
+  line-height: 1;
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 9px;
+}
+
+flocus-sounds .sounds-body .sound .name {
+  font-size: 0.86rem;
+  font-weight: 500;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.88);
+  min-width: 0;
+}
+
+flocus-sounds .sounds-body .sound input[type='range'] {
+  width: 100%;
+  margin: 0;
+  accent-color: var(--fl-accent-color, #7432FF);
+}
+
+/* ---- Empty state (no bundled sounds) ---- */
+flocus-sounds .sounds-body--empty {
+  display: flex !important;
+  flex-direction: column !important;
+  grid-template-columns: none !important;
+  gap: 0.9rem !important;
+  padding: 1rem 1.15rem 1.35rem !important;
+}
+
+flocus-sounds .sounds-empty-card {
+  position: relative;
+  padding: 1.15rem 1.15rem 1.15rem 3.55rem !important;
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, 0.042) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 8px 24px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(8px);
+}
+
+flocus-sounds .sounds-empty-card::before {
+  position: absolute;
+  left: 1.1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.6rem;
+  line-height: 1;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+flocus-sounds .sounds-empty-card:nth-of-type(1)::before {
+  content: '📦';
+}
+
+flocus-sounds .sounds-empty-card:nth-of-type(2)::before {
+  content: '🎚️';
+}
+
+flocus-sounds .sounds-empty-card strong {
+  display: block;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 600;
+  margin-bottom: 0.35rem !important;
+  line-height: 1.3;
+}
+
+flocus-sounds .sounds-empty-card p {
+  font-size: 0.8rem !important;
+  color: rgba(255, 255, 255, 0.62) !important;
+  line-height: 1.5 !important;
+  margin: 0 !important;
+}
+
+flocus-sounds .sounds-empty-card code {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.1rem 0.4rem;
+  border-radius: 6px;
+  font-size: 0.76rem;
+  color: rgba(255, 255, 255, 0.88);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
 .plus-badge-inline {
   margin-left: 0.35rem;
   font-size: 8px;
@@ -3391,7 +3657,7 @@ settings-panel .tally-preview .tally-preview-icon.active {
   flex-direction: column !important;
   justify-content: center !important;
   align-items: center !important;
-  padding: 1rem 0.75rem !important;
+  padding: 1rem 0.85rem !important;
   background: linear-gradient(to right, rgba(10,12,20,0.28), transparent 85%);
 }
 
@@ -3407,7 +3673,7 @@ settings-panel .tally-preview .tally-preview-icon.active {
   flex-direction: column !important;
   justify-content: center !important;
   align-items: center !important;
-  padding: 1rem 0.75rem !important;
+  padding: 1rem 0.85rem !important;
   background: linear-gradient(to left, rgba(10,12,20,0.28), transparent 85%);
 }
 
@@ -3497,6 +3763,8 @@ settings-panel .tally-preview .tally-preview-icon.active {
   left: calc(0.75rem + 42px + 0.75rem);
   right: auto;
   transform: translateY(-50%);
+  animation-name: rail-slide-left;
+  transform-origin: left center;
 }
 
 .side-rail--right .rail-drawer {
@@ -3505,6 +3773,8 @@ settings-panel .tally-preview .tally-preview-icon.active {
   right: calc(0.75rem + 42px + 0.75rem);
   left: auto;
   transform: translateY(-50%);
+  animation-name: rail-slide-right;
+  transform-origin: right center;
 }
 
 /* BOTTOM: full width, bottom edge, buttons horizontal & CENTERED */
@@ -3568,13 +3838,12 @@ settings-panel .tally-preview .tally-preview-icon.active {
 
 .side-rail--bottom .rail-streak {
   top: auto;
-  bottom: calc(100% + 0.55rem);
+  bottom: calc(100% + 0.55rem + 8px);
   left: 50%;
   transform: translateX(-50%);
-}
-
-.side-rail--bottom .rail-streak:hover {
-  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .side-rail--bottom .rail-badge {
@@ -3587,6 +3856,8 @@ settings-panel .tally-preview .tally-preview-icon.active {
   top: auto;
   left: 50%;
   transform: translateX(-50%);
+  animation-name: rail-slide-bottom;
+  transform-origin: center bottom;
 }
 
 .side-rail--bottom .rail-drawer-backdrop {
@@ -3764,9 +4035,14 @@ settings-panel .tally-preview .tally-preview-icon.active {
   .side-rail--left .rail-streak,
   .side-rail--right .rail-streak {
     top: auto !important;
-    bottom: calc(100% + 0.45rem) !important;
+    bottom: calc(100% + 0.45rem + 8px) !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
+    opacity: 1 !important;
+    transition: none !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
   }
 
   .side-rail--left .rail-badge,
@@ -3783,6 +4059,8 @@ settings-panel .tally-preview .tally-preview-icon.active {
     top: auto !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
+    animation-name: rail-slide-bottom !important;
+    transform-origin: center bottom !important;
   }
 }
 
@@ -3818,7 +4096,7 @@ settings-panel .tally-preview .tally-preview-icon.active {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.45rem;
+  gap: 0.65rem;
   color: rgba(255, 255, 255, 0.82);
   user-select: none;
   pointer-events: none;
@@ -4178,11 +4456,12 @@ body[data-clear-mode='on'] .side-rail:focus-within {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  animation: rail-slide 340ms cubic-bezier(0.2, 0.85, 0.25, 1) both;
+  animation: rail-slide-left 340ms cubic-bezier(0.2, 0.85, 0.25, 1) both;
   transform-origin: left center;
 }
 
-@keyframes rail-slide {
+/* LEFT rail drawer: slides in from the LEFT side (default animation) */
+@keyframes rail-slide-left {
   0% {
     opacity: 0;
     transform: translate(-24px, -50%) scale(0.96);
@@ -4195,6 +4474,42 @@ body[data-clear-mode='on'] .side-rail:focus-within {
   100% {
     opacity: 1;
     transform: translate(0, -50%) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* RIGHT rail drawer: slides in from the RIGHT side */
+@keyframes rail-slide-right {
+  0% {
+    opacity: 0;
+    transform: translate(24px, -50%) scale(0.96);
+    filter: blur(4px);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, -50%) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* BOTTOM rail drawer: slides in from BELOW (bottom of viewport, drawer above rail) */
+@keyframes rail-slide-bottom {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 24px) scale(0.96);
+    filter: blur(4px);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
     filter: blur(0);
   }
 }
@@ -4445,19 +4760,66 @@ settings-panel .settings-section .login.col-12 {
   }
 }
 
-.side-rail--left .rail-drawer {
+/* =============================================================
+   EXPLICIT drawer position classes — rail-drawer--{left,right,bottom}
+   Because .rail-drawer is a SIBLING of .side-rail (not a child),
+   descendant selectors like .side-rail--right .rail-drawer never match.
+   We instead stamp a position class directly on .rail-drawer (SideRail.tsx).
+   ============================================================= */
+
+.rail-drawer--left {
+  top: 50% !important;
+  bottom: auto !important;
+  left: calc(0.75rem + 42px + 0.7rem + 18px) !important;
+  right: auto !important;
+  transform: translateY(-50%) !important;
   animation: rail-slide-left 340ms cubic-bezier(0.2, 0.85, 0.25, 1) both !important;
-  transform-origin: left center;
+  transform-origin: left center !important;
 }
 
-.side-rail--right .rail-drawer {
+.rail-drawer--right {
+  top: 50% !important;
+  bottom: auto !important;
+  right: calc(0.75rem + 42px + 0.7rem + 18px) !important;
+  left: auto !important;
+  transform: translateY(-50%) !important;
   animation: rail-slide-right 340ms cubic-bezier(0.2, 0.85, 0.25, 1) both !important;
-  transform-origin: right center;
+  transform-origin: right center !important;
 }
 
-.side-rail--bottom .rail-drawer {
+.rail-drawer--bottom {
+  bottom: calc(0.75rem + 42px + 0.6rem + 8px) !important;
+  top: auto !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
   animation: rail-slide-bottom 340ms cubic-bezier(0.2, 0.85, 0.25, 1) both !important;
-  transform-origin: center bottom;
+  transform-origin: center bottom !important;
+}
+
+/* Mobile (≤640px): all rails collapse to bottom, so force bottom drawer + animation */
+@media (max-width: 640px) {
+  .rail-drawer--left,
+  .rail-drawer--right,
+  .rail-drawer--bottom {
+    bottom: calc(0.5rem + 42px + 0.45rem + 8px) !important;
+    top: auto !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    animation: rail-slide-bottom 340ms cubic-bezier(0.2, 0.85, 0.25, 1) both !important;
+    transform-origin: center bottom !important;
+  }
+}
+
+/* Tablet (≤900px): tighten drawer distance for left/right — still match streak */
+@media (max-width: 900px) and (min-width: 641px) {
+  .rail-drawer--left {
+    left: calc(0.5rem + 42px + 0.7rem + 18px) !important;
+  }
+  .rail-drawer--right {
+    right: calc(0.5rem + 42px + 0.7rem + 18px) !important;
+  }
 }
 
 /* =================================================================== */
@@ -4868,20 +5230,25 @@ settings-panel--position-bottom .offcanvas-body > .d-flex {
 .settings-panel .color-custom-row {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 0.85rem;
   margin-top: 1.1rem;
   padding: 0.9rem 1rem;
   border-radius: 1rem;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.09);
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  min-height: 60px;
 }
 .settings-panel .color-custom-input-wrap {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.7rem;
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
+  height: 100%;
+  align-self: stretch;
 }
 .settings-panel .color-custom-label {
   font-size: 0.9rem;
@@ -4890,6 +5257,10 @@ settings-panel--position-bottom .offcanvas-body > .d-flex {
   margin-bottom: 0;
   line-height: 1;
   cursor: pointer;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
 }
 .settings-panel .color-custom-input {
   -webkit-appearance: none;
@@ -4901,6 +5272,7 @@ settings-panel--position-bottom .offcanvas-body > .d-flex {
   padding: 0;
   cursor: pointer;
   flex: 0 0 auto;
+  align-self: center;
 }
 .settings-panel .color-custom-input::-webkit-color-swatch-wrapper {
   padding: 0;
@@ -4933,6 +5305,12 @@ settings-panel--position-bottom .offcanvas-body > .d-flex {
     color 0.15s ease,
     transform 0.1s ease;
   flex: 0 0 auto;
+  align-self: center;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 .settings-panel .color-reset-btn:hover {
   background: rgba(255, 255, 255, 0.08);
@@ -4957,23 +5335,19 @@ settings-panel--position-bottom .offcanvas-body > .d-flex {
    ============================================================ */
 
 /* ------ LEFT side rail: streak sits to the RIGHT of the Focus slot
-           (same offset as .rail-label — calc(100% + 0.7rem + 2px)) ------ */
+           (offset — calc(100% + 0.7rem + 18px)) ------ */
 .side-rail--left .rail-streak {
   top: 50% !important;
-  left: calc(100% + 0.7rem + 10px) !important;
+  left: calc(100% + 0.7rem + 18px) !important;
   right: auto !important;
   bottom: auto !important;
-  transform: translate(-10px, -50%) !important;
-  opacity: 0;
-  transition:
-    transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
-    opacity 0.2s ease !important;
-  pointer-events: none;
-}
-.side-rail--left .rail-mode-slot:hover .rail-streak,
-.side-rail--left .rail-mode-slot:focus-within .rail-streak,
-.side-rail--left .rail-mode-slot--streak:hover .rail-streak {
+  transform: translate(0, -50%) !important;
   opacity: 1 !important;
+  transition: none !important;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 /* LEFT rail: task badge still stays top-right corner of the button icon */
@@ -4985,23 +5359,19 @@ settings-panel--position-bottom .offcanvas-body > .d-flex {
 }
 
 /* ------ RIGHT side rail: streak sits to the LEFT of the Focus slot
-           (same offset as .rail-label — calc(100% + 0.7rem + 2px)) ------ */
+           (offset — calc(100% + 0.7rem + 18px)) ------ */
 .side-rail--right .rail-streak {
   top: 50% !important;
-  right: calc(100% + 0.7rem + 10px) !important;
+  right: calc(100% + 0.7rem + 18px) !important;
   left: auto !important;
   bottom: auto !important;
-  transform: translate(10px, -50%) !important;
-  opacity: 0;
-  transition:
-    transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
-    opacity 0.2s ease !important;
-  pointer-events: none;
-}
-.side-rail--right .rail-mode-slot:hover .rail-streak,
-.side-rail--right .rail-mode-slot:focus-within .rail-streak,
-.side-rail--right .rail-mode-slot--streak:hover .rail-streak {
+  transform: translate(0, -50%) !important;
   opacity: 1 !important;
+  transition: none !important;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 /* RIGHT rail: task badge stays top-left corner of the button icon */
@@ -5148,17 +5518,14 @@ settings-panel--position-bottom .offcanvas-body > .d-flex {
   top: auto !important;
   left: 50% !important;
   right: auto !important;
-  bottom: calc(100% + 0.6rem) !important;
-  transform: translateX(-50%) translateY(-10px) !important;
-  opacity: 0;
-  transition:
-    transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
-    opacity 0.2s ease !important;
-}
-.side-rail--bottom .rail-mode-slot:hover .rail-streak,
-.side-rail--bottom .rail-mode-slot--streak:hover .rail-streak,
-.side-rail--bottom .rail-mode-slot:focus-within .rail-streak {
+  bottom: calc(100% + 0.6rem + 8px) !important;
+  transform: translateX(-50%) translateY(0) !important;
   opacity: 1 !important;
+  transition: none !important;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 /* BOTTOM rail: task badge still stays top-right of the icon (corner badge, not directional) */

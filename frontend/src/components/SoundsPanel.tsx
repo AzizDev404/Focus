@@ -94,11 +94,11 @@ export function SoundsPanel() {
     <div className={wrapperClassName}>
       <header className="sounds-header">
         <div>
-          <p className="music-section-label" style={{ marginBottom: 4 }}>
+          <p className="music-section-label">
             Sounds
           </p>
-          <p className="text-secondary" style={{ fontSize: 11, margin: 0 }}>
-            {hasBundledSounds ? 'Ambient library' : 'Open-source safe build'}
+          <p className="text-secondary">
+            {hasBundledSounds ? 'Mix & match ambient layers — up to 5 at once' : 'Open-source safe build'}
           </p>
         </div>
         {hasBundledSounds ? (
@@ -121,7 +121,7 @@ export function SoundsPanel() {
             >
               {SOUND_CATEGORIES.map((c) => (
                 <option key={c} value={c}>
-                  {c === 'all' ? 'All' : c.charAt(0).toUpperCase() + c.slice(1)}
+                  {c === 'all' ? 'All categories' : c.charAt(0).toUpperCase() + c.slice(1)}
                 </option>
               ))}
             </select>
@@ -176,16 +176,16 @@ export function SoundsPanel() {
             role="status"
             aria-live="polite"
           >
-            <div className="glass-surface sounds-empty-card" style={{ padding: 16, borderRadius: 18 }}>
-              <strong style={{ display: 'block', marginBottom: 6 }}>No bundled audio pack</strong>
-              <p className="text-secondary" style={{ margin: 0, fontSize: 12, lineHeight: 1.5 }}>
-                This repository does not ship copyrighted ambient tracks, sound packs, or embedded music sources.
+            <div className="glass-surface sounds-empty-card">
+              <strong>No bundled audio pack</strong>
+              <p className="text-secondary">
+                This repository does <em>not</em> ship copyrighted ambient tracks, sound packs, or embedded music sources — your deployment stays fully compliant with open-source licenses.
               </p>
             </div>
-            <div className="glass-surface sounds-empty-card" style={{ padding: 16, borderRadius: 18 }}>
-              <strong style={{ display: 'block', marginBottom: 6 }}>Want your own sounds?</strong>
-              <p className="text-secondary" style={{ margin: 0, fontSize: 12, lineHeight: 1.5 }}>
-                Add entries to <code>frontend/src/data/catalog.ts</code> and keep any private media in your own deployment.
+            <div className="glass-surface sounds-empty-card">
+              <strong>Bring your own sounds</strong>
+              <p className="text-secondary">
+                Add entries to <code>frontend/src/data/catalog.ts</code> and drop your audio files into <code>frontend/public/sounds/</code> (or point <code>url</code> / <code>file</code> fields at any private, self-hosted location).
               </p>
             </div>
           </div>
