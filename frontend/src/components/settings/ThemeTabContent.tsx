@@ -11,7 +11,6 @@ const THEME_COLOR = ['All', 'Blue', 'Green', 'Pink', 'Purple', 'Orange/Yellow', 
 
 const MIN_SCALE = 1
 const MAX_SCALE = 3
-const MAX_FILE_BYTES = 5 * 1024 * 1024
 
 const MODE_META: Record<
   DashboardMode,
@@ -72,7 +71,7 @@ export function ThemeTabContent({ mode }: { mode: DashboardMode }) {
   }
 
   const updateCustom = (
-    patch: Partial<{ dataUrl: string; opacity: number; scale: number; posX: number; posY: number }>,
+    patch: Partial<{ dataUrl: string; opacity: number; kind?: 'image' | 'video'; scale: number; posX: number; posY: number }>,
   ) => {
     const existing = settings.customThemes[mode]
     if (!existing && !patch.dataUrl) return
@@ -82,6 +81,7 @@ export function ThemeTabContent({ mode }: { mode: DashboardMode }) {
         [mode]: {
           dataUrl: patch.dataUrl ?? existing!.dataUrl,
           opacity: patch.opacity ?? existing?.opacity ?? 35,
+          kind: patch.kind ?? existing?.kind ?? 'image',
           scale: patch.scale ?? existing?.scale ?? 1,
           posX: patch.posX ?? existing?.posX ?? 50,
           posY: patch.posY ?? existing?.posY ?? 50,
@@ -92,24 +92,51 @@ export function ThemeTabContent({ mode }: { mode: DashboardMode }) {
 
   const uploadTheme = (file: File) => {
     setUploadError(null)
-    if (!file.type.startsWith('image/')) {
+    const isImage = file.type.startsWith('image/')
+    const isVideo = file.type.startsWith('video/')
+    if (!isImage && !isVideo) {
       setUploadError('Please choose an image file (JPG, PNG, WEBP).')
       return
     }
-    if (file.size > MAX_FILE_BYTES) {
-      setUploadError('Image is larger than 5MB. Pick a smaller one.')
+    if (isVideo) {
+      setUploadError('Video uploads are disabled. Ask an administrator to add videos.')
       return
     }
+    // no size limit enforced by app; browser or server may impose limits
+
+    const existing = settings.customThemes[mode]
+    if (existing?.kind === 'video' && existing.dataUrl?.startsWith('blob:')) {
+      try {
+        URL.revokeObjectURL(existing.dataUrl)
+      } catch {
+        /* ignore */
+      }
+    }
+
     const reader = new FileReader()
     reader.onload = () => {
-      updateCustom({ dataUrl: reader.result as string, scale: 1, posX: 50, posY: 50 })
+      updateCustom({
+        dataUrl: reader.result as string,
+        kind: 'image',
+        scale: 1,
+        posX: 50,
+        posY: 50,
+      })
     }
-    reader.onerror = () => setUploadError('Could not read that file. Try a different image.')
+    reader.onerror = () => setUploadError('Could not read that file. Try a different file.')
     reader.readAsDataURL(file)
   }
 
   const removeUpload = () => {
     const next = { ...settings.customThemes }
+    const existing = next[mode]
+    if (existing?.kind === 'video' && existing.dataUrl?.startsWith('blob:')) {
+      try {
+        URL.revokeObjectURL(existing.dataUrl)
+      } catch {
+        /* ignore */
+      }
+    }
     delete next[mode]
     setSettings({ customThemes: next })
     if (settings[meta.settingKey] === 'custom') {
@@ -231,7 +258,7 @@ export function ThemeTabContent({ mode }: { mode: DashboardMode }) {
                 <p className="theme-upload-sub">
                   or <span>browse files</span>
                 </p>
-                <span className="theme-upload-hint">JPG, PNG, WEBP · max 5MB</span>
+                  <span className="theme-upload-hint">JPG, PNG, WEBP</span>
               </div>
             </div>
           ) : (
@@ -245,16 +272,30 @@ export function ThemeTabContent({ mode }: { mode: DashboardMode }) {
                 onPointerUp={endDrag}
                 onPointerCancel={endDrag}
               >
-                <img
-                  src={custom.dataUrl}
-                  alt=""
-                  draggable={false}
-                  style={{
-                    transform: `scale(${scale})`,
-                    transformOrigin: 'center center',
-                    objectPosition: `${posX}% ${posY}%`,
-                  }}
-                />
+                {custom.kind === 'video' ? (
+                  <video
+                    src={custom.dataUrl}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    draggable={false}
+                    style={{
+                      transform: `scale(${scale})`,
+                      transformOrigin: `${posX}% ${posY}%`,
+                    }}
+                  />
+                ) : (
+                  <img
+                    src={custom.dataUrl}
+                    alt=""
+                    draggable={false}
+                    style={{
+                      transform: `scale(${scale})`,
+                      transformOrigin: `${posX}% ${posY}%`,
+                    }}
+                  />
+                )}
                 <div className="crop-overlay" aria-hidden="true" />
                 {scale > 1 ? (
                   <span className="crop-hint" aria-hidden="true">
@@ -287,7 +328,6 @@ export function ThemeTabContent({ mode }: { mode: DashboardMode }) {
                     max={100}
                     step={1}
                     value={posX}
-                    disabled={scale <= 1}
                     onChange={(e) => updateCustom({ posX: Number(e.target.value) })}
                   />
                   <span className="range-value">{Math.round(posX)}%</span>
@@ -302,7 +342,6 @@ export function ThemeTabContent({ mode }: { mode: DashboardMode }) {
                     max={100}
                     step={1}
                     value={posY}
-                    disabled={scale <= 1}
                     onChange={(e) => updateCustom({ posY: Number(e.target.value) })}
                   />
                   <span className="range-value">{Math.round(posY)}%</span>
@@ -327,14 +366,14 @@ export function ThemeTabContent({ mode }: { mode: DashboardMode }) {
                 <button type="button" className="btn btn-primary" onClick={applyUpload}>
                   Apply background
                 </button>
-                <button type="button" className="btn btn-outline-secondary" onClick={openPicker}>
-                  Replace
+                <button type="button" className="icon-btn" onClick={openPicker} aria-label="Replace image">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                 </button>
-                <button type="button" className="btn btn-outline-secondary" onClick={resetCrop}>
-                  Reset crop
+                <button type="button" className="icon-btn" onClick={resetCrop} aria-label="Reset crop">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
                 </button>
-                <button type="button" className="btn btn-danger" onClick={removeUpload}>
-                  Remove
+                <button type="button" className="icon-btn btn-danger" onClick={removeUpload} aria-label="Remove image">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
                 </button>
               </div>
             </div>

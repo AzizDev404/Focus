@@ -28,23 +28,23 @@ export function Background({ mode }: Props) {
     return () => window.removeEventListener('resize', onResize)
   }, [])
 
-  const themeImageUrl =
-    isMobile && theme?.mobileImage ? theme.mobileImage : theme?.image
+  const themeImageUrl = isMobile && theme?.mobileImage ? theme.mobileImage : theme?.image
 
-  const videoUrl =
-    theme?.type === 'animated' &&
-    theme.animated &&
-    !settings.disableAnimatedThemes
+  const themeVideoUrl =
+    theme?.type === 'animated' && theme.animated && !settings.disableAnimatedThemes
       ? theme.videoUrl ?? getAnimatedVideoUrl(themeId)
       : undefined
 
-  const themeType = videoUrl
+  const customIsVideo = custom?.kind === 'video'
+  const themeType = customIsVideo
+    ? 'video'
+    : themeVideoUrl
     ? 'video'
     : custom?.dataUrl || themeImageUrl || (theme && !theme.gradient)
-      ? 'image'
-      : 'gradient'
+    ? 'image'
+    : 'gradient'
 
-  const renderedImage = custom?.dataUrl ?? (!videoUrl ? themeImageUrl : undefined)
+  const renderedImage = customIsVideo ? undefined : custom?.dataUrl ?? (!themeVideoUrl ? themeImageUrl : undefined)
 
   const gradientStyle = useMemo(() => {
     if (renderedImage) return undefined
@@ -61,19 +61,39 @@ export function Background({ mode }: Props) {
 
   // Apply per-upload zoom + pan only when the active image is the user's
   // custom upload. Defaults: scale 1, centered (50/50).
-  const usingCustom = renderedImage === custom?.dataUrl && Boolean(custom?.dataUrl)
+  const usingCustom = Boolean(custom?.dataUrl)
   const imgStyle: React.CSSProperties | undefined = usingCustom
     ? {
         transform: `scale(${custom?.scale ?? 1})`,
-        transformOrigin: 'center center',
-        objectPosition: `${custom?.posX ?? 50}% ${custom?.posY ?? 50}%`,
+        transformOrigin: `${custom?.posX ?? 50}% ${custom?.posY ?? 50}%`,
       }
     : undefined
 
   return (
     <div id="bg-wrapper" data-theme-type={themeType} style={wrapperStyle}>
-      {videoUrl ? (
-        <video key={videoUrl} id="bg-video" src={videoUrl} autoPlay loop muted playsInline />
+      {customIsVideo ? (
+        <video
+          key={custom!.dataUrl}
+          id="bg-video"
+          src={custom!.dataUrl}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          style={imgStyle as React.CSSProperties}
+        />
+      ) : themeVideoUrl ? (
+        <video
+          key={themeVideoUrl}
+          id="bg-video"
+          src={themeVideoUrl}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+        />
       ) : renderedImage ? (
         <img
           key={renderedImage}

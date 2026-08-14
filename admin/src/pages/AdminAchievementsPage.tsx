@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { ImageIcon, Pencil, Trash2, Trophy, Upload } from '../components/icons'
 import { AdminModal } from '../components/admin/ui/AdminSheet'
 import { AdminNumberInput } from '../components/admin/ui/AdminNumberInput'
@@ -68,13 +68,13 @@ export function AdminAchievementsPage({ token }: Props) {
   const fileRef = useRef<HTMLInputElement>(null)
   const editFileRef = useRef<HTMLInputElement>(null)
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setItems(await fetchAdminAchievements(token))
-  }
+  }, [token])
 
   useEffect(() => {
     void load().catch((e) => setError(e instanceof Error ? e.message : 'Load failed'))
-  }, [token])
+  }, [load])
 
   useEffect(() => {
     return () => {

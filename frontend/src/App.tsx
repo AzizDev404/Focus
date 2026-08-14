@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useAuthSession } from './hooks/useAuthSession'
+import { useLocationSync } from './lib/locationSync'
 import { Background } from './components/Background'
 import { SideRail } from './components/SideRail'
 import { FocusView } from './components/modes/FocusView'
@@ -29,11 +30,11 @@ const modeVariants = {
 export default function App() {
   useAuthSession()
   useWorkspaceSync()
+  useLocationSync()
   const mode = useFlocusStore((s) => s.mode)
   const panel = useFlocusStore((s) => s.panel)
   const settings = useFlocusStore((s) => s.settings)
   const setSettings = useFlocusStore((s) => s.setSettings)
-  const setSettingsTab = useFlocusStore((s) => s.setSettingsTab)
   const setPanel = useFlocusStore((s) => s.setPanel)
 
   useEffect(() => {
@@ -64,18 +65,6 @@ export default function App() {
       for (const [k, v] of vars) el.style.setProperty(k, v)
     }
   }, [settings.accentColor])
-
-  useEffect(() => {
-    const legacy: Record<string, string> = {
-      themeHome: 'homeTheme',
-      themeFocus: 'focusTheme',
-      themeAmbient: 'homeTheme',
-      ambientTheme: 'homeTheme',
-    }
-    let tab = legacy[settings.defaultSettingsTab] ?? settings.defaultSettingsTab
-    if (tab === 'themes' || tab === 'upgrade') tab = 'homeTheme'
-    setSettingsTab(tab || 'timer')
-  }, [])
 
   useEffect(() => {
     if (settings.preventSleep) void useFlocusStore.getState().requestWakeLock()

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react'
 import { Calendar, FolderOpen, ImageIcon, Pencil, RefreshCcw, Trash2, Upload } from '../components/icons'
 import { AdminModal } from '../components/admin/ui/AdminSheet'
 import { AdminNumberInput } from '../components/admin/ui/AdminNumberInput'
@@ -160,7 +160,7 @@ export function AdminMagazinePage({ token }: Props) {
     [events],
   )
 
-  const load = async () => {
+  const load = useCallback(async () => {
     const [itemsResult, eventsResult] = await Promise.allSettled([
       fetchAdminShopItems(token),
       fetchAdminShopEvents(token),
@@ -176,11 +176,11 @@ export function AdminMagazinePage({ token }: Props) {
       setEvents([])
       console.warn('[admin] shop events unavailable:', eventsResult.reason)
     }
-  }
+  }, [token])
 
   useEffect(() => {
     void load().catch((e) => setError(e instanceof Error ? e.message : 'Load failed'))
-  }, [token])
+  }, [load])
 
   useEffect(() => {
     return () => {

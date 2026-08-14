@@ -11,20 +11,10 @@ import type { ShopItem } from '../lib/auth/types'
 import type { AdminInventoryItem, AdminUserDetail } from '../lib/adminApi'
 import { AdminNumberInput } from '../components/admin/ui/AdminNumberInput'
 import { AdminTextInput } from '../components/admin/ui/AdminTextInput'
+import { formatDate, formatDuration } from '../lib/adminDateUtils'
 
 const SLOTS = ['background', 'avatar', 'frame', 'charm'] as const
 
-function formatDuration(sec: number) {
-  const h = Math.floor(sec / 3600)
-  const m = Math.floor((sec % 3600) / 60)
-  if (h) return `${h}h ${m}m`
-  return `${m}m`
-}
-
-function formatDate(iso: string | null | undefined) {
-  if (!iso) return '—'
-  return new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
-}
 
 function ItemPreview({ preview, emoji }: { preview: string; emoji?: string }) {
   if (preview.startsWith('/uploads/')) {
@@ -247,4 +237,4 @@ export function AdminUserOverview({
   )
 }
 
-export { formatDate, formatDuration }
+export {}

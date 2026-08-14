@@ -219,11 +219,11 @@ flocus-sounds .sounds-empty-card {
   justify-content: center;
   min-height: 11rem;
   padding: 1.5rem 1.25rem;
-  border-radius: 0.85rem;
-  border: 1.5px dashed rgba(255, 255, 255, 0.16);
-  background:
-    linear-gradient(145deg, rgba(116, 50, 255, 0.08), rgba(255, 255, 255, 0.02)),
-    var(--sett-glass-card, rgba(255, 255, 255, 0.04));
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
   cursor: pointer;
   outline: none;
   overflow: hidden;
@@ -238,18 +238,17 @@ flocus-sounds .sounds-empty-card {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 0%, rgba(116, 50, 255, 0.12), transparent 55%);
+  background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.4), transparent 45%);
+  opacity: 0.45;
   pointer-events: none;
 }
 
 .theme-upload-drop:hover,
 .theme-upload-drop:focus-visible,
 .theme-upload-drop.is-dragging {
-  border-color: rgba(167, 139, 250, 0.55);
-  background:
-    linear-gradient(145deg, rgba(116, 50, 255, 0.14), rgba(255, 255, 255, 0.04)),
-    var(--sett-glass-card, rgba(255, 255, 255, 0.06));
-  box-shadow: 0 0 0 1px rgba(116, 50, 255, 0.15), 0 12px 32px rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.32);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.18);
   transform: translateY(-1px);
 }
 
@@ -342,22 +341,82 @@ flocus-sounds .sounds-empty-card {
 
 .theme-upload-actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
+  flex-wrap: nowrap;
+  gap: 0.75rem;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
 }
 
 .theme-upload-actions .btn {
-  flex: 1 1 auto;
+  flex: 0 0 auto;
   min-width: 6.5rem;
   min-height: 2.35rem;
   border-radius: 0.55rem;
   font-size: 0.8rem;
   font-weight: 600;
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #fff;
 }
 
 .theme-upload-actions .btn-primary {
-  flex: 1 1 100%;
+  flex: 1 1 auto;
+  min-width: 9rem;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.18);
 }
+
+/* Push icon buttons to the far right by giving the primary button auto right margin */
+.theme-upload-actions .btn-primary {
+  margin-right: auto;
+}
+
+/* Remove hover effects inside the upload actions to keep UI minimal */
+.theme-upload-actions .btn-primary:hover,
+.theme-upload-actions .btn-primary:focus-visible {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  color: #fff !important;
+  transform: none;
+}
+
+.theme-upload-actions .btn-outline-secondary {
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.theme-upload-actions .btn-outline-secondary:hover,
+.theme-upload-actions .btn-outline-secondary:focus-visible {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  transform: none;
+}
+
+.theme-upload-actions .btn-danger:hover,
+.theme-upload-actions .btn-danger:focus-visible {
+  background: rgba(248, 113, 113, 0.16) !important;
+  color: #fff !important;
+  border-color: rgba(248, 113, 113, 0.24) !important;
+}
+
+/* Icon-only buttons inside upload actions */
+.theme-upload-actions .icon-btn {
+  flex: 0 0 auto;
+  width: 2.35rem;
+  height: 2.35rem;
+  padding: 0.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.45rem;
+  background: rgba(255,255,255,0.04);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.theme-upload-actions .icon-btn:hover { transform: none; background: rgba(255,255,255,0.06); }
+.theme-upload-actions .icon-btn svg { display: block; }
 
 /* Crop editor (shared with legacy .custom-background) */
 settings-panel .theme-upload-editor .crop-preview {
@@ -380,7 +439,8 @@ settings-panel .theme-upload-editor .crop-preview.is-dragging {
   cursor: grabbing;
 }
 
-settings-panel .theme-upload-editor .crop-preview img {
+settings-panel .theme-upload-editor .crop-preview img,
+settings-panel .theme-upload-editor .crop-preview video {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -388,7 +448,7 @@ settings-panel .theme-upload-editor .crop-preview img {
   object-fit: cover;
   display: block;
   pointer-events: none;
-  will-change: transform, object-position;
+  will-change: transform, transform-origin;
   transition: transform 80ms linear;
 }
 

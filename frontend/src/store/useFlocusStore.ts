@@ -448,6 +448,11 @@ export const useFlocusStore = create<FlocusStore>()(
         const persistedWithLegacy = persistedSettings as Partial<FlocusSettings> & { themeAmbient?: string }
         const sanitizeTheme = <K extends 'themeHome' | 'themeFocus'>(key: K) => {
           const candidate = persistedWithLegacy[key]
+          if (candidate === 'custom') {
+            const themeMode = key === 'themeHome' ? 'home' : 'focus'
+            const customTheme = persistedWithLegacy.customThemes?.[themeMode]
+            return customTheme?.dataUrl ? 'custom' : current.settings[key]
+          }
           return typeof candidate === 'string' && validIds.has(candidate)
             ? candidate
             : current.settings[key]
@@ -461,7 +466,7 @@ export const useFlocusStore = create<FlocusStore>()(
         return {
           ...current,
           ...p,
-          mode: (p.mode as string) === 'ambient' ? 'home' : current.mode,
+          mode: (p.mode as string) === 'ambient' ? 'home' : (p.mode ?? current.mode),
           profile: null,
           settings: {
             ...current.settings,
@@ -479,6 +484,42 @@ export const useFlocusStore = create<FlocusStore>()(
         }
       },
       onRehydrateStorage: () => (state) => {
+        if (state?.settings?.customThemes) {
+          const validCustomThemes = Object.fromEntries(
+            Object.entries(state.settings.customThemes).filter(
+              ([, theme]) => theme.kind !== 'video' || !theme.dataUrl?.startsWith('blob:'),
+            ),
+          ) as typeof state.settings.customThemes
+          state.settings.customThemes = validCustomThemes
+          if (
+            state.settings.themeHome === 'custom' &&
+            !validCustomThemes.home?.dataUrl
+          ) {
+            state.settings.themeHome = 'black'
+          }
+          if (
+            state.settings.themeFocus === 'custom' &&
+            !validCustomThemes.focus?.dataUrl
+          ) {
+            state.settings.themeFocus = 'black'
+          }
+        }
+
+        // Re-inject any persisted custom clock font rule so PIP/isolated docs
+        // render the same font immediately after hydrate.
+        if (state?.settings?.customClockFont) {
+          try {
+            const { name, url } = state.settings.customClockFont
+            const rule = `@font-face { font-family: "${name}"; src: url('${url}'); font-weight: normal; font-style: normal; }`
+            const style = document.createElement('style')
+            style.setAttribute('data-custom-clock-font', name)
+            style.appendChild(document.createTextNode(rule))
+            document.head.appendChild(style)
+          } catch {
+            /* ignore */
+          }
+        }
+
         const session = readSession()
         if (session) {
           if (!state?.profile?.id) {
@@ -500,7 +541,19 @@ export const useFlocusStore = create<FlocusStore>()(
         }
       },
       partialize: (s) => ({
-        settings: s.settings,
+        mode: s.mode,
+        panel: s.panel,
+        settingsTab: s.settingsTab,
+        settings: {
+          ...s.settings,
+          customThemes: Object.fromEntries(
+            Object.entries(s.settings.customThemes ?? {}).filter(
+              ([, theme]) => theme.kind !== 'video' || !theme.dataUrl?.startsWith('blob:'),
+            ),
+          ) as typeof s.settings.customThemes,
+        },
+        // persist customClockFont so user-uploaded font survives reload
+        customClockFont: s.settings.customClockFont,
         tasks: s.tasks,
         statsHistory: s.statsHistory,
         streak: s.streak,

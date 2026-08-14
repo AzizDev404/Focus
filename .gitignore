@@ -10,10 +10,17 @@ lerna-debug.log*
 node_modules
 dist
 .env
+.env.*
 backend/data/db.json
 backend/uploads/
+server/data/*.json
+server/data/**/*.json
+.uploads/
+.uploads/**
 dist-ssr
 *.local
+*.db
+*.sqlite
 
 # Editor directories and files
 .vscode/*

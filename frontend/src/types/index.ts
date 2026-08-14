@@ -10,12 +10,11 @@ export type QuoteCategory = 'all' | 'motivational' | 'inspirational' | 'selfcare
 
 export type ClockFont =
   | 'default'
-  | 'minimal'
   | 'minimal-wide'
-  | 'serif'
-  | 'serif-condensed'
   | 'handwritten'
   | 'pixel'
+  | 'custom'
+  | 'custom'
 
 export type ThemeType = 'gradient' | 'world' | 'animated' | 'solid' | 'custom' | 'youtube'
 
@@ -90,6 +89,10 @@ export interface FlocusSettings {
   dynamicGreetings: boolean
   showGreetings: boolean
   clockFont: ClockFont
+  customClockFont?: {
+    name: string
+    url: string
+  }
   timerMode: TimerMode
   useTaskEtaTimer: boolean
   focusMinutes: number
@@ -116,6 +119,8 @@ export interface FlocusSettings {
       {
         dataUrl: string
         opacity: number
+        /** 'image' for pictures, 'video' for uploaded video files */
+        kind?: 'image' | 'video'
         scale?: number
         posX?: number
         posY?: number

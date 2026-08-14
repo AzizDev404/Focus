@@ -2405,9 +2405,10 @@ settings-panel .format-card-label {
   color: var(--fl-ctrl-text);
 }
 
+/* Remove lift and strong hover color so previews match background without distracting color changes */
 settings-panel .format-card:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.08);
+  transform: none;
 }
 
 settings-panel .format-card.active {
@@ -2770,6 +2771,60 @@ settings-panel .clock-style-card.active {
   border-color: var(--fl-accent-color, #7432ff);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--fl-accent-color, #7432ff) 22%, transparent),
     0 10px 22px -12px rgba(0, 0, 0, 0.6);
+}
+
+/* Small upload card shown alongside clock cards */
+settings-panel .clock-upload-card {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  border-radius: 0.85rem;
+  min-height: 0;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.06);
+  color: var(--fl-ctrl-text);
+}
+
+settings-panel .clock-upload-card .clock-style-preview {
+  position: relative;
+  height: 6rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.65rem 0.65rem 0 0;
+  background:
+    radial-gradient(120% 100% at 50% 100%, rgba(255, 130, 80, 0.06), transparent 60%),
+    linear-gradient(180deg, #1d1d3a 0%, #2a1d4a 55%, #44284e 100%);
+  overflow: hidden;
+}
+
+settings-panel .clock-upload-card .clock-style-preview::before {
+  /* allow underlying inline background (accent color) to show through */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  border-radius: 0.65rem 0.65rem 0 0;
+  z-index: 1;
+}
+
+settings-panel .clock-upload-card .clock-style-time {
+  position: relative;
+  z-index: 2;
+  color: rgba(255,255,255,0.9);
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+settings-panel .clock-upload-card .clock-style-label { display: none; }
+
+settings-panel .clock-upload-card:hover {
+  border-color: rgba(255,255,255,0.14);
+  transform: translateY(-2px);
 }
 
 /* ---- Timer Lengths 3-column grid (Focus / Short break / Long break) */
@@ -3196,23 +3251,27 @@ settings-panel .btn,
   gap: 0.4rem;
 }
 
-settings-panel .btn.btn-primary,
-.btn.btn-primary {
+settings-panel .btn.btn-primary {
   background: var(--fl-ctrl-accent) !important;
   border: 1px solid transparent !important;
   color: #fff !important;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset, 0 4px 14px rgba(116, 50, 255, 0.25) !important;
 }
 
-settings-panel .btn.btn-primary:hover,
-.btn.btn-primary:hover {
+settings-panel .btn.btn-primary:hover {
   background: #8b48ff !important;
   transform: translateY(-1px);
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset, 0 6px 18px rgba(116, 50, 255, 0.45) !important;
 }
 
-settings-panel .btn.btn-primary:active,
-.btn.btn-primary:active {
+/* For the theme upload area, keep the primary button visually stable on hover */
+settings-panel .theme-upload-actions .btn.btn-primary:hover {
+  background: var(--fl-ctrl-accent) !important;
+  transform: none !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset, 0 4px 14px rgba(116, 50, 255, 0.25) !important;
+}
+
+settings-panel .btn.btn-primary:active {
   background: #6b29df !important;
   transform: translateY(0);
 }
@@ -3601,7 +3660,7 @@ settings-panel .form-text {
   max-width: none !important;
   max-height: none !important;
   object-fit: cover !important;
-  object-position: center center !important;
+  object-position: center center;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

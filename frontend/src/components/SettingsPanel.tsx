@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { ALERT_SOUNDS, DYNAMIC_TALLIES, STATIC_TALLIES } from '../data/catalog'
 import { calculateFocusScore } from '../lib/focusScore'
 import { CLOCK_FONT_DEFINITIONS, CLOCK_FONT_PICKER_IDS } from '../lib/clockFonts'
+import { getTheme } from '../data/catalog'
 import { aggregatePeriodStats } from '../lib/statsPeriod'
 import { StatsChart, SessionsBarChart } from './StatsChart'
 import { SettingsNavGroup } from './settings/SettingsNavGroup'
@@ -68,6 +69,35 @@ export function SettingsPanel() {
       {children}
     </div>
   )
+
+  const previewStyleForMode = (mode: DashboardMode): React.CSSProperties => {
+    const themeId = mode === 'focus' ? settings.themeFocus : settings.themeHome
+    const custom = settings.customThemes?.[mode]
+    const theme = getTheme(themeId)
+
+    // Custom uploaded image
+    if (custom?.dataUrl && custom.kind !== 'video') {
+      return {
+        backgroundImage: `url(${custom.dataUrl})`,
+        backgroundSize: 'cover',
+        backgroundPosition: `${custom.posX ?? 50}% ${custom.posY ?? 50}%`,
+      }
+    }
+
+    // Theme image
+    const themeImage = theme?.image ?? theme?.mobileImage
+    if (themeImage) {
+      return { backgroundImage: `url(${themeImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+    }
+
+    // Gradient
+    if (theme?.gradient) return { background: theme.gradient }
+
+    // Fallback to accent color
+    if (settings.accentColor) return { background: settings.accentColor }
+
+    return {}
+  }
 
   const renderNavGroups = () =>
     SETTINGS_NAV_GROUPS.map((group) => (
@@ -448,7 +478,7 @@ export function SettingsPanel() {
             <SettingsGroup>
               <SettingsSection title="Clock format" description="Choose between 12-hour or 24-hour clock format.">
                 <div className="format-picker" role="radiogroup" aria-label="Clock format">
-                  {([
+                    {([
                     { id: '12', label: '12-hour Clock', preview: '2:24', tone: 'warm' },
                     { id: '24', label: '24-hour Clock', preview: '14:24', tone: 'cool' },
                   ] as const).map((opt) => {
@@ -463,7 +493,7 @@ export function SettingsPanel() {
                         data-tone={opt.tone}
                         onClick={() => setSettings({ clockFormat: opt.id as '12' | '24' })}
                       >
-                        <span className="format-card-preview">{opt.preview}</span>
+                        <span className="format-card-preview" style={previewStyleForMode('home')}>{opt.preview}</span>
                         <span className="format-card-label">{opt.label}</span>
                       </button>
                     )
@@ -486,7 +516,7 @@ export function SettingsPanel() {
                         className={`clock-style-card${active ? ' active' : ''}`}
                         data-font-style={id}
                       >
-                        <span className="clock-style-preview" aria-hidden>
+                        <span className="clock-style-preview" aria-hidden style={previewStyleForMode('home')}>
                           <span className="clock-style-brand">focus</span>
                           <span
                             className="clock-style-time"
@@ -496,13 +526,38 @@ export function SettingsPanel() {
                               fontWeight: s.fontWeight,
                             }}
                           >
-                            9:24
+                            {settings.clockFormat === '24' ? '14:24' : '2:24'}
                           </span>
                         </span>
                         <span className="clock-style-label">{s.label}</span>
                       </button>
                     )
                   })}
+                  
+                  {/* Upload card: small '+' card rendered alongside font cards */}
+                  <input
+                    id="upload-clock-font"
+                    type="file"
+                    accept=".woff,.woff2"
+                    style={{ display: 'none' }}
+                    onChange={(e) => {
+                      const f = e.target.files?.[0]
+                      if (!f) return
+                      const url = URL.createObjectURL(f)
+                      const name = `CustomClock-${Date.now()}`
+                      const rule = `@font-face { font-family: "${name}"; src: url('${url}'); font-weight: normal; font-style: normal; }`
+                      const style = document.createElement('style')
+                      style.setAttribute('data-custom-clock-font', name)
+                      style.appendChild(document.createTextNode(rule))
+                      document.head.appendChild(style)
+                      setSettings({ customClockFont: { name, url }, clockFont: 'custom' })
+                    }}
+                  />
+                  <label htmlFor="upload-clock-font" className="clock-style-card clock-upload-card" role="button" aria-label="Upload clock font">
+                          <span className="clock-style-preview" aria-hidden style={previewStyleForMode('home')}>
+                      <span className="clock-style-time" style={{ fontSize: '1.6rem' }}>+</span>
+                    </span>
+                  </label>
                 </div>
                 <FormSwitch id="flipClockHome" label="Use flip clock" description="Display the clock with a flip animation." checked={settings.flipClock} onChange={(v) => setSettings({ flipClock: v })} />
                 <FormSwitch id="showSeconds" label="Show clock seconds" description="Get a detailed time view. Turn off to hide seconds." checked={settings.showClockSeconds} onChange={(v) => setSettings({ showClockSeconds: v })} />

@@ -130,6 +130,38 @@ Production da API (3001 port) o'zi built frontend + adminni statik fayl sifatida
 
 ---
 
+## 🐳 Docker (local development)
+
+Agar siz Docker bilan ishlashni xohlasangiz, loyiha oddiy Docker Compose fayli bilan keladi. Buning uchun Docker va Docker Compose o'rnatilgan bo'lishi kerak.
+
+1) `.env` faylingizni tayyorlang (ko'pincha `.env.example` ni nusxalash kifoya qiladi):
+
+```bash
+cp .env.example .env
+# edit .env and set JWT_SECRET and ADMIN_PASSWORD
+```
+
+2) Docker Compose orqali dev stackni ishga tushiring:
+
+```bash
+docker compose up --build
+```
+
+Bu yerda xizmatlar:
+- `backend` — API (port 3001)
+- `frontend` — Vite dev server (port 5173)
+- `admin` — Admin Vite dev server (port 5174)
+
+Ishni to'xtatish uchun:
+
+```bash
+docker compose down
+```
+
+Eslatma: bu Docker Compose konfiguratsiyasi lokal rivojlanish uchun mo'ljallangan. Production deploy uchun alohida Dockerfile va reverse-proxy (Nginx) sozlamalarini tavsiya qilamiz.
+
+---
+
 ## ✨ Asosiy funksiyalar
 
 | Bo'lim | Nima bor |
@@ -219,6 +251,44 @@ Hissangiz uchun oldindan **katta rahmat!** 🙏
 O'zgartirishingiz, tarqatishingiz, sotishingiz, o'z loyihangizda ishlatishingiz mumkin. Bitta shart: litsenziya matnini saqlab qoling.
 
 ---
+
+## ✅ Open Source & Verification
+
+Tsukiyomi bu ochiq kodli loyiha va MIT litsenziyasi ostida tarqatiladi — siz kodni ko'rishingiz, o'zgartirishingiz va tarqatishingiz mumkin.
+
+Iltimos, quyidagi tekshiruvlardan o'tkazing har qanday noxush holatlarni oldini olish uchun:
+
+- 1) Lokal buildni ishga tushiring (frontend + admin):
+
+```bash
+npm install
+npm run build
+```
+
+- 2) TypeScript va bundler xatolari yo'qligini tekshiring (yuqoridagi buyruq ham shu tekshiruvni bajaradi).
+
+- 3) Maxfiy ma'lumotlar uchun git tarixini tekshiring (agar `.env` yoki boshqa kalitlar bor-yo'qligini tekshirish):
+
+```bash
+git log --all --full-history -- .env || true
+git log --all --full-history -- backend/data/db.json || true
+```
+
+- 4) Lint va testlarni ishga tushiring (agar mavjud bo'lsa):
+
+```bash
+npm run lint
+# npm test  # agar test script mavjud bo'lsa
+```
+
+- 5) Media (uploads) va fontlar: agar siz custom fayllar yuklagan bo'lsangiz, brauzerda ilovani ochib, upload/qo'llash/oqish oqimini sinab ko'ring.
+
+Qo'shimcha xavfsizlik tekshiruvlari:
+- GitHub Secrets va `.env` fayllarini push qilishdan avval ikki marta tekshiring.
+- Agar tarixda maxfiy ma'lumot topilsa, `git filter-repo` yoki BFG yordamida tozalang.
+
+Kontakt va xavfsizlik muammolari uchun: u03062010@gmail.com
+
 
 ## 🙏 Minnetdorchilik
 

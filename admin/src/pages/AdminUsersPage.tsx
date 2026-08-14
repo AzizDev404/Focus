@@ -14,7 +14,8 @@ import {
   updateAdminUser,
   type AdminUserDetail,
 } from '../lib/adminApi'
-import { AdminUserOverview, formatDate } from './AdminUserDetailView'
+import { AdminUserOverview } from './AdminUserDetailView'
+import { formatDate } from '../lib/adminDateUtils'
 import { AdminSheet } from '../components/admin/ui/AdminSheet'
 import { AdminTabPanel, AdminTabs } from '../components/admin/ui/AdminTabs'
 import { AdminNumberInput } from '../components/admin/ui/AdminNumberInput'
