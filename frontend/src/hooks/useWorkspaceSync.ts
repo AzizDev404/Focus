@@ -35,11 +35,12 @@ export function useWorkspaceSync() {
           setNotepad(data.notepadHtml || '')
         }
         loadedFor.current = profileId
-      } catch {
-        loadedFor.current = profileId
-      } finally {
         skipTaskSave.current = false
         skipNotepadSave.current = false
+      } catch {
+        loadedFor.current = null
+        skipTaskSave.current = true
+        skipNotepadSave.current = true
       }
     })()
 

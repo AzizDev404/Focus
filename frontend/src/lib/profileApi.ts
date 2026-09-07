@@ -73,10 +73,13 @@ async function uploadProfileImage(
   if (!token) throw new Error('Not signed in')
   const form = new FormData()
   form.set('image', file)
+  const headers: Record<string, string> = {}
+  if (token && token !== 'cookie') headers.Authorization = `Bearer ${token}`
   const res = await fetch(path, {
     method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
+    headers,
     body: form,
+    credentials: 'include',
   })
   const data = await res.json().catch(() => ({}))
   if (!res.ok) throw new Error(typeof data.error === 'string' ? data.error : 'Upload failed')

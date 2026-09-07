@@ -151,9 +151,9 @@ export function AdminApp() {
     setBooting(false)
   }, [])
 
-  const onLoginSuccess = useCallback((t: string, username: string) => {
-    setAdminToken(t, username)
-    setToken(t.trim())
+  const onLoginSuccess = useCallback((_t: string, username: string) => {
+    setAdminToken('cookie', username)
+    setToken('cookie')
     setBooting(false)
   }, [])
 

@@ -1,35 +1,38 @@
 import type { UserProfile } from './auth/types'
 import { STORAGE_KEYS } from './auth/constants'
 
-/** Single source of truth: token + profile together. */
+/** Profile cache only — JWTs live in httpOnly cookies. */
 export const SESSION_KEY = 'tsukiyomi-session'
 const LEGACY_PROFILE_KEY = 'tsukiyomi-profile-cache'
 
 export type StoredSession = {
-  token: string
+  token?: string
+  refreshToken?: string
   profile: UserProfile
   savedAt: number
 }
 
-function writeTokenKey(token: string) {
-  localStorage.setItem(STORAGE_KEYS.userToken, token)
+function stripLegacyTokens() {
+  localStorage.removeItem(STORAGE_KEYS.userToken)
+  localStorage.removeItem('tsukiyomi-user-token')
 }
 
-export function saveSession(token: string, profile: UserProfile) {
-  const trimmed = token?.trim()
-  if (!trimmed || !profile?.id) {
-    throw new Error('Cannot save session without token and profile')
+export function saveSession(_token: string | null | undefined, profile: UserProfile, _refreshToken?: string | null) {
+  if (!profile?.id) {
+    throw new Error('Cannot save session without profile')
   }
-  const payload: StoredSession = { token: trimmed, profile, savedAt: Date.now() }
+  const payload: StoredSession = {
+    profile,
+    savedAt: Date.now(),
+  }
   localStorage.setItem(SESSION_KEY, JSON.stringify(payload))
-  writeTokenKey(trimmed)
+  stripLegacyTokens()
   localStorage.removeItem(LEGACY_PROFILE_KEY)
 }
 
 export function updateSessionProfile(profile: UserProfile) {
-  const session = readSessionRaw()
-  if (!session?.token) return
-  saveSession(session.token, profile)
+  if (!profile?.id) return
+  saveSession(null, profile)
 }
 
 export function readSession(): StoredSession | null {
@@ -42,7 +45,7 @@ function readSessionRaw(): StoredSession | null {
     const raw = localStorage.getItem(SESSION_KEY)
     if (raw) {
       const parsed = JSON.parse(raw) as StoredSession
-      if (parsed?.token?.trim() && parsed?.profile?.id) return parsed
+      if (parsed?.profile?.id) return parsed
     }
   } catch {
     /* */
@@ -50,18 +53,14 @@ function readSessionRaw(): StoredSession | null {
   return null
 }
 
-/** Merge legacy keys into tsukiyomi-session and remove duplicates. */
+/** Merge legacy keys into tsukiyomi-session. Tokens are dropped (cookies replace them). */
 export function migrateAuthStorage() {
   const current = readSessionRaw()
-  if (current) {
-    writeTokenKey(current.token)
+  if (current?.profile?.id) {
+    stripLegacyTokens()
     localStorage.removeItem(LEGACY_PROFILE_KEY)
     return
   }
-
-  const token =
-    localStorage.getItem(STORAGE_KEYS.userToken) ??
-    localStorage.getItem('tsukiyomi-user-token')
 
   let profile: UserProfile | null = null
   try {
@@ -71,13 +70,8 @@ export function migrateAuthStorage() {
     /* */
   }
 
-  if (token?.trim() && profile?.id) {
-    saveSession(token.trim(), profile)
-    return
-  }
-
-  if (!token?.trim() && profile) {
-    localStorage.removeItem(LEGACY_PROFILE_KEY)
+  if (profile?.id) {
+    saveSession(null, profile)
   }
 }
 
@@ -93,8 +87,7 @@ export function clearSessionStorage() {
   try {
     localStorage.removeItem(SESSION_KEY)
     localStorage.removeItem(LEGACY_PROFILE_KEY)
-    localStorage.removeItem(STORAGE_KEYS.userToken)
-    localStorage.removeItem('tsukiyomi-user-token')
+    stripLegacyTokens()
   } catch {
     /* */
   }

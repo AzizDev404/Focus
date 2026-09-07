@@ -75,10 +75,11 @@ export function AccountChats({ embedded = false }: Props) {
   }, [])
 
   useEffect(() => {
+    if (!profile?.id) return
     void refresh(true)
     const id = window.setInterval(() => void refresh(false), POLL_INTERVAL_MS)
     return () => window.clearInterval(id)
-  }, [refresh])
+  }, [profile?.id, refresh])
 
   useEffect(() => {
     if (listRef.current) listRef.current.scrollTop = listRef.current.scrollHeight

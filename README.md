@@ -52,23 +52,26 @@ Agar siz kompaniya / jamoa bo'lsangiz:
 
 ```
 Tsukiyomi/
-├── frontend/   # Foydalanuvchi app (React + Vite) — localhost:5173
-├── admin/      # Admin panel (React + Vite)   — localhost:5174
-├── backend/    # API, auth, mail, DB, uploads — localhost:3001
-└── server/     # Local JSON DB (dev uchun)
+├── frontend/   # Foydalanuvchi app — http://localhost:5173
+├── admin/      # Admin panel — http://localhost:5174
+└── backend/    # API + ma'lumotlar (SQLite yoki JSON) — http://localhost:3001
 ```
 
 Monorepo — npm workspaces. Root `package.json` da barcha scriptlar mavjud.
 
 ---
 
-## 🚀 Tez o'rnatish (5 daqiqa)
+## 🚀 Laptopda ishga tushirish (5 daqiqa)
+
+**Talab:** [Node.js 18+](https://nodejs.org/) (LTS tavsiya). Windows, macOS, Linux.
 
 ### 1. Yuklab oling
 ```bash
-git clone https://github.com/YOUR_USERNAME/Tsukiyomi.git
-cd Tsukiyomi
+git clone https://github.com/AzizDev404/Focus.git
+cd Focus
 ```
+
+Yoki GitHub’dan ZIP yuklab, papkani oching va shu papkada terminal oching.
 
 ### 2. Bog'lamlarni o'rnating
 ```bash
@@ -82,19 +85,19 @@ copy .env.example .env        # Windows
 cp .env.example .env           # Linux / macOS
 ```
 
-`.env` ichida:
-- `JWT_SECRET` — kamida 32 belgidan iborat random string yozing
-- `ADMIN_USERNAME` / `ADMIN_PASSWORD` — admin panel uchun login
-- Google Sign-In va SMTP — ixtiyoriy (bo'sh qolsa ham ishlaydi)
+`.env` ichida (dev uchun `.env.example` qiymatlari yetadi):
+- `JWT_SECRET` — istalgan uzun matn (production’da kamida 32 belgi)
+- `ADMIN_USERNAME` / `ADMIN_PASSWORD` — admin panel login (dev: `admin` / `admin123`)
+- Google Sign-In va SMTP — ixtiyoriy
 
-> ⚠️ **Hech qachon** `.env` faylni GitHub'ga commit qilmang. (U `.gitignore` da.)
+> ⚠️ **Hech qachon** `.env` faylni GitHub'ga commit qilmang.
 
-### 4. Ishga tushiring (Development)
+### 4. Ishga tushiring
 ```bash
 npm run dev
 ```
 
-Bu 3 ta jarayonni parallel ishga tushiradi:
+Brauzerda oching:
 | Narsa | Manzil |
 |---|---|
 | Frontend (user app) | http://localhost:5173 |
@@ -102,10 +105,12 @@ Bu 3 ta jarayonni parallel ishga tushiradi:
 | Backend API | http://localhost:3001 |
 
 ### 5. Akkaunt ochish
-1. Frontendni (5173) oching
-2. **Sign up** ni bosing → email + parol bilan ro'yxatdan o'ting
-3. Agar `REQUIRE_EMAIL_VERIFICATION=false` bo'lsa → darvozabon tushadi. Aks holda OTP konsolga (API terminaliga) chiqadi.
-4. Admin panelga kirish → `/admin` manziliga o'ting, `.env` dagi `ADMIN_USERNAME` / `ADMIN_PASSWORD` bilan kiring.
+1. http://localhost:5173 ni oching (avtomatik `/app` ga o‘tadi)
+2. **Sign up** — email + parol
+3. `REQUIRE_EMAIL_VERIFICATION=false` bo‘lsa darhol kirasiz. Production’da SMTP bo‘lmasa ham `false` qoldirish mumkin (uy serveri). SMTP bo‘lsa kod emailga ketadi; bo‘lmasa **API terminalida** chiqadi.
+4. Admin: http://localhost:5174 — `.env` dagi login/parol.
+
+Sessiya **httpOnly cookie** da saqlanadi (`localStorage` da JWT yo‘q). Dev’da `VITE_API_URL` ni bo‘sh qoldiring — Vite `/api` ni proxy qiladi, cookie ishlashi uchun shu kerak.
 
 ---
 
@@ -119,14 +124,17 @@ npm run build
 NODE_ENV=production npm run start
 ```
 
-Production da API (3001 port) o'zi built frontend + adminni statik fayl sifatida xizmat qiladi — barchasi bitta portda.
+Production da API (3001 port) o'zi built frontend (`/app`) va admin (`/admin`) ni statik fayl sifatida xizmat qiladi — barchasi bitta portda. Admin Vite `base` `/admin/` bo'lishi shart (`npm run build`).
 
 **Talablar:**
-- Node.js 18+
+- Node.js 18+ (22+ da SQLite avtomatik; 18–21 da `backend/data/db.json`)
 - `JWT_SECRET` kamida 32 belgi
 - `ADMIN_USERNAME` = `admin` bo'lmasligi kerak
 - `ADMIN_PASSWORD` kamida 12 belgi
-- (Ixtiyoriy) SMTP yuborish uchun sozlamalar
+- Email tasdiqlash: SMTP sozlangan bo‘lsa avtomatik; uyda SMTP yo‘q bo‘lsa `REQUIRE_EMAIL_VERIFICATION=false`
+- UI va API bir hostda bo‘lsin (yoki `CORS_ORIGINS` va cookie `Secure` production’da)
+
+See `SECURITY.md` for session cookies, rate limits, and self-host notes.
 
 ---
 
@@ -158,7 +166,7 @@ Ishni to'xtatish uchun:
 docker compose down
 ```
 
-Eslatma: bu Docker Compose konfiguratsiyasi lokal rivojlanish uchun mo'ljallangan. Production deploy uchun alohida Dockerfile va reverse-proxy (Nginx) sozlamalarini tavsiya qilamiz.
+Eslatma: `docker compose up` — lokal development. Production: `docker compose -f docker-compose.prod.yml up --build` (`.env` da production `JWT_SECRET` va admin parol).
 
 ---
 

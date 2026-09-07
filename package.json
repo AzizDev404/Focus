@@ -14,7 +14,11 @@
     "dev:backend": "npm run dev -w backend",
     "build": "npm run build -w frontend && npm run build -w admin",
     "start": "npm run start -w backend",
-    "lint": "npm run lint -w frontend && npm run lint -w admin"
+    "lint": "npm run lint -w frontend && npm run lint -w admin",
+    "test": "npm run test -w backend"
+  },
+  "engines": {
+    "node": ">=18"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

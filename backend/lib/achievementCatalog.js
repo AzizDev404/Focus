@@ -1,15 +1,9 @@
-import fs from 'node:fs'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const DB_PATH = path.join(__dirname, '..', 'data', 'db.json')
+import { peekSnapshot } from './jsonStore.js'
 
 export const ACHIEVEMENT_TRIGGERS = ['register', 'sessions', 'focusMinutes', 'tasks', 'level']
 
 function readRawDb() {
-  if (!fs.existsSync(DB_PATH)) return { achievementDefs: [] }
-  return JSON.parse(fs.readFileSync(DB_PATH, 'utf8'))
+  return peekSnapshot() ?? { achievementDefs: [] }
 }
 
 export function normalizeAchievementDef(raw, sortOrder = 0) {

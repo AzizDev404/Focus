@@ -15,31 +15,67 @@ import { createSocialRouter } from './routes/social.js'
 import { createDmRouter } from './routes/dm.js'
 import { createWorkspaceRouter } from './routes/workspace.js'
 import { createChatRouter } from './routes/chat.js'
+import { securityHeaders, uploadStaticHeaders } from './lib/httpSecurity.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
+function corsOrigin(origin, callback) {
+  if (!origin) {
+    callback(null, true)
+    return
+  }
+  if (config.corsOrigins.includes(origin)) {
+    callback(null, true)
+    return
+  }
+  if (!config.isProd && /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)) {
+    callback(null, true)
+    return
+  }
+  callback(null, false)
+}
+
+function spaHtmlHeaders(res, filePath) {
+  if (filePath.endsWith('.html')) {
+    res.setHeader('Cache-Control', 'no-cache')
+  }
+}
+
 export function createApp() {
   const app = express()
-  app.use(cors({ origin: true, credentials: true }))
-  app.use(express.json())
+  app.use(securityHeaders)
+  app.use(cors({ origin: corsOrigin, credentials: true }))
+  app.use(express.json({ limit: '256kb' }))
   app.use(
     '/uploads',
     express.static(path.join(__dirname, 'uploads'), {
       maxAge: '1d',
       etag: true,
       lastModified: true,
+      setHeaders: uploadStaticHeaders,
     }),
   )
 
-  const distPath = path.join(__dirname, '..', 'frontend', 'dist')
+  const frontendDist = path.join(__dirname, '..', 'frontend', 'dist')
+  const adminDist = path.join(__dirname, '..', 'admin', 'dist')
   if (config.serveStatic && config.isProd) {
-    app.use(express.static(distPath, { maxAge: '1h', etag: true }))
-    app.get('/', (_req, res) => {
-      res.redirect(302, '/app')
-    })
-    app.get(/^\/(app|admin)(\/.*)?$/, (_req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'))
-    })
+    app.use(
+      '/admin',
+      express.static(adminDist, {
+        maxAge: '1h',
+        etag: true,
+        index: false,
+        setHeaders: spaHtmlHeaders,
+      }),
+    )
+    app.use(
+      express.static(frontendDist, {
+        maxAge: '1h',
+        etag: true,
+        index: false,
+        setHeaders: spaHtmlHeaders,
+      }),
+    )
   }
 
   app.get('/api/health', (_req, res) => {
@@ -84,9 +120,31 @@ export function createApp() {
     }),
   )
 
+  if (config.serveStatic && config.isProd) {
+    app.get('/', (_req, res) => {
+      res.redirect(302, '/app')
+    })
+    app.get(/^\/admin(\/.*)?$/, (_req, res) => {
+      res.setHeader('Cache-Control', 'no-cache')
+      res.sendFile(path.join(adminDist, 'index.html'))
+    })
+    app.get(/^\/app(\/.*)?$/, (_req, res) => {
+      res.setHeader('Cache-Control', 'no-cache')
+      res.sendFile(path.join(frontendDist, 'index.html'))
+    })
+  }
+
   app.use((err, _req, res, _next) => {
     if (err?.type === 'entity.parse.failed') {
       res.status(400).json({ error: 'Invalid JSON in request body' })
+      return
+    }
+    if (err?.type === 'entity.too.large') {
+      res.status(413).json({ error: 'Request body is too large' })
+      return
+    }
+    if (err?.code === 'LIMIT_FILE_SIZE') {
+      res.status(413).json({ error: 'File is too large' })
       return
     }
     console.error(err)

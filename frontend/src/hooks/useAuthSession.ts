@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { migrateAuthStorage, readSession } from '../lib/authSessionCache'
-import { getUserToken, useUserToken } from '../lib/authStorage'
+import { useUserToken } from '../lib/authStorage'
 import { restoreSessionFromStorage, scrubStaleSession, logoutUser } from '../lib/establishSession'
 import type { UserProfile } from '../lib/auth/types'
 import { apiGet, ApiError } from '../lib/api'
@@ -18,16 +18,13 @@ export function useAuthSession() {
     scrubStaleSession()
     restoreSessionFromStorage()
 
-    const token = getUserToken()
-    if (!token) return
-
-    void apiGet<{ user: UserProfile }>('/api/auth/me', token)
+    void apiGet<{ user: UserProfile }>('/api/auth/me')
       .then(({ user }) => {
-        establishUserSession(token, user)
+        establishUserSession(null, user)
       })
       .catch((err) => {
         if (err instanceof ApiError && (err.status === 401 || err.status === 403)) {
-          logoutUser()
+          if (readSession()?.profile?.id) logoutUser()
           return
         }
         restoreSessionFromStorage()
@@ -39,8 +36,8 @@ export function useIsLoggedIn() {
   useUserToken()
   const profile = useFlocusStore((s) => s.profile)
   const session = readSession()
-  if (session?.token && session.profile?.id) return true
-  return Boolean(getUserToken()) && Boolean(profile?.id)
+  if (session?.profile?.id) return true
+  return Boolean(profile?.id)
 }
 
 function openProfileSettings() {

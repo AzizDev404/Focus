@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback } from 'react'
 import { audioEngine } from '../lib/howlerAudio'
-import { useFlocusStore } from '../store/useFlocusStore'
+import { startStatsClock, pauseStatsClock, statsKindFromSegment } from '../lib/userStatsSync'
 import type { TimerSegment } from '../types'
 
 function segmentDuration(
@@ -203,7 +203,15 @@ export function useFocusTimer() {
     useFlocusStore.getState().updateStreak()
   }
 
-  const pause = () => setTimer({ isRunning: false })
+  useEffect(() => {
+    if (!timer.isRunning) return
+    void startStatsClock(statsKindFromSegment(timer.segment))
+  }, [timer.isRunning, timer.segment])
+
+  const pause = () => {
+    pauseStatsClock(statsKindFromSegment(timer.segment))
+    setTimer({ isRunning: false })
+  }
 
   const toggle = () => (timer.isRunning ? pause() : start())
 

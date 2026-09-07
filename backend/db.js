@@ -1,6 +1,4 @@
-import fs from 'node:fs'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import crypto from 'node:crypto'
 import bcrypt from 'bcryptjs'
 import { clearAllUploads } from './lib/uploads.js'
 import { evaluateAchievements } from './lib/achievements.js'
@@ -14,9 +12,15 @@ import { normalizeMail } from './validators/mail.js'
 import { isShopEventLive, serializeShopEvent, slugifyEventTitle } from './lib/shopEvents.js'
 import { sanitizeChatHtml } from './lib/sanitizeHtml.js'
 import { normalizeNotepadDaily, normalizeUserTasks, workspacePayload } from './lib/workspace.js'
+import {
+  loadSnapshot,
+  resetSnapshot,
+  saveSnapshot,
+  snapshotByteSize,
+} from './lib/jsonStore.js'
+import { clockElapsedMs, creditTimedSeconds } from './lib/statsClock.js'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const DB_PATH = path.join(__dirname, 'data', 'db.json')
+let liveDb = null
 
 const emptyDb = () => ({
   users: [],
@@ -33,44 +37,46 @@ const emptyDb = () => ({
   nextDmId: 1,
 })
 
-function readDb() {
-  try {
-    if (!fs.existsSync(DB_PATH)) return emptyDb()
-    const raw = fs.readFileSync(DB_PATH, 'utf8')
-    const data = JSON.parse(raw)
-    if (!Array.isArray(data.users)) return emptyDb()
-    const db = {
-      users: data.users,
-      shopItems: Array.isArray(data.shopItems) ? data.shopItems : [],
-      shopEvents: Array.isArray(data.shopEvents) ? data.shopEvents : [],
-      achievementDefs: Array.isArray(data.achievementDefs) ? data.achievementDefs : [],
-      chatMessages: Array.isArray(data.chatMessages) ? data.chatMessages : [],
-      follows: Array.isArray(data.follows) ? data.follows : [],
-      dmMessages: Array.isArray(data.dmMessages) ? data.dmMessages : [],
-      nextId: Number.isFinite(data.nextId) ? data.nextId : 1,
-      nextShopId: Number.isFinite(data.nextShopId) ? data.nextShopId : 1,
-      nextEventId: Number.isFinite(data.nextEventId) ? data.nextEventId : 1,
-      nextChatId: Number.isFinite(data.nextChatId) ? data.nextChatId : 1,
-      nextDmId: Number.isFinite(data.nextDmId) ? data.nextDmId : 1,
-    }
-    for (const item of db.shopItems) normalizeShopItemRecord(item)
-    for (const u of db.users) normalizeProfile(u)
-    return db
-  } catch {
-    return emptyDb()
+function hydrate(data) {
+  const db = {
+    users: Array.isArray(data.users) ? data.users : [],
+    shopItems: Array.isArray(data.shopItems) ? data.shopItems : [],
+    shopEvents: Array.isArray(data.shopEvents) ? data.shopEvents : [],
+    achievementDefs: Array.isArray(data.achievementDefs) ? data.achievementDefs : [],
+    chatMessages: Array.isArray(data.chatMessages) ? data.chatMessages : [],
+    follows: Array.isArray(data.follows) ? data.follows : [],
+    dmMessages: Array.isArray(data.dmMessages) ? data.dmMessages : [],
+    nextId: Number.isFinite(data.nextId) ? data.nextId : 1,
+    nextShopId: Number.isFinite(data.nextShopId) ? data.nextShopId : 1,
+    nextEventId: Number.isFinite(data.nextEventId) ? data.nextEventId : 1,
+    nextChatId: Number.isFinite(data.nextChatId) ? data.nextChatId : 1,
+    nextDmId: Number.isFinite(data.nextDmId) ? data.nextDmId : 1,
   }
+  for (const item of db.shopItems) normalizeShopItemRecord(item)
+  for (const u of db.users) normalizeProfile(u)
+  return db
+}
+
+function readDb() {
+  if (liveDb) return liveDb
+  try {
+    liveDb = hydrate(loadSnapshot(emptyDb))
+  } catch {
+    liveDb = emptyDb()
+  }
+  return liveDb
 }
 
 export async function resetDatabase() {
-  const clean = emptyDb()
-  writeDb(clean)
+  liveDb = emptyDb()
+  resetSnapshot(liveDb)
   await clearAllUploads()
-  return clean
+  return liveDb
 }
 
 function writeDb(data) {
-  fs.mkdirSync(path.dirname(DB_PATH), { recursive: true })
-  fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), 'utf8')
+  liveDb = data
+  saveSnapshot(data)
 }
 
 function userEmail(user) {
@@ -151,6 +157,7 @@ export function createUser({
     emailVerified: Boolean(emailVerified),
     googleId,
     pendingVerification: null,
+    tokenVersion: 0,
   }
   evaluateAchievements(user, { includeRegister: true })
   applyXpAndLevel(user)
@@ -207,6 +214,7 @@ export function findOrLinkGoogleUser({ email, googleId, displayName, picture }) 
     emailVerified: true,
     googleId,
     pendingVerification: null,
+    tokenVersion: 0,
     media: { avatarUrl: picture ?? null, backgroundUrl: null },
   }
   evaluateAchievements(created, { includeRegister: true })
@@ -220,14 +228,14 @@ const RESET_TTL_MS = 15 * 60 * 1000
 const OTP_TTL_MS = 15 * 60 * 1000
 
 function resetCode() {
-  return String(Math.floor(100000 + Math.random() * 900000))
+  return String(crypto.randomInt(100000, 1000000))
 }
 
 export async function setPendingVerification(userId, code) {
+  const codeHash = await bcrypt.hash(code, 10)
   const db = readDb()
   const user = db.users.find((u) => u.id === userId)
   if (!user) return null
-  const codeHash = await bcrypt.hash(code, 10)
   user.pendingVerification = {
     codeHash,
     expiresAt: new Date(Date.now() + OTP_TTL_MS).toISOString(),
@@ -257,17 +265,23 @@ export async function verifyPendingCode(email, code) {
     return { error: 'TOO_MANY_ATTEMPTS' }
   }
 
+  const userId = user.id
   const ok = await bcrypt.compare(String(code ?? ''), pending.codeHash)
+  const fresh = readDb()
+  const current = fresh.users.find((u) => u.id === userId)
+  if (!current?.pendingVerification) return { error: 'NO_PENDING' }
+  if (current.emailVerified) return { error: 'ALREADY_VERIFIED' }
+
   if (!ok) {
-    pending.attempts = (pending.attempts ?? 0) + 1
-    writeDb(db)
+    current.pendingVerification.attempts = (current.pendingVerification.attempts ?? 0) + 1
+    writeDb(fresh)
     return { error: 'INVALID_CODE' }
   }
 
-  user.emailVerified = true
-  user.pendingVerification = null
-  writeDb(db)
-  return { user: normalizeProfile(user) }
+  current.emailVerified = true
+  current.pendingVerification = null
+  writeDb(fresh)
+  return { user: normalizeProfile(current) }
 }
 
 export function findPendingByEmail(email) {
@@ -306,27 +320,22 @@ export async function requestPasswordReset(email, deliver) {
   const user = db.users.find((u) => userEmail(u) === target)
   if (!user) return { ok: true }
 
-  normalizeProfile(user)
+  const userId = user.id
   const code = resetCode()
   const codeHash = await bcrypt.hash(code, 10)
-  user.passwordReset = {
+  const fresh = readDb()
+  const current = fresh.users.find((u) => u.id === userId)
+  if (!current) return { ok: true }
+  normalizeProfile(current)
+  current.passwordReset = {
     codeHash,
     expiresAt: new Date(Date.now() + RESET_TTL_MS).toISOString(),
+    attempts: 0,
   }
-
-  user.mailbox.unshift({
-    id: user.nextMailId++,
-    type: 'password_reset',
-    subject: 'Password reset',
-    body: `Your reset code is ${code}. It expires in 15 minutes. Open Account on this device and enter the code to set a new password.`,
-    read: false,
-    createdAt: new Date().toISOString(),
-  })
-
-  writeDb(db)
+  writeDb(fresh)
 
   if (typeof deliver === 'function') {
-    await deliver({ user, code })
+    await deliver({ user: current, code })
   }
 
   return { ok: true }
@@ -346,14 +355,29 @@ export async function resetPasswordWithCode(email, code, passwordHash) {
     writeDb(db)
     return { error: 'EXPIRED' }
   }
+  if ((user.passwordReset.attempts ?? 0) >= 6) {
+    user.passwordReset = null
+    writeDb(db)
+    return { error: 'TOO_MANY_ATTEMPTS' }
+  }
 
+  const userId = user.id
   const ok = await bcrypt.compare(String(code ?? ''), codeHash)
-  if (!ok) return { error: 'INVALID_CODE' }
+  const fresh = readDb()
+  const current = fresh.users.find((u) => u.id === userId)
+  if (!current?.passwordReset) return { error: 'INVALID_CODE' }
 
-  user.passwordHash = passwordHash
-  user.passwordReset = null
-  writeDb(db)
-  return { user: normalizeProfile(user) }
+  if (!ok) {
+    current.passwordReset.attempts = (current.passwordReset.attempts ?? 0) + 1
+    writeDb(fresh)
+    return { error: 'INVALID_CODE' }
+  }
+
+  current.passwordHash = passwordHash
+  current.passwordReset = null
+  current.tokenVersion = (current.tokenVersion ?? 0) + 1
+  writeDb(fresh)
+  return { user: normalizeProfile(current) }
 }
 
 function aggregateStats(statsHistory = {}) {
@@ -453,6 +477,9 @@ export function deleteUser(id) {
   const before = db.users.length
   db.users = db.users.filter((u) => u.id !== id)
   if (db.users.length === before) return false
+  db.follows = (db.follows ?? []).filter((f) => f.followerId !== id && f.followingId !== id)
+  db.dmMessages = (db.dmMessages ?? []).filter((m) => m.fromId !== id && m.toId !== id)
+  db.chatMessages = (db.chatMessages ?? []).filter((m) => m.userId !== id)
   writeDb(db)
   return true
 }
@@ -653,12 +680,6 @@ export function getDatabaseSummary() {
     if (u.emailVerified) verifiedUsers++
     if (u.googleId) googleUsers++
   }
-  let dbSizeBytes = 0
-  try {
-    dbSizeBytes = fs.statSync(DB_PATH).size
-  } catch {
-    /* */
-  }
   return {
     userCount: db.users.length,
     shopItemCount: db.shopItems.length,
@@ -669,7 +690,7 @@ export function getDatabaseSummary() {
     nextUserId: db.nextId,
     nextShopId: db.nextShopId,
     nextChatId: db.nextChatId,
-    dbSizeBytes,
+    dbSizeBytes: snapshotByteSize(),
   }
 }
 
@@ -678,68 +699,129 @@ function ensureStatsHistory(user) {
   return user.statsHistory
 }
 
-function afterStatsUpdate(userId) {
-  updateUserById(userId, () => {})
+const MAX_FOCUS_PER_POST = 4 * 60 * 60
+const MAX_BREAK_PER_POST = 2 * 60 * 60
+const MAX_FOCUS_PER_DAY = 16 * 60 * 60
+const MAX_BREAK_PER_DAY = 8 * 60 * 60
+const MAX_SESSIONS_PER_DAY = 48
+const MAX_TASKS_PER_DAY = 80
+
+function emptyDayStats() {
+  return { focusSeconds: 0, breakSeconds: 0, sessions: 0, tasksCompleted: 0 }
 }
 
-export function addFocusStats(userId, date, seconds) {
+function applyAchievementsInPlace(user) {
+  normalizeProfile(user)
+  applyXpAndLevel(user)
+  evaluateAchievements(user)
+  applyXpAndLevel(user)
+}
+
+function ensureStatsClock(user) {
+  if (!user.statsClock || typeof user.statsClock !== 'object') user.statsClock = {}
+  return user.statsClock
+}
+
+export function startStatsClock(userId, kind) {
+  if (kind !== 'focus' && kind !== 'break') return { error: 'INVALID' }
   const db = readDb()
   const user = db.users.find((u) => u.id === userId)
-  if (!user) return false
-  const statsHistory = ensureStatsHistory(user)
-  const current = statsHistory[date] ?? {
-    focusSeconds: 0,
-    breakSeconds: 0,
-    sessions: 0,
-    tasksCompleted: 0,
+  if (!user) return { error: 'NOT_FOUND' }
+  const clocks = ensureStatsClock(user)
+  const now = Date.now()
+  const existing = clocks[kind]
+  if (existing?.id) {
+    if (existing.running === false) {
+      existing.running = true
+      existing.startedAt = now
+      writeDb(db)
+    }
+    return { sessionId: existing.id, startedAt: existing.startedAt }
   }
+  const sessionId = crypto.randomUUID()
+  clocks[kind] = { id: sessionId, startedAt: now, accruedMs: 0, running: true }
+  writeDb(db)
+  return { sessionId, startedAt: now }
+}
+
+export function pauseStatsClock(userId, kind) {
+  if (kind !== 'focus' && kind !== 'break') return { error: 'INVALID' }
+  const db = readDb()
+  const user = db.users.find((u) => u.id === userId)
+  if (!user) return { error: 'NOT_FOUND' }
+  const clock = user.statsClock?.[kind]
+  if (!clock?.id) return { ok: true }
+  if (clock.running !== false) {
+    clock.accruedMs = clockElapsedMs(clock)
+    clock.running = false
+    clock.startedAt = Date.now()
+    writeDb(db)
+  }
+  return { ok: true }
+}
+
+function consumeClock(user, kind, sessionId, claimed, maxSeconds) {
+  const clock = user.statsClock?.[kind]
+  if (!clock?.id || clock.id !== sessionId) return { error: 'NO_SESSION' }
+  return creditTimedSeconds(claimed, clockElapsedMs(clock), maxSeconds)
+}
+
+export function addFocusStats(userId, date, seconds, sessionId) {
+  const db = readDb()
+  const user = db.users.find((u) => u.id === userId)
+  if (!user) return { error: 'NOT_FOUND' }
+  const credited = consumeClock(user, 'focus', sessionId, seconds, MAX_FOCUS_PER_POST)
+  if (credited.error) return credited
+  const amount = credited.seconds
+  const statsHistory = ensureStatsHistory(user)
+  const current = statsHistory[date] ?? emptyDayStats()
+  if ((current.sessions ?? 0) >= MAX_SESSIONS_PER_DAY) return { error: 'DAY_LIMIT' }
+  if ((current.focusSeconds ?? 0) >= MAX_FOCUS_PER_DAY) return { error: 'DAY_LIMIT' }
+  user.statsClock.focus = null
+  const nextFocus = Math.min(MAX_FOCUS_PER_DAY, current.focusSeconds + amount)
   statsHistory[date] = {
     ...current,
-    focusSeconds: current.focusSeconds + seconds,
+    focusSeconds: nextFocus,
     sessions: current.sessions + 1,
   }
+  applyAchievementsInPlace(user)
   writeDb(db)
-  afterStatsUpdate(userId)
-  return true
+  return { ok: true, creditedSeconds: amount }
 }
 
-export function addBreakStats(userId, date, seconds) {
+export function addBreakStats(userId, date, seconds, sessionId) {
   const db = readDb()
   const user = db.users.find((u) => u.id === userId)
-  if (!user) return false
+  if (!user) return { error: 'NOT_FOUND' }
+  const credited = consumeClock(user, 'break', sessionId, seconds, MAX_BREAK_PER_POST)
+  if (credited.error) return credited
+  const amount = credited.seconds
   const statsHistory = ensureStatsHistory(user)
-  const current = statsHistory[date] ?? {
-    focusSeconds: 0,
-    breakSeconds: 0,
-    sessions: 0,
-    tasksCompleted: 0,
-  }
+  const current = statsHistory[date] ?? emptyDayStats()
+  if ((current.breakSeconds ?? 0) >= MAX_BREAK_PER_DAY) return { error: 'DAY_LIMIT' }
+  user.statsClock.break = null
   statsHistory[date] = {
     ...current,
-    breakSeconds: current.breakSeconds + seconds,
+    breakSeconds: Math.min(MAX_BREAK_PER_DAY, current.breakSeconds + amount),
   }
   writeDb(db)
-  return true
+  return { ok: true, creditedSeconds: amount }
 }
 
 export function addTaskCompleteStats(userId, date) {
   const db = readDb()
   const user = db.users.find((u) => u.id === userId)
-  if (!user) return false
+  if (!user) return { error: 'NOT_FOUND' }
   const statsHistory = ensureStatsHistory(user)
-  const current = statsHistory[date] ?? {
-    focusSeconds: 0,
-    breakSeconds: 0,
-    sessions: 0,
-    tasksCompleted: 0,
-  }
+  const current = statsHistory[date] ?? emptyDayStats()
+  if ((current.tasksCompleted ?? 0) >= MAX_TASKS_PER_DAY) return { error: 'DAY_LIMIT' }
   statsHistory[date] = {
     ...current,
     tasksCompleted: current.tasksCompleted + 1,
   }
+  applyAchievementsInPlace(user)
   writeDb(db)
-  afterStatsUpdate(userId)
-  return true
+  return { ok: true }
 }
 
 // ——— Shop ———
@@ -937,6 +1019,13 @@ export function deleteShopItem(id) {
   const before = db.shopItems.length
   db.shopItems = db.shopItems.filter((i) => i.id !== id)
   if (db.shopItems.length === before) return false
+  for (const user of db.users) {
+    normalizeProfile(user)
+    user.inventory = (user.inventory ?? []).filter((itemId) => itemId !== id)
+    for (const slot of ['background', 'avatar', 'frame', 'charm']) {
+      if (user.equipped[slot] === id) user.equipped[slot] = null
+    }
+  }
   writeDb(db)
   return true
 }
@@ -1260,6 +1349,10 @@ export function saveUserNotepad(userId, date, html) {
   normalizeProfile(user)
   if (!user.notepadDaily) user.notepadDaily = {}
   user.notepadDaily[day] = String(html ?? '').slice(0, 80_000)
+  const keys = Object.keys(user.notepadDaily).sort()
+  if (keys.length > 21) {
+    for (const old of keys.slice(0, keys.length - 21)) delete user.notepadDaily[old]
+  }
   writeDb(db)
   return { date: day, saved: true }
 }

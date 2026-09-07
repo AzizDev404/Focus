@@ -93,8 +93,10 @@ export async function fetchChatMessages(opts: { since?: number; limit?: number }
   if (opts.limit) params.set('limit', String(opts.limit))
   if (opts.since) params.set('since', String(opts.since))
   const qs = params.toString()
+  const token = getUserToken()
   const data = await apiGet<{ messages: ChatMessage[] }>(
     `/api/chat${qs ? `?${qs}` : ''}`,
+    token,
   )
   return data.messages
 }

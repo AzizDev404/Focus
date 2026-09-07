@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import bcrypt from 'bcryptjs'
+import crypto from 'node:crypto'
 import { OAuth2Client } from 'google-auth-library'
 import {
   createUser,
@@ -20,12 +21,32 @@ import {
   validatePassword,
 } from '../validators/mail.js'
 import { otpTemplate, sendMail } from '../lib/mailer.js'
-import { signUserToken, userMiddleware } from '../auth.js'
+import { issueAuthTokens, userMiddleware, verifyToken, authUserId } from '../auth.js'
 import { config } from '../config.js'
+import { rateLimit } from '../lib/rateLimit.js'
+import {
+  clearUserAuthCookies,
+  readUserRefreshToken,
+  setUserAuthCookies,
+} from '../lib/cookies.js'
 
 function generateOtp() {
-  return String(Math.floor(100000 + Math.random() * 900000))
+  return String(crypto.randomInt(100000, 1000000))
 }
+
+function sendSession(res, user, jwtSecret, extra = {}, status = 200) {
+  const tokens = issueAuthTokens(user, jwtSecret)
+  setUserAuthCookies(res, tokens)
+  res.status(status).json({
+    ...tokens,
+    user: publicProfile(user),
+    ...extra,
+  })
+}
+
+const authLimit = rateLimit({ windowMs: 15 * 60 * 1000, max: 25, name: 'auth' })
+const otpLimit = rateLimit({ windowMs: 15 * 60 * 1000, max: 8, name: 'otp' })
+const refreshLimit = rateLimit({ windowMs: 15 * 60 * 1000, max: 40, name: 'refresh' })
 
 async function dispatchOtp(user, code) {
   const tpl = otpTemplate({ code, displayName: user.displayName })
@@ -44,7 +65,7 @@ export function createAuthRouter({ jwtSecret }) {
     ? new OAuth2Client(config.googleClientId)
     : null
 
-  router.post('/register', async (req, res) => {
+  router.post('/register', authLimit, async (req, res) => {
     const nameCheck = validateFullName(req.body?.name ?? req.body?.displayName)
     if (!nameCheck.ok) {
       res.status(400).json({ error: nameCheck.error })
@@ -94,11 +115,10 @@ export function createAuthRouter({ jwtSecret }) {
       return
     }
 
-    const token = signUserToken(result.user, jwtSecret)
-    res.status(201).json({ token, user: publicProfile(result.user) })
+    sendSession(res, result.user, jwtSecret, {}, 201)
   })
 
-  router.post('/verify-email', async (req, res) => {
+  router.post('/verify-email', otpLimit, async (req, res) => {
     const mailCheck = validateMail(req.body?.email)
     if (!mailCheck.ok) {
       res.status(400).json({ error: mailCheck.error })
@@ -156,11 +176,10 @@ export function createAuthRouter({ jwtSecret }) {
     }
 
     updateUserLogin(result.user.id)
-    const token = signUserToken(result.user, jwtSecret)
-    res.json({ token, user: publicProfile(result.user) })
+    sendSession(res, result.user, jwtSecret)
   })
 
-  router.post('/resend-otp', async (req, res) => {
+  router.post('/resend-otp', otpLimit, async (req, res) => {
     const mailCheck = validateMail(req.body?.email)
     if (!mailCheck.ok) {
       res.status(400).json({ error: mailCheck.error })
@@ -187,7 +206,7 @@ export function createAuthRouter({ jwtSecret }) {
     res.json({ ok: true })
   })
 
-  router.post('/login', async (req, res) => {
+  router.post('/login', authLimit, async (req, res) => {
     const mailCheck = validateMail(req.body?.email ?? req.body?.address)
     if (!mailCheck.ok) {
       res.status(400).json({ error: mailCheck.error })
@@ -236,11 +255,10 @@ export function createAuthRouter({ jwtSecret }) {
 
     updateUserLogin(user.id)
     const fresh = findUserById(user.id)
-    const token = signUserToken(fresh, jwtSecret)
-    res.json({ token, user: publicProfile(fresh) })
+    sendSession(res, fresh, jwtSecret)
   })
 
-  router.post('/google', async (req, res) => {
+  router.post('/google', authLimit, async (req, res) => {
     if (!googleClient) {
       res.status(503).json({
         error: 'Google Sign-In is not configured on this server.',
@@ -289,8 +307,7 @@ export function createAuthRouter({ jwtSecret }) {
 
     updateUserLogin(result.user.id)
     const fresh = findUserById(result.user.id)
-    const token = signUserToken(fresh, jwtSecret)
-    res.json({ token, user: publicProfile(fresh), created: Boolean(result.created) })
+    sendSession(res, fresh, jwtSecret, { created: Boolean(result.created) })
   })
 
   router.get('/me', userMiddleware(jwtSecret), (req, res) => {
@@ -302,6 +319,31 @@ export function createAuthRouter({ jwtSecret }) {
     res.json({ user: publicProfile(user) })
   })
 
+  router.post('/logout', (_req, res) => {
+    clearUserAuthCookies(res)
+    res.json({ ok: true })
+  })
+
+  router.post('/refresh', refreshLimit, (req, res) => {
+    const refreshToken = readUserRefreshToken(req)
+    if (!refreshToken) {
+      res.status(401).json({ error: 'Invalid session' })
+      return
+    }
+    const payload = verifyToken(refreshToken, jwtSecret)
+    if (!payload || payload.role !== 'user' || payload.typ !== 'refresh') {
+      res.status(401).json({ error: 'Invalid session' })
+      return
+    }
+    const userId = authUserId(payload)
+    const user = userId ? findUserById(userId) : null
+    if (!user || (user.tokenVersion ?? 0) !== (payload.ver ?? 0)) {
+      res.status(401).json({ error: 'Session expired. Sign in again.' })
+      return
+    }
+    sendSession(res, user, jwtSecret)
+  })
+
   router.get('/config', (_req, res) => {
     res.json({
       googleEnabled: Boolean(config.googleClientId),
@@ -311,7 +353,7 @@ export function createAuthRouter({ jwtSecret }) {
     })
   })
 
-  router.post('/forgot-password', async (req, res) => {
+  router.post('/forgot-password', otpLimit, async (req, res) => {
     const mailCheck = validateMail(req.body?.email)
     if (!mailCheck.ok) {
       res.status(400).json({ error: mailCheck.error })
@@ -340,7 +382,7 @@ export function createAuthRouter({ jwtSecret }) {
     })
   })
 
-  router.post('/reset-password', async (req, res) => {
+  router.post('/reset-password', otpLimit, async (req, res) => {
     const mailCheck = validateMail(req.body?.email)
     if (!mailCheck.ok) {
       res.status(400).json({ error: mailCheck.error })
@@ -365,6 +407,10 @@ export function createAuthRouter({ jwtSecret }) {
     }
     if (result.error === 'INVALID_CODE') {
       res.status(400).json({ error: 'Wrong code. Check your email.' })
+      return
+    }
+    if (result.error === 'TOO_MANY_ATTEMPTS') {
+      res.status(429).json({ error: 'Too many attempts. Request a new reset code.' })
       return
     }
 

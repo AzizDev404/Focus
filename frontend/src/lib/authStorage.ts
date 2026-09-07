@@ -1,33 +1,26 @@
 import { useSyncExternalStore } from 'react'
-import { STORAGE_KEYS } from './auth/constants'
 import { readSession, saveSession, clearSessionStorage } from './authSessionCache'
 import type { UserProfile } from './auth/types'
 
 export const AUTH_STORAGE_EVENT = 'tsukiyomi-auth-storage'
+
+/** Placeholder so callers can detect a cookie session without storing a JWT. */
+export const COOKIE_SESSION = 'cookie'
 
 export function emitUserStorageChange() {
   window.dispatchEvent(new Event(AUTH_STORAGE_EVENT))
 }
 
 export function getUserToken() {
-  const session = readSession()
-  if (session?.token) return session.token
-  return (
-    localStorage.getItem(STORAGE_KEYS.userToken) ??
-    localStorage.getItem('tsukiyomi-user-token')
-  )
+  if (readSession()?.profile?.id) return COOKIE_SESSION
+  return null
 }
 
-export function setUserToken(token: string, profile?: UserProfile | null) {
-  const trimmed = token?.trim()
-  if (!trimmed) return
+export function setUserToken(_token: string, profile?: UserProfile | null) {
   if (profile?.id) {
-    saveSession(trimmed, profile)
-  } else {
-    localStorage.setItem(STORAGE_KEYS.userToken, trimmed)
-    localStorage.removeItem('tsukiyomi-user-token')
+    saveSession(null, profile)
+    emitUserStorageChange()
   }
-  emitUserStorageChange()
 }
 
 export function clearUserToken() {

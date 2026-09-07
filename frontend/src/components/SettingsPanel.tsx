@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { ALERT_SOUNDS, DYNAMIC_TALLIES, STATIC_TALLIES } from '../data/catalog'
 import { calculateFocusScore } from '../lib/focusScore'
-import { CLOCK_FONT_DEFINITIONS, CLOCK_FONT_PICKER_IDS } from '../lib/clockFonts'
+import { CLOCK_FONT_DEFINITIONS, CLOCK_FONT_PICKER_IDS, customClockFontFaceRule } from '../lib/clockFonts'
 import { getTheme } from '../data/catalog'
 import { aggregatePeriodStats } from '../lib/statsPeriod'
 import { StatsChart, SessionsBarChart } from './StatsChart'
@@ -545,7 +545,8 @@ export function SettingsPanel() {
                       if (!f) return
                       const url = URL.createObjectURL(f)
                       const name = `CustomClock-${Date.now()}`
-                      const rule = `@font-face { font-family: "${name}"; src: url('${url}'); font-weight: normal; font-style: normal; }`
+                      const rule = customClockFontFaceRule(name, url)
+                      if (!rule) return
                       const style = document.createElement('style')
                       style.setAttribute('data-custom-clock-font', name)
                       style.appendChild(document.createTextNode(rule))

@@ -18,7 +18,7 @@ type Props = {
   onSuccess?: () => void
 }
 
-type AuthSuccess = { token: string; user: UserProfile }
+type AuthSuccess = { token: string; refreshToken?: string; user: UserProfile }
 
 const fade = {
   initial: { opacity: 0, y: 6 },
@@ -79,9 +79,9 @@ export function AccountAuthPanel({ initialTab = 'login', onSuccess }: Props) {
   }, [])
 
   const finish = useCallback(
-    (token: string, profile: UserProfile) => {
-      if (!token?.trim()) {
-        setError('Server did not return a session token. Try again.')
+    (token: string | undefined, profile: UserProfile, _refreshToken?: string) => {
+      if (!profile?.id) {
+        setError('Server did not return a user profile. Try again.')
         return
       }
       try {
@@ -103,7 +103,7 @@ export function AccountAuthPanel({ initialTab = 'login', onSuccess }: Props) {
       setBusy(true)
       try {
         const data = await apiPost<AuthSuccess>('/api/auth/google', { credential })
-        finish(data.token, data.user)
+        finish(data.token, data.user, data.refreshToken)
       } catch (err) {
         setError(err instanceof ApiError ? err.message : 'Google sign-in failed.')
       } finally {
@@ -170,7 +170,7 @@ export function AccountAuthPanel({ initialTab = 'login', onSuccess }: Props) {
         go('verify')
         return
       }
-      if (data.token && data.user) finish(data.token, data.user)
+      if (data.token && data.user) finish(data.token, data.user, data.refreshToken)
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) {
         setInfo(`Enter the code sent to ${mailCheck.email}`)
@@ -197,7 +197,7 @@ export function AccountAuthPanel({ initialTab = 'login', onSuccess }: Props) {
         email: mailCheck.email,
         password: passCheck.password,
       })
-      finish(data.token, data.user)
+      finish(data.token, data.user, data.refreshToken)
     } catch (err) {
       if (err instanceof ApiError) {
         const data = err.data as { status?: string; email?: string }
@@ -230,7 +230,7 @@ export function AccountAuthPanel({ initialTab = 'login', onSuccess }: Props) {
         email: mailCheck.email,
         code: digits,
       })
-      finish(data.token, data.user)
+      finish(data.token, data.user, data.refreshToken)
     } catch (err) {
       if (err instanceof ApiError) {
         const status = (err.data as { status?: string })?.status

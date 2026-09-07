@@ -35,3 +35,14 @@ export function validatePassword(raw) {
 export function isValidDateKey(date) {
   return typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)
 }
+
+export function isValidStatsDateKey(date) {
+  if (!isValidDateKey(date)) return false
+  const t = Date.parse(`${date}T00:00:00Z`)
+  if (!Number.isFinite(t)) return false
+  const now = Date.now()
+  const day = 24 * 60 * 60 * 1000
+  if (t > now + day) return false
+  if (t < now - 14 * day) return false
+  return true
+}

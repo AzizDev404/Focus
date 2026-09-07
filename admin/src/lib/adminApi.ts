@@ -1,6 +1,12 @@
 import { apiDelete, apiGet, apiPatch, apiPost, ApiError } from './api'
 import type { AdminUser, ShopEvent, ShopItem } from './auth/types'
 
+function uploadInit(token: string, body: FormData): RequestInit {
+  const headers: Record<string, string> = {}
+  if (token && token !== 'cookie') headers.Authorization = `Bearer ${token}`
+  return { method: 'POST', headers, body, credentials: 'include' }
+}
+
 export type AdminStats = {
   userCount: number
   shopItemCount: number
@@ -249,11 +255,7 @@ export async function cleanupAdminUploads(token: string) {
 export async function uploadShopPreview(id: number, file: File, token: string) {
   const form = new FormData()
   form.set('image', file)
-  const res = await fetch(`/api/admin/shop/items/${id}/preview-image`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-    body: form,
-  })
+  const res = await fetch(`/api/admin/shop/items/${id}/preview-image`, uploadInit(token, form))
   const data = await res.json().catch(() => ({}))
   if (!res.ok) {
     throw new ApiError(typeof data.error === 'string' ? data.error : 'Upload failed', res.status, data)
@@ -291,11 +293,7 @@ export async function createShopItemWithImage(form: CreateShopItemForm, token: s
   if (form.stockLimit !== '') body.set('stockLimit', form.stockLimit)
   if (form.image) body.set('image', form.image)
 
-  const res = await fetch('/api/admin/shop/items/with-image', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-    body,
-  })
+  const res = await fetch('/api/admin/shop/items/with-image', uploadInit(token, body))
   const data = await res.json().catch(() => ({}))
   if (!res.ok) {
     throw new ApiError(typeof data.error === 'string' ? data.error : 'Create failed', res.status, data)
@@ -344,11 +342,7 @@ export async function deleteAdminAchievement(id: string, token: string) {
 export async function uploadAchievementImage(id: string, file: File, token: string) {
   const form = new FormData()
   form.set('image', file)
-  const res = await fetch(`/api/admin/achievements/${id}/image`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-    body: form,
-  })
+  const res = await fetch(`/api/admin/achievements/${id}/image`, uploadInit(token, form))
   const data = await res.json().catch(() => ({}))
   if (!res.ok) {
     throw new ApiError(typeof data.error === 'string' ? data.error : 'Upload failed', res.status, data)
@@ -382,11 +376,7 @@ export async function createAchievementWithImage(form: CreateAchievementForm, to
   body.set('enabled', String(form.enabled))
   if (form.image) body.set('image', form.image)
 
-  const res = await fetch('/api/admin/achievements/with-image', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-    body,
-  })
+  const res = await fetch('/api/admin/achievements/with-image', uploadInit(token, body))
   const data = await res.json().catch(() => ({}))
   if (!res.ok) {
     throw new ApiError(typeof data.error === 'string' ? data.error : 'Create failed', res.status, data)

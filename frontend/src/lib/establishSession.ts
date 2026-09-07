@@ -6,17 +6,16 @@ import {
   readSession,
   saveSession,
 } from './authSessionCache'
-import { emitUserStorageChange, getUserToken } from './authStorage'
+import { emitUserStorageChange } from './authStorage'
+import { apiPost } from './api'
 import { useFlocusStore } from '../store/useFlocusStore'
 
-/** Save token + profile together so they never get out of sync. */
-export function establishUserSession(token: string, profile: UserProfile) {
-  const trimmed = token?.trim()
-  if (!trimmed) {
-    console.error('[auth] establishUserSession: missing token')
+export function establishUserSession(_token: string | null | undefined, profile: UserProfile) {
+  if (!profile?.id) {
+    console.error('[auth] establishUserSession: missing profile')
     return false
   }
-  saveSession(trimmed, profile)
+  saveSession(null, profile)
   const store = useFlocusStore.getState()
   store.setProfile(profile)
   store.setAuth(profileToSession(profile))
@@ -32,12 +31,15 @@ export function openProfileSettings() {
   store.setAuthModalOpen(false)
 }
 
-export function completeAuthSuccess(token: string, profile: UserProfile) {
+export function completeAuthSuccess(token: string | null | undefined, profile: UserProfile) {
   if (!establishUserSession(token, profile)) return
   openProfileSettings()
 }
 
 export function logoutUser() {
+  void apiPost('/api/auth/logout', {}).catch(() => {
+    /* cookie clear is best-effort */
+  })
   clearSessionStorage()
   emitUserStorageChange()
   useFlocusStore.getState().clearAuth()
@@ -58,18 +60,18 @@ export function restoreSessionFromStorage() {
   return true
 }
 
-/** Remove orphaned profile cache from old builds (no token). */
 export function scrubStaleSession() {
   migrateAuthStorage()
   if (!readSession()) {
-    const legacy = localStorage.getItem('tsukiyomi-profile-cache')
-    if (legacy && !getUserToken()) {
+    try {
       localStorage.removeItem('tsukiyomi-profile-cache')
+    } catch {
+      /* */
     }
   }
 }
 
 export function isUserSignedIn() {
   const session = readSession()
-  return Boolean(session?.token && session?.profile?.id)
+  return Boolean(session?.profile?.id)
 }

@@ -7,11 +7,19 @@ dotenv.config({ path: path.join(__dirname, '..', '.env') })
 
 const isProd = process.env.NODE_ENV === 'production'
 
+function parseCorsOrigins() {
+  return String(process.env.CORS_ORIGINS ?? '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)
+}
+
 export const config = {
   port: Number(process.env.PORT) || 3001,
   jwtSecret: process.env.JWT_SECRET || (isProd ? '' : 'dev-change-me-in-production'),
   adminUsername: process.env.ADMIN_USERNAME || 'admin',
   adminPassword: process.env.ADMIN_PASSWORD || (isProd ? '' : 'admin123'),
+  corsOrigins: parseCorsOrigins(),
   // Google OAuth — optional, only required if you enable Google Sign-In
   googleClientId: process.env.GOOGLE_CLIENT_ID || '',
   // Email / SMTP — used for OTP and password-reset codes. If unset, codes
@@ -25,13 +33,23 @@ export const config = {
   },
   mailFrom: process.env.MAIL_FROM || 'Focus by Tsukiyomi <no-reply@tsukiyomi.focus>',
   appName: process.env.APP_NAME || 'Focus by Tsukiyomi',
-  // Skip OTP entirely in dev unless explicitly opted in. In production OTP
-  // verification is always on.
-  requireEmailVerification:
-    isProd || process.env.REQUIRE_EMAIL_VERIFICATION === 'true',
-  // In production the API also serves the built Vite app (single host).
   serveStatic: process.env.SERVE_STATIC !== 'false',
+  trustProxy: process.env.TRUST_PROXY === 'true',
   isProd,
+}
+
+const smtpConfigured = Boolean(config.smtp.host && config.smtp.user)
+
+// Self-host: production without SMTP should still allow sign-up.
+// Force verification only when SMTP is configured, or when explicitly requested.
+config.requireEmailVerification =
+  process.env.REQUIRE_EMAIL_VERIFICATION === 'true' ||
+  (isProd && process.env.REQUIRE_EMAIL_VERIFICATION !== 'false' && smtpConfigured)
+
+if (config.requireEmailVerification && !smtpConfigured) {
+  console.warn(
+    '[config] Email verification is on but SMTP is not set. OTP codes will print in the API log. Set SMTP_* or REQUIRE_EMAIL_VERIFICATION=false.',
+  )
 }
 
 if (isProd) {

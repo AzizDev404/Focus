@@ -1,4 +1,11 @@
+import { clearSessionStorage, saveSession } from './authSessionCache'
+import { COOKIE_SESSION, emitUserStorageChange, getUserToken } from './authStorage'
+import type { UserProfile } from './auth/types'
+
 const API_BASE = import.meta.env.VITE_API_URL ?? ''
+
+const SKIP_REFRESH =
+  /\/api\/auth\/(login|register|refresh|logout|forgot-password|reset-password|verify-email|resend-otp|google|config)(\?|$)/
 
 export class ApiError extends Error {
   status: number
@@ -8,6 +15,45 @@ export class ApiError extends Error {
     this.status = status
     this.data = data
   }
+}
+
+let refreshInFlight: Promise<boolean> | null = null
+
+function bearerHeader(token?: string | null) {
+  if (!token || token === COOKIE_SESSION) return null
+  return token
+}
+
+async function tryRefreshSession(): Promise<boolean> {
+  if (refreshInFlight) return refreshInFlight
+  refreshInFlight = (async () => {
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: '{}',
+      })
+      if (!res.ok) {
+        if (res.status === 401 || res.status === 403) {
+          clearSessionStorage()
+          emitUserStorageChange()
+        }
+        return false
+      }
+      const data = (await res.json()) as { user?: UserProfile }
+      if (data.user?.id) {
+        saveSession(null, data.user)
+        emitUserStorageChange()
+      }
+      return true
+    } catch {
+      return false
+    } finally {
+      refreshInFlight = null
+    }
+  })()
+  return refreshInFlight
 }
 
 async function parseJson(res: Response) {
@@ -52,64 +98,75 @@ async function parseJson(res: Response) {
   return data
 }
 
-export async function apiPost<T>(path: string, body: unknown, token?: string | null): Promise<T> {
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-  if (token) headers.Authorization = `Bearer ${token}`
+async function apiFetch(path: string, init: RequestInit, token?: string | null): Promise<Response> {
+  const headers = new Headers(init.headers)
+  const bearer = bearerHeader(token)
+  if (bearer) headers.set('Authorization', `Bearer ${bearer}`)
+  const opts: RequestInit = { ...init, headers, credentials: 'include' }
   let res: Response
   try {
-    res = await fetch(`${API_BASE}${path}`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(body),
-    })
+    res = await fetch(`${API_BASE}${path}`, opts)
   } catch {
     throw new ApiError('Cannot reach API — run npm run dev', 0, {})
   }
+  if (res.status === 401 && !SKIP_REFRESH.test(path)) {
+    const ok = await tryRefreshSession()
+    if (ok) {
+      try {
+        res = await fetch(`${API_BASE}${path}`, opts)
+      } catch {
+        throw new ApiError('Cannot reach API — run npm run dev', 0, {})
+      }
+    }
+  }
+  return res
+}
+
+export async function apiPost<T>(path: string, body: unknown, token?: string | null): Promise<T> {
+  const res = await apiFetch(
+    path,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    },
+    token ?? getUserToken(),
+  )
   return parseJson(res) as Promise<T>
 }
 
 export async function apiGet<T>(path: string, token?: string | null): Promise<T> {
-  const headers: Record<string, string> = {}
-  if (token) headers.Authorization = `Bearer ${token}`
-  let res: Response
-  try {
-    res = await fetch(`${API_BASE}${path}`, { headers })
-  } catch {
-    throw new ApiError('Cannot reach API — run npm run dev', 0, {})
-  }
+  const res = await apiFetch(path, { method: 'GET' }, token ?? getUserToken())
   return parseJson(res) as Promise<T>
 }
 
 export async function apiPut<T>(path: string, body: unknown, token?: string | null): Promise<T> {
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-  if (token) headers.Authorization = `Bearer ${token}`
-  let res: Response
-  try {
-    res = await fetch(`${API_BASE}${path}`, {
+  const res = await apiFetch(
+    path,
+    {
       method: 'PUT',
-      headers,
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
-    })
-  } catch {
-    throw new ApiError('Cannot reach API — run npm run dev', 0, {})
-  }
+    },
+    token ?? getUserToken(),
+  )
   return parseJson(res) as Promise<T>
 }
 
 export async function apiPatch<T>(path: string, body: unknown, token?: string | null): Promise<T> {
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-  if (token) headers.Authorization = `Bearer ${token}`
-  const res = await fetch(`${API_BASE}${path}`, {
-    method: 'PATCH',
-    headers,
-    body: JSON.stringify(body),
-  })
+  const res = await apiFetch(
+    path,
+    {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    },
+    token ?? getUserToken(),
+  )
   return parseJson(res) as Promise<T>
 }
 
 export async function apiDelete<T>(path: string, token?: string | null): Promise<T> {
-  const headers: Record<string, string> = {}
-  if (token) headers.Authorization = `Bearer ${token}`
-  const res = await fetch(`${API_BASE}${path}`, { method: 'DELETE', headers })
+  const res = await apiFetch(path, { method: 'DELETE' }, token ?? getUserToken())
   return parseJson(res) as Promise<T>
 }

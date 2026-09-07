@@ -10,6 +10,11 @@ export class ApiError extends Error {
   }
 }
 
+function bearer(token?: string | null) {
+  if (!token || token === 'cookie') return null
+  return token
+}
+
 async function parseJson(res: Response) {
   const text = await res.text()
   let data: Record<string, unknown> = {}
@@ -42,9 +47,9 @@ async function parseJson(res: Response) {
             ? 'API endpoint not found — restart with npm run dev'
             : res.status === 401
               ? 'Not authenticated — sign in again'
-              : res.status === 403
-                ? 'Access denied — use admin login'
-                : 'Request failed',
+            : res.status === 403
+              ? 'Access denied — use admin login'
+              : 'Request failed',
       res.status,
       data,
     )
@@ -52,48 +57,47 @@ async function parseJson(res: Response) {
   return data
 }
 
-export async function apiPost<T>(path: string, body: unknown, token?: string | null): Promise<T> {
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-  if (token) headers.Authorization = `Bearer ${token}`
+async function request(path: string, init: RequestInit, token?: string | null) {
+  const headers = new Headers(init.headers)
+  const auth = bearer(token)
+  if (auth) headers.set('Authorization', `Bearer ${auth}`)
   let res: Response
   try {
-    res = await fetch(`${API_BASE}${path}`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(body),
-    })
+    res = await fetch(`${API_BASE}${path}`, { ...init, headers, credentials: 'include' })
   } catch {
     throw new ApiError('Cannot reach API — run npm run dev', 0, {})
   }
-  return parseJson(res) as Promise<T>
+  return parseJson(res)
+}
+
+export async function apiPost<T>(path: string, body: unknown, token?: string | null): Promise<T> {
+  return request(
+    path,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    },
+    token,
+  ) as Promise<T>
 }
 
 export async function apiGet<T>(path: string, token?: string | null): Promise<T> {
-  const headers: Record<string, string> = {}
-  if (token) headers.Authorization = `Bearer ${token}`
-  let res: Response
-  try {
-    res = await fetch(`${API_BASE}${path}`, { headers })
-  } catch {
-    throw new ApiError('Cannot reach API — run npm run dev', 0, {})
-  }
-  return parseJson(res) as Promise<T>
+  return request(path, { method: 'GET' }, token) as Promise<T>
 }
 
 export async function apiPatch<T>(path: string, body: unknown, token?: string | null): Promise<T> {
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-  if (token) headers.Authorization = `Bearer ${token}`
-  const res = await fetch(`${API_BASE}${path}`, {
-    method: 'PATCH',
-    headers,
-    body: JSON.stringify(body),
-  })
-  return parseJson(res) as Promise<T>
+  return request(
+    path,
+    {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    },
+    token,
+  ) as Promise<T>
 }
 
 export async function apiDelete<T>(path: string, token?: string | null): Promise<T> {
-  const headers: Record<string, string> = {}
-  if (token) headers.Authorization = `Bearer ${token}`
-  const res = await fetch(`${API_BASE}${path}`, { method: 'DELETE', headers })
-  return parseJson(res) as Promise<T>
+  return request(path, { method: 'DELETE' }, token) as Promise<T>
 }

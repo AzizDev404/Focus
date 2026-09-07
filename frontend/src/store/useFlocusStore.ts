@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { THEMES } from '../data/catalog'
-import { normalizeClockFont } from '../lib/clockFonts'
+import { customClockFontFaceRule, normalizeClockFont } from '../lib/clockFonts'
 import type {
   CustomPlaylist,
   DashboardMode,
@@ -510,11 +510,13 @@ export const useFlocusStore = create<FlocusStore>()(
         if (state?.settings?.customClockFont) {
           try {
             const { name, url } = state.settings.customClockFont
-            const rule = `@font-face { font-family: "${name}"; src: url('${url}'); font-weight: normal; font-style: normal; }`
-            const style = document.createElement('style')
-            style.setAttribute('data-custom-clock-font', name)
-            style.appendChild(document.createTextNode(rule))
-            document.head.appendChild(style)
+            const rule = customClockFontFaceRule(name, url)
+            if (rule) {
+              const style = document.createElement('style')
+              style.setAttribute('data-custom-clock-font', name)
+              style.appendChild(document.createTextNode(rule))
+              document.head.appendChild(style)
+            }
           } catch {
             /* ignore */
           }

@@ -1,10 +1,11 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { sniffImageMime } from './imageSniff.js'
+import { peekSnapshot } from './jsonStore.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dirname, '..')
-const DATA_DB_PATH = path.join(ROOT, 'data', 'db.json')
 const UPLOAD_ROOT = path.join(ROOT, 'uploads', 'users')
 const SHOP_UPLOAD_ROOT = path.join(ROOT, 'uploads', 'shop')
 const ACHIEVEMENT_UPLOAD_ROOT = path.join(ROOT, 'uploads', 'achievements')
@@ -20,16 +21,30 @@ export function uploadsRoot() {
   return UPLOAD_ROOT
 }
 
-export function validateImageFile(file) {
-  if (!file) return 'Image is required.'
-  if (!ALLOWED_MIME.has(file.mimetype)) return 'Only JPG, PNG or WEBP images are allowed.'
-  if (file.size > 5 * 1024 * 1024) return 'Image must be smaller than 5MB.'
+function applySniffedMime(file) {
+  const sniffed = sniffImageMime(file.buffer)
+  if (!sniffed) return 'File is not a valid JPG, PNG or WEBP image.'
+  file.mimetype = sniffed
   return null
 }
 
-/** Admin uploads — no size cap (still MIME-checked). */
+export function validateImageFile(file) {
+  if (!file) return 'Image is required.'
+  if (file.size > 5 * 1024 * 1024) return 'Image must be smaller than 5MB.'
+  const sniffError = applySniffedMime(file)
+  if (sniffError) return sniffError
+  if (!ALLOWED_MIME.has(file.mimetype)) return 'Only JPG, PNG or WEBP images are allowed.'
+  return null
+}
+
+const ADMIN_MAX_BYTES = 8 * 1024 * 1024
+
+/** Admin uploads — magic-byte + MIME-checked, 8MB cap. */
 export function validateAdminImageFile(file) {
   if (!file) return 'Image is required.'
+  if (file.size > ADMIN_MAX_BYTES) return 'Image must be smaller than 8MB.'
+  const sniffError = applySniffedMime(file)
+  if (sniffError) return sniffError
   if (!ALLOWED_MIME.has(file.mimetype)) return 'Only JPG, PNG or WEBP images are allowed.'
   return null
 }
@@ -89,8 +104,7 @@ export async function saveUserImage({ userId, slot, file }) {
 
 async function collectActiveUploads() {
   try {
-    const raw = await fs.readFile(DATA_DB_PATH, 'utf8')
-    const db = JSON.parse(raw)
+    const db = peekSnapshot() ?? {}
     const active = new Set()
     for (const user of db.users ?? []) {
       const media = user?.media ?? {}

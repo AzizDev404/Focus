@@ -122,16 +122,21 @@ export default function App() {
     document.addEventListener('input', onInput, true)
     document.addEventListener('change', onInput, true)
     const initial = window.setTimeout(refreshAll, 0)
-    // Re-paint whenever the settings panel (or any other surface containing
-    // sliders) is mounted by React. The observer is cheap because it only
-    // reacts to subtree changes, not every frame.
-    const observer = new MutationObserver(refreshAll)
+    let raf = 0
+    const observer = new MutationObserver(() => {
+      if (raf) return
+      raf = window.requestAnimationFrame(() => {
+        raf = 0
+        refreshAll()
+      })
+    })
     observer.observe(document.body, { childList: true, subtree: true })
 
     return () => {
       document.removeEventListener('input', onInput, true)
       document.removeEventListener('change', onInput, true)
       clearTimeout(initial)
+      if (raf) window.cancelAnimationFrame(raf)
       observer.disconnect()
     }
   }, [])

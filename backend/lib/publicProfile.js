@@ -28,6 +28,7 @@ export function normalizeProfile(user) {
   if (typeof user.emailVerified !== 'boolean') user.emailVerified = true
   if (user.googleId === undefined) user.googleId = null
   if (user.pendingVerification === undefined) user.pendingVerification = null
+  if (user.tokenVersion == null) user.tokenVersion = 0
   if (!user.tasks) user.tasks = []
   if (!user.notepadDaily) user.notepadDaily = {}
   return user

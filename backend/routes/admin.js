@@ -26,16 +26,22 @@ import {
   updateShopItem,
 } from '../db.js'
 import { signAdminToken, adminMiddleware } from '../auth.js'
+import { clearAdminAuthCookie, setAdminAuthCookie } from '../lib/cookies.js'
 import { saveShopPreviewImage, saveAchievementImage, validateAdminImageFile, cleanupOrphanUploads } from '../lib/uploads.js'
 import { getAdminSystemInfo } from '../lib/systemInfo.js'
+import { rateLimit } from '../lib/rateLimit.js'
 
 export function createAdminRouter({ jwtSecret, adminUsername, adminPassword }) {
   const router = Router()
   const upload = multer({
     storage: multer.memoryStorage(),
+    limits: { fileSize: 8 * 1024 * 1024 },
   })
 
-  router.post('/login', (req, res) => {
+  router.post(
+    '/login',
+    rateLimit({ windowMs: 15 * 60 * 1000, max: 15, name: 'admin-login' }),
+    (req, res) => {
     const username = String(req.body?.username ?? '').trim()
     const password = String(req.body?.password ?? '')
 
@@ -44,7 +50,14 @@ export function createAdminRouter({ jwtSecret, adminUsername, adminPassword }) {
       return
     }
 
-    res.json({ token: signAdminToken(username, jwtSecret), username })
+    const token = signAdminToken(username, jwtSecret)
+    setAdminAuthCookie(res, token)
+    res.json({ token, username })
+  })
+
+  router.post('/logout', (_req, res) => {
+    clearAdminAuthCookie(res)
+    res.json({ ok: true })
   })
 
   router.get('/stats', adminMiddleware(jwtSecret), (_req, res) => {

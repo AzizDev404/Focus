@@ -1,10 +1,17 @@
 import { Router } from 'express'
 import { findUserById, listDmInbox, listDmMessages, postDmMessage } from '../db.js'
 import { userMiddleware } from '../auth.js'
+import { rateLimit } from '../lib/rateLimit.js'
 
 export function createDmRouter({ jwtSecret }) {
   const router = Router()
   const auth = userMiddleware(jwtSecret)
+  const postLimit = rateLimit({
+    windowMs: 60 * 1000,
+    max: 30,
+    name: 'dm-post',
+    keyFn: (req) => `u:${req.auth?.sub ?? 'anon'}`,
+  })
 
   router.get('/inbox', auth, (req, res) => {
     res.json({ conversations: listDmInbox(req.auth.sub) })
@@ -29,7 +36,7 @@ export function createDmRouter({ jwtSecret }) {
     })
   })
 
-  router.post('/:peerId/messages', auth, (req, res) => {
+  router.post('/:peerId/messages', auth, postLimit, (req, res) => {
     const peerId = Number(req.params.peerId)
     if (!Number.isFinite(peerId) || peerId < 1) {
       return res.status(400).json({ error: 'Invalid user id' })

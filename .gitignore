@@ -11,7 +11,10 @@ node_modules
 dist
 .env
 .env.*
+!.env.example
 backend/data/db.json
+backend/data/*.sqlite
+backend/data/*.sqlite-*
 backend/uploads/
 server/data/*.json
 server/data/**/*.json

@@ -3,9 +3,10 @@ import { STORAGE_KEYS } from './auth/constants'
 
 export const ADMIN_STORAGE_EVENT = 'tsukiyomi-admin-storage'
 export const ADMIN_SESSION_KEY = 'tsukiyomi-admin-session'
+export const COOKIE_SESSION = 'cookie'
 
 export type StoredAdminSession = {
-  token: string
+  token?: string
   username: string
   savedAt: number
 }
@@ -19,33 +20,28 @@ export function readAdminSession(): StoredAdminSession | null {
     const raw = localStorage.getItem(ADMIN_SESSION_KEY)
     if (raw) {
       const parsed = JSON.parse(raw) as StoredAdminSession
-      if (parsed?.token?.trim()) return parsed
+      if (parsed?.username?.trim()) return parsed
     }
   } catch {
     /* ignore */
   }
-  const legacy = localStorage.getItem(STORAGE_KEYS.adminToken)?.trim()
-  if (legacy) {
-    return { token: legacy, username: 'admin', savedAt: Date.now() }
-  }
   return null
 }
 
-export function saveAdminSession(token: string, username: string) {
-  const trimmed = token?.trim()
-  if (!trimmed) return
+export function saveAdminSession(_token: string | null | undefined, username: string) {
+  const name = username.trim() || 'admin'
   const payload: StoredAdminSession = {
-    token: trimmed,
-    username: username.trim() || 'admin',
+    username: name,
     savedAt: Date.now(),
   }
   localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(payload))
-  localStorage.setItem(STORAGE_KEYS.adminToken, trimmed)
+  localStorage.removeItem(STORAGE_KEYS.adminToken)
   emitAdminStorageChange()
 }
 
 export function getAdminToken() {
-  return readAdminSession()?.token ?? null
+  if (readAdminSession()?.username) return COOKIE_SESSION
+  return null
 }
 
 export function setAdminToken(token: string, username = 'admin') {

@@ -91,3 +91,21 @@ export function pipClockFontCss(clockFont: ClockFont): string {
     letter-spacing: ${f.letterSpacing};
   `
 }
+
+function cssQuoted(value: string) {
+  return String(value).replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+}
+
+export function customClockFontFaceRule(name: string, url: string): string | null {
+  const family = String(name ?? '').trim()
+  const src = String(url ?? '').trim()
+  if (!/^[A-Za-z0-9 _-]{1,64}$/.test(family)) return null
+  if (
+    !/^(data:font\/|data:application\/(font|octet-stream)|https?:|blob:)/i.test(src) &&
+    !src.startsWith('/')
+  ) {
+    return null
+  }
+  if (src.includes(')') || src.includes(';')) return null
+  return `@font-face { font-family: "${cssQuoted(family)}"; src: url("${cssQuoted(src)}"); font-weight: normal; font-style: normal; }`
+}
