@@ -6,7 +6,7 @@ export const QUOTES: Record<Exclude<QuoteCategory, 'all'>, string[]> = {
     'The secret of getting ahead is getting started.',
     'Focus on being productive instead of busy.',
     'Small steps every day lead to big changes.',
-    'You don\'t have to be great to start, but you have to start to be great.',
+    "You don't have to be great to start, but you have to start to be great.",
   ],
   inspirational: [
     'The only way to do great work is to love what you do.',
@@ -31,10 +31,23 @@ export const QUOTES: Record<Exclude<QuoteCategory, 'all'>, string[]> = {
   ],
 }
 
-export function pickQuote(category: QuoteCategory): string {
-  const pool =
+export function buildQuotePool(
+  category: QuoteCategory,
+  customQuotes: string[] = [],
+): string[] {
+  const base =
     category === 'all'
       ? Object.values(QUOTES).flat()
       : QUOTES[category]
+  const trimmedCustom = customQuotes.map((q) => q.trim()).filter((q) => q.length > 0)
+  return [...trimmedCustom, ...base]
+}
+
+export function pickQuote(
+  category: QuoteCategory,
+  customQuotes: string[] = [],
+): string {
+  const pool = buildQuotePool(category, customQuotes)
+  if (pool.length === 0) return 'Keep going — you\'ve got this.'
   return pool[Math.floor(Math.random() * pool.length)]
 }

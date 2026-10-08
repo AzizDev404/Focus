@@ -13,11 +13,14 @@ export function TopQuote() {
   if (!show) return null
 
   return (
-    <text-quote className={`top-quote ${mode === 'focus' ? 'quote-focus' : 'quote-home'}`}>
+    <text-quote
+      id="flocus-top-quote"
+      className={`top-quote flocus-quote ${mode === 'focus' ? 'quote-focus' : 'quote-home'}`}
+    >
       <AnimatePresence mode="wait">
         <motion.span
           key={quote}
-          className="content"
+          className="content top-quote-text"
           initial={{ opacity: 0, y: 8, filter: 'blur(4px)' }}
           animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
           exit={{ opacity: 0, y: -8, filter: 'blur(4px)' }}

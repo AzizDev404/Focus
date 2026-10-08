@@ -1,4 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react'
+import { useFlocusStore } from '../store/useFlocusStore'
 import { audioEngine } from '../lib/howlerAudio'
 import { startStatsClock, pauseStatsClock, statsKindFromSegment } from '../lib/userStatsSync'
 import type { TimerSegment } from '../types'
@@ -197,7 +198,6 @@ export function useFocusTimer() {
         segment: 'focus',
       })
     } else {
-      useFlocusStore.getState().updateStreak()
       setTimer({ isRunning: true })
     }
     useFlocusStore.getState().updateStreak()

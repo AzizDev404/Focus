@@ -15,7 +15,7 @@ import { TopQuote } from './components/TopQuote'
 import { audioEngine } from './lib/howlerAudio'
 import { THEMES } from './data/catalog'
 import { useFlocusStore } from './store/useFlocusStore'
-import { clockFontDataAttr } from './lib/clockFonts'
+import { clockFontDataAttr, quoteFontDataAttr } from './lib/clockFonts'
 import { useWorkspaceSync } from './hooks/useWorkspaceSync'
 import './styles/app.css'
 import './styles/ui-polish.css'
@@ -41,8 +41,9 @@ export default function App() {
     document.body.setAttribute('data-dashboard-mode', mode)
     document.body.setAttribute('data-clear-mode', settings.clearMode ? 'on' : 'off')
     document.body.setAttribute('data-font', clockFontDataAttr(settings.clockFont))
+    document.body.setAttribute('data-quote-font', quoteFontDataAttr(settings.quoteFont))
     document.body.classList.add('flocus-is-plus')
-  }, [mode, settings.clearMode, settings.clockFont])
+  }, [mode, settings.clearMode, settings.clockFont, settings.quoteFont])
 
   useEffect(() => {
     const accent = settings.accentColor || '#0369A1'

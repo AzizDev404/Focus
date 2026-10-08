@@ -14,6 +14,12 @@ export type ClockFont =
   | 'handwritten'
   | 'pixel'
   | 'custom'
+
+export type QuoteFont =
+  | 'default'
+  | 'minimal-wide'
+  | 'handwritten'
+  | 'pixel'
   | 'custom'
 
 export type ThemeType = 'gradient' | 'world' | 'animated' | 'solid' | 'custom' | 'youtube'
@@ -111,6 +117,12 @@ export interface FlocusSettings {
   quoteCategory: QuoteCategory
   showQuotesHome: boolean
   showQuotesFocus: boolean
+  quoteFont: QuoteFont
+  customQuoteFont?: {
+    name: string
+    url: string
+  }
+  customQuotes: string[]
   themeHome: string
   themeFocus: string
   customThemes: Partial<

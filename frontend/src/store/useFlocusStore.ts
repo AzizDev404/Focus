@@ -51,6 +51,8 @@ const defaultSettings: FlocusSettings = {
   quoteCategory: 'all',
   showQuotesHome: true,
   showQuotesFocus: true,
+  quoteFont: 'default',
+  customQuotes: [],
   themeHome: 'black',
   themeFocus: 'black',
   customThemes: {},
@@ -112,6 +114,8 @@ interface FlocusStore {
   setSettingsTab: (t: string) => void
   setNotepad: (t: string) => void
   setQuote: () => void
+  addCustomQuote: (quote: string) => boolean
+  removeCustomQuote: (index: number) => void
   setShowOnboarding: (v: boolean) => void
   setUserEmail: (email: string) => void
   setAuth: (user: AuthSession) => void
@@ -187,8 +191,33 @@ export const useFlocusStore = create<FlocusStore>()(
       setPanel: (p) => set({ panel: p }),
       setSettingsTab: (t) => set({ settingsTab: t }),
       setNotepad: (t) => set({ notepad: t }),
-      setQuote: () =>
-        set({ currentQuote: pickQuote(get().settings.quoteCategory) }),
+      setQuote: () => {
+        const s = get()
+        set({ currentQuote: pickQuote(s.settings.quoteCategory, s.settings.customQuotes) })
+      },
+      addCustomQuote: (quote) => {
+        const trimmed = quote.trim()
+        if (trimmed.length === 0) return false
+        const s = get()
+        const already = s.settings.customQuotes.some(
+          (q) => q.trim().toLowerCase() === trimmed.toLowerCase(),
+        )
+        if (already) return false
+        set({
+          settings: {
+            ...s.settings,
+            customQuotes: [...s.settings.customQuotes, trimmed],
+          },
+        })
+        return true
+      },
+      removeCustomQuote: (index) => {
+        const s = get()
+        if (index < 0 || index >= s.settings.customQuotes.length) return
+        const next = s.settings.customQuotes.slice()
+        next.splice(index, 1)
+        set({ settings: { ...s.settings, customQuotes: next } })
+      },
       setShowOnboarding: (v) => set({ showOnboarding: v }),
       setUserEmail: (email) => set({ userEmail: email }),
       setAuth: ({ email, displayName }) =>

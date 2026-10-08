@@ -1,7 +1,14 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { ALERT_SOUNDS, DYNAMIC_TALLIES, STATIC_TALLIES } from '../data/catalog'
 import { calculateFocusScore } from '../lib/focusScore'
-import { CLOCK_FONT_DEFINITIONS, CLOCK_FONT_PICKER_IDS, customClockFontFaceRule } from '../lib/clockFonts'
+import {
+  CLOCK_FONT_DEFINITIONS,
+  CLOCK_FONT_PICKER_IDS,
+  QUOTE_FONT_DEFINITIONS,
+  QUOTE_FONT_PICKER_IDS,
+  customClockFontFaceRule,
+  customQuoteFontFaceRule,
+} from '../lib/clockFonts'
 import { getTheme } from '../data/catalog'
 import { aggregatePeriodStats } from '../lib/statsPeriod'
 import { StatsChart, SessionsBarChart } from './StatsChart'
@@ -32,6 +39,9 @@ export function SettingsPanel() {
   const setSettingsTab = useFlocusStore((s) => s.setSettingsTab)
   const setPanel = useFlocusStore((s) => s.setPanel)
   const setMode = useFlocusStore((s) => s.setMode)
+  const setQuote = useFlocusStore((s) => s.setQuote)
+  const addCustomQuote = useFlocusStore((s) => s.addCustomQuote)
+  const removeCustomQuote = useFlocusStore((s) => s.removeCustomQuote)
   const streak = useFlocusStore((s) => s.streak)
   const statsPeriod = useFlocusStore((s) => s.statsPeriod)
   const setStatsPeriod = useFlocusStore((s) => s.setStatsPeriod)
@@ -40,6 +50,10 @@ export function SettingsPanel() {
   const releaseWakeLock = useFlocusStore((s) => s.releaseWakeLock)
 
   const [navOpen, setNavOpen] = useState(false)
+  const [newQuoteText, setNewQuoteText] = useState('')
+  const [newQuoteError, setNewQuoteError] = useState<string | null>(null)
+  const [newQuoteFontName, setNewQuoteFontName] = useState('')
+  const [newQuoteFontError, setNewQuoteFontError] = useState<string | null>(null)
 
   const isLoggedIn = useIsLoggedIn()
 
@@ -577,34 +591,227 @@ export function SettingsPanel() {
             'settModal-quotes',
             'Quotes',
             <SettingsGroup>
-              <SettingsSection title="Quote category">
-                <SettingsInputGroup label="Select category" htmlFor="quoteCategory">
+              <SettingsSection
+                title="Quote typography"
+                description="Pick a font style for quotes on Home and Focus. Preview updates live in the top quote bar."
+              >
+                <div className="clock-style-grid quote-style-grid" role="radiogroup" aria-label="Quote font style">
+                  {QUOTE_FONT_PICKER_IDS.map((id) => {
+                    const f = QUOTE_FONT_DEFINITIONS[id]
+                    const active = settings.quoteFont === id
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        role="radio"
+                        aria-checked={active}
+                        onClick={() => setSettings({ quoteFont: id })}
+                        className={`clock-style-card quote-style-card${active ? ' active' : ''}`}
+                        data-font-style={id}
+                      >
+                        <span className="clock-style-swatch" style={{
+                          fontFamily: f.fontFamily,
+                          fontWeight: f.fontWeight,
+                          letterSpacing: f.letterSpacing,
+                          fontStyle: f.fontStyle ?? 'normal',
+                        }}>
+                          “Dream it. Do it.”
+                        </span>
+                        <span className="clock-style-label">{f.label}</span>
+                      </button>
+                    )
+                  })}
+                  <input
+                    id="upload-quote-font"
+                    type="file"
+                    accept=".ttf,.otf,.woff,.woff2"
+                    hidden
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (!file) return
+                      const name = file.name.replace(/\.[^.]+$/, '') || 'CustomQuote'
+                      const reader = new FileReader()
+                      reader.onerror = () => {
+                        setNewQuoteFontError('Failed to read font file. Please try another.')
+                      }
+                      reader.onload = () => {
+                        const url = String(reader.result ?? '')
+                        const rule = customQuoteFontFaceRule('CustomQuote', url)
+                        if (rule == null) {
+                          setNewQuoteFontError('Unsupported font file. Use TTF, OTF, WOFF, or WOFF2.')
+                          return
+                        }
+                        setNewQuoteFontError(null)
+                        setNewQuoteFontName(name)
+                        const style = document.createElement('style')
+                        style.setAttribute('data-custom-quote-font', name)
+                        style.appendChild(document.createTextNode(rule))
+                        document.head.appendChild(style)
+                        setSettings({
+                          customQuoteFont: { name, url },
+                          quoteFont: 'custom',
+                        })
+                      }
+                      reader.readAsDataURL(file)
+                    }}
+                  />
+                  <label
+                    htmlFor="upload-quote-font"
+                    className="clock-style-card clock-upload-card quote-style-card quote-upload-card"
+                    role="button"
+                    aria-label="Upload quote font"
+                  >
+                    <span className="clock-style-swatch upload-swatch">⬆</span>
+                    <span className="clock-style-label">
+                      {settings.customQuoteFont
+                        ? `Uploaded · ${settings.customQuoteFont.name}`
+                        : newQuoteFontName
+                        ? `Uploaded · ${newQuoteFontName}`
+                        : 'Upload font'}
+                    </span>
+                  </label>
+                </div>
+                {newQuoteFontError ? (
+                  <p className="settings-input-help mt-2" style={{ color: 'var(--fl-danger-color, #ff5b6b)' }}>
+                    {newQuoteFontError}
+                  </p>
+                ) : null}
+              </SettingsSection>
+
+              <SettingsSection
+                title="Quote sources"
+                description="Mix curated categories with your own words. Custom quotes always appear first in the pool."
+              >
+                <SettingsInputGroup label="Category" htmlFor="quoteCategory">
                   <SettingsSelect
                     id="quoteCategory"
                     value={settings.quoteCategory}
                     onValueChange={(v) => {
                       setSettings({ quoteCategory: v as typeof settings.quoteCategory })
-                      useFlocusStore.getState().setQuote()
+                      setQuote()
                     }}
                     options={['all', 'motivational', 'inspirational', 'selfcare', 'gratitude'].map((c) => ({
                       value: c,
-                      label: c === 'all' ? 'All' : c.charAt(0).toUpperCase() + c.slice(1),
+                      label:
+                        c === 'all'
+                          ? 'All categories'
+                          : c.charAt(0).toUpperCase() + c.slice(1),
                     }))}
                     aria-label="Quote category"
                   />
                 </SettingsInputGroup>
-                <FormSwitch id="quotesFocus" label="Show quotes in Focus Mode" checked={settings.showQuotesFocus} onChange={(v) => setSettings({ showQuotesFocus: v })} />
-                <FormSwitch id="quotesHome" label="Show quotes in Home" checked={settings.showQuotesHome} onChange={(v) => setSettings({ showQuotesHome: v })} />
-                <button
-                  type="button"
-                  onClick={() => useFlocusStore.getState().setQuote()}
-                  className="btn btn-secondary btn-sm"
-                >
-                  Shuffle to a new quote
-                </button>
+                <FormSwitch
+                  id="quotesFocus"
+                  label="Show quotes in Focus Mode"
+                  checked={settings.showQuotesFocus}
+                  onChange={(v) => setSettings({ showQuotesFocus: v })}
+                />
+                <FormSwitch
+                  id="quotesHome"
+                  label="Show quotes in Home"
+                  checked={settings.showQuotesHome}
+                  onChange={(v) => setSettings({ showQuotesHome: v })}
+                />
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginTop: '0.5rem', flexWrap: 'wrap' }}>
+                  <button
+                    type="button"
+                    onClick={() => setQuote()}
+                    className="btn btn-secondary btn-sm"
+                  >
+                    Shuffle a new quote
+                  </button>
+                  <span className="settings-input-help" style={{ margin: 0 }}>
+                    Pool includes {settings.customQuotes.length} custom + curated entries.
+                  </span>
+                </div>
               </SettingsSection>
+
+              <SettingsSection
+                title="Add a quote"
+                description="Drop in a phrase that keeps you going. It will join the random shuffle."
+              >
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault()
+                    setNewQuoteError(null)
+                    const ok = addCustomQuote(newQuoteText)
+                    if (!ok) {
+                      if (newQuoteText.trim().length === 0) {
+                        setNewQuoteError('Please write something meaningful first.')
+                      } else {
+                        setNewQuoteError('This quote is already in your list.')
+                      }
+                      return
+                    }
+                    setNewQuoteText('')
+                  }}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.65rem',
+                  }}
+                >
+                  <textarea
+                    id="addQuoteText"
+                    value={newQuoteText}
+                    onChange={(e) => {
+                      setNewQuoteText(e.target.value)
+                      if (newQuoteError) setNewQuoteError(null)
+                    }}
+                    className="form-control"
+                    placeholder="Write your quote here…"
+                    rows={3}
+                    style={{ resize: 'vertical' }}
+                  />
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                    <div style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.55)' }}>
+                      {newQuoteText.length}/500
+                    </div>
+                    <button
+                      type="submit"
+                      className="btn btn-primary btn-sm"
+                      disabled={newQuoteText.trim().length === 0}
+                      style={{ marginLeft: 'auto' }}
+                    >
+                      + Add quote
+                    </button>
+                  </div>
+                  {newQuoteError ? (
+                    <p className="settings-input-help" style={{ color: 'var(--fl-danger-color, #ff5b6b)', margin: 0 }}>
+                      {newQuoteError}
+                    </p>
+                  ) : null}
+                </form>
+              </SettingsSection>
+
+              {settings.customQuotes.length > 0 ? (
+                <SettingsSection
+                  title={`Your quotes · ${settings.customQuotes.length}`}
+                  description="Remove anytime; curation stays with you across sessions."
+                  className="custom-quotes-section"
+                >
+                  <ul className="custom-quotes-list">
+                    {settings.customQuotes.map((q, idx) => (
+                      <li key={`${idx}-${q.slice(0, 20)}`} className="custom-quote-item">
+                        <blockquote className="custom-quote-text">{q}</blockquote>
+                        <button
+                          type="button"
+                          className="btn btn-ghost btn-sm custom-quote-delete"
+                          aria-label="Remove quote"
+                          onClick={() => removeCustomQuote(idx)}
+                          title="Remove quote"
+                        >
+                          <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14z" />
+                          </svg>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </SettingsSection>
+              ) : null}
             </SettingsGroup>,
-            'Pick a quote to keep you motivated through the day.',
+            'Keep yourself inspired — pick a typeface, mix curated categories, and save your own words to shuffle.',
           )}
 
         {settingsTab === 'extras' &&

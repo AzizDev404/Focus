@@ -1,4 +1,4 @@
-import type { ClockFont } from '../types'
+import type { ClockFont, QuoteFont } from '../types'
 
 export interface ClockFontDefinition {
   id: ClockFont
@@ -79,9 +79,90 @@ export function normalizeClockFont(value: unknown): ClockFont {
   return 'default'
 }
 
-/** Google Fonts bundle for PiP / isolated documents (no access to index.html links). */
+/* =========================================================
+ *  QUOTE FONTS
+ * ========================================================= */
+
+export interface QuoteFontDefinition {
+  id: QuoteFont
+  label: string
+  /** Value for `document.body` attribute `data-quote-font`. */
+  dataFont: string
+  fontFamily: string
+  fontWeight: number | string
+  letterSpacing: string
+  fontStyle?: 'normal' | 'italic'
+}
+
+export const QUOTE_FONT_DEFINITIONS: Record<QuoteFont, QuoteFontDefinition> = {
+  default: {
+    id: 'default',
+    label: 'Elegant Sans',
+    dataFont: 'Default',
+    fontFamily: "'Inter', 'Degular', system-ui, sans-serif",
+    fontWeight: 400,
+    letterSpacing: '0.005em',
+  },
+  'minimal-wide': {
+    id: 'minimal-wide',
+    label: 'Serif Wide',
+    dataFont: 'Minimal Wide',
+    fontFamily: "'Cormorant Garamond', 'Playfair Display', Georgia, serif",
+    fontWeight: 400,
+    letterSpacing: '0.02em',
+    fontStyle: 'italic',
+  },
+  handwritten: {
+    id: 'handwritten',
+    label: 'Handwritten',
+    dataFont: 'Handwritten',
+    fontFamily: "'Gaegu', 'Caveat', cursive",
+    fontWeight: 500,
+    letterSpacing: '0.01em',
+  },
+  pixel: {
+    id: 'pixel',
+    label: 'Pixel Serif',
+    dataFont: 'Pixel',
+    fontFamily: "'VT323', 'Press Start 2P', monospace",
+    fontWeight: 400,
+    letterSpacing: '0.01em',
+  },
+  custom: {
+    id: 'custom',
+    label: 'Custom',
+    dataFont: 'Custom',
+    fontFamily: "'CustomQuote', 'Inter', sans-serif",
+    fontWeight: 400,
+    letterSpacing: '0',
+  },
+}
+
+export const QUOTE_FONT_PICKER_IDS = [
+  'default',
+  'minimal-wide',
+  'handwritten',
+  'pixel',
+] as const satisfies readonly QuoteFont[]
+
+export function getQuoteFontDefinition(quoteFont: QuoteFont): QuoteFontDefinition {
+  return QUOTE_FONT_DEFINITIONS[quoteFont] ?? QUOTE_FONT_DEFINITIONS.default
+}
+
+export function quoteFontDataAttr(quoteFont: QuoteFont): string {
+  return getQuoteFontDefinition(quoteFont).dataFont
+}
+
+export function normalizeQuoteFont(value: unknown): QuoteFont {
+  if (value && typeof value === 'string' && value in QUOTE_FONT_DEFINITIONS) {
+    return value as QuoteFont
+  }
+  return 'default'
+}
+
+/** Google Fonts bundle — covers both clock + quote font families. */
 export const CLOCK_FONTS_GOOGLE_STYLESHEET =
-  'https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Inter:wght@100..900&family=Press+Start+2P&display=swap'
+  'https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Gaegu:wght@400;700&family=Inter:wght@100..900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Press+Start+2P&family=VT323&display=swap'
 
 export function pipClockFontCss(clockFont: ClockFont): string {
   const f = getClockFontDefinition(clockFont)
@@ -109,3 +190,6 @@ export function customClockFontFaceRule(name: string, url: string): string | nul
   if (src.includes(')') || src.includes(';')) return null
   return `@font-face { font-family: "${cssQuoted(family)}"; src: url("${cssQuoted(src)}"); font-weight: normal; font-style: normal; }`
 }
+
+/** @alias same validator for quote fonts */
+export const customQuoteFontFaceRule = customClockFontFaceRule

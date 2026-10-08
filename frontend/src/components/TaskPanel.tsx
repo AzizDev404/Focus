@@ -124,8 +124,8 @@ function SortableTaskRow({
 
       <input
         type="checkbox"
-        className="form-check-input"
-        checked={false}
+        className="form-check-input flocus-task-checkbox"
+        checked={task.completed}
         onChange={() => onComplete(task.id)}
         aria-label="Complete task"
       />
